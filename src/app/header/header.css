@@ -1,0 +1,311 @@
+/* header.component.css */
+
+/* Variables CSS */
+:host {
+    --primary-color: #6366f1;
+    --primary-dark: #4f46e5;
+    --primary-light: #818cf8;
+    --bg-dark: #111827;
+    --bg-darker: #0f172a;
+    --text-light: #f3f4f6;
+    --text-gray: #9ca3af;
+    --border-color: #1f2937;
+    --gradient-start: #6366f1;
+    --gradient-end: #8b5cf6;
+  }
+  
+  /* Navigation principale */
+  .custom-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: #000000;
+    border-bottom: 2px solid var(--border-color);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+  
+  .nav-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+  
+  .nav-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+    gap: 2rem;
+  }
+  
+  /* ===== LOGO SECTION ===== */
+  .logo-section {
+    flex-shrink: 0;
+  }
+    
+  .logo-image {
+    height: 80px;
+    width: auto;
+    display: block;
+    position: relative;
+    z-index: 2;
+  }
+          
+  /* ===== DESKTOP MENU ===== */
+  .desktop-menu {
+    display: flex;
+    gap: 0.5rem;
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .nav-link {
+    position: relative;
+    padding: 0.75rem 1.5rem;
+    color: var(--text-gray);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+    /* Suppression du border-radius et overflow */
+  }
+  
+  /* Suppression du background au survol */
+  .nav-link:hover {
+    color: white;
+  }
+  
+  /* Suppression de l'effet de background */
+  .nav-link-bg {
+    display: none;
+  }
+  
+  /* Active link style - sans background */
+  .nav-link.active {
+    color: white;
+  }
+  
+  /* ===== RIGHT SECTION ===== */
+  .right-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  /* Cart Button */
+  .cart-button {
+    position: relative;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.6rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .cart-button:hover {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+  }
+  
+  .cart-icon {
+    height: 24px;
+    width: 24px;
+    color: var(--text-gray);
+    transition: color 0.3s ease;
+  }
+  
+  .cart-button:hover .cart-icon {
+    color: white;
+  }
+  
+  .cart-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    height: 20px;
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    animation: pulse 2s infinite;
+  }
+  
+  /* Mobile Menu Button */
+  .mobile-menu-button {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.6rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .mobile-menu-button:hover {
+    background: rgba(99, 102, 241, 0.2);
+  }
+  
+  .hamburger-line {
+    width: 24px;
+    height: 2px;
+    background: var(--text-gray);
+    transition: all 0.3s ease;
+  }
+  
+  .mobile-menu-button:hover .hamburger-line {
+    background: white;
+  }
+  
+  /* ===== MOBILE MENU ===== */
+  .mobile-menu {
+    display: none;
+    background: linear-gradient(135deg, var(--bg-darker), #0a0f1e);
+    border-top: 1px solid var(--border-color);
+    animation: slideDown 0.3s ease;
+  }
+  
+  .mobile-menu-content {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .mobile-nav-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1rem;
+    color: var(--text-gray);
+    text-decoration: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+  }
+  
+  .mobile-nav-link:hover {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.1));
+    color: white;
+    transform: translateX(8px);
+  }
+    
+  .mobile-nav-link:hover {
+    transform: translateX(4px);
+    color: var(--primary-light);
+  }
+  
+  /* ===== ANIMATIONS ===== */
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+  }
+  
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* ===== RESPONSIVE DESIGN ===== */
+  @media (max-width: 768px) {
+    .nav-wrapper {
+      height: 70px;
+    }
+    
+    .desktop-menu {
+      display: none;
+    }
+    
+    .mobile-menu-button {
+      display: flex;
+    }
+    
+    .mobile-menu {
+      display: block;
+    }
+        
+    .logo-image {
+      height: 32px;
+    }
+    
+    .logo-wrapper {
+      padding: 6px;
+      border-radius: 12px;
+    }
+    
+  }
+  
+  /* Desktop menu visible */
+  @media (min-width: 769px) {
+    .desktop-menu {
+      display: flex;
+    }
+    
+    .mobile-menu {
+      display: none !important;
+    }
+  }
+  
+  /* ===== HOVER EFFECTS - BORDER BOTTOM ONLY ===== */
+  .nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+  }
+  
+  .nav-link:hover::before {
+    width: calc(100% - 3rem);
+  }
+  
+  /* Scroll effect */
+  .custom-nav.scrolled {
+    background: rgba(17, 24, 39, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom-color: var(--primary-color);
+  }
+  
+  /* Loading skeleton for logo */
+  .logo-image[src=""] {
+    background: linear-gradient(90deg, #1f2937, #374151, #1f2937);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+  }
+  
+  @keyframes loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }

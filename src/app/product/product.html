@@ -1,0 +1,55 @@
+<section class="products-section">
+    <div class="products-container">
+        <!-- En-tête -->
+        <div class="products-header">
+            <h2 class="products-title">
+                Nos produits
+            </h2>
+            <p class="products-subtitle">
+                Découvrez notre sélection d'e-liquides de qualité, fabriqués avec passion à Madagascar
+            </p>
+        </div>
+
+        <!-- Grille de produits -->
+        <div class="products-grid">
+            <div class="product-card" *ngFor="let product of products">
+                
+                <!-- Image du produit -->
+                <div class="product-image">
+                    <img [src]="product.image" [alt]="product.name">
+                    <div class="product-actions">
+                        <button class="action-btn" (click)="viewDetails(product)">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </button>
+                        <button class="action-btn" (click)="addToCart(product)">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="stock-badge" [class.out-of-stock]="!product.inStock">
+                        {{ product.inStock ? 'En stock' : 'Rupture' }}
+                    </div>
+                </div>
+
+                <!-- Informations produit -->
+                <div class="product-info">
+                    <h3 class="product-name">{{ product.name }}</h3>
+                    
+                    <!-- Prix -->
+                    <div class="product-price">
+                        <span class="current-price">{{ product.price | number }} Ar</span>
+                    </div>
+
+                    <!-- Bouton ajouter -->
+                    <button class="add-to-cart-btn" (click)="addToCart(product)" [disabled]="!product.inStock">
+                        {{ product.inStock ? 'Ajouter au panier' : 'Indisponible' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

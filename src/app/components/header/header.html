@@ -1,0 +1,65 @@
+<div class="app-container">
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="navbar-toggle" (click)="toggleSidebar()">
+        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"/>
+          </svg>
+      </div>
+      <div class="navbar-brand">
+        <img src="/logo.jpg" alt="Logo Mada-stock">
+      </div>
+      <div class="navbar-user">
+        <h1>John Doe</h1>
+      </div>
+    </nav>
+  
+    <!-- Sidebar -->
+    <div class="sidebar" [class.sidebar-open]="sidebarOpen" [class.sidebar-closed]="!sidebarOpen">
+      <div class="sidebar-header">
+        <h3>Menu</h3>
+      </div>
+      <ul class="sidebar-menu">
+        <li>
+          <a routerLink="/dashboard" routerLinkActive="active" class="menu-item">
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5Zm16 14a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2ZM4 13a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6Zm16-2a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v6Z"/>
+              </svg>
+              
+            <span class="menu-text">Tableau de bord</span>
+          </a>
+        </li>
+        <li>
+            <a routerLink="/produits" routerLinkActive="active" class="menu-item">
+              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v13H7a2 2 0 0 0-2 2Zm0 0a2 2 0 0 0 2 2h12M9 3v14m7 0v4"/>
+                </svg>
+              <span class="menu-text">Produits</span>
+            </a>
+          </li>  
+        <li>
+          <a routerLink="#" routerLinkActive="active" class="menu-item">
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 6H5m2 3H5m2 3H5m2 3H5m2 3H5m11-1a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2M7 3h11a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm8 7a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/>
+              </svg>
+            <span class="menu-text">Utilisateurs</span>
+          </a>
+        </li>
+        <li>
+            <a routerLink="#" routerLinkActive="active" class="menu-item">
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="2" d="M10 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h2m10 1a3 3 0 0 1-3 3m3-3a3 3 0 0 0-3-3m3 3h1m-4 3a3 3 0 0 1-3-3m3 3v1m-3-4a3 3 0 0 1 3-3m-3 3h-1m4-3v-1m-2.121 1.879-.707-.707m5.656 5.656-.707-.707m-4.242 0-.707.707m5.656-5.656-.707.707M12 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                  </svg>
+                                <span class="menu-text">Paramètres</span>
+            </a>
+          </li>  
+      </ul>
+    </div>
+  
+    <!-- Main Content -->
+    <main class="main-content" [class.sidebar-open]="sidebarOpen" [class.sidebar-closed]="!sidebarOpen">
+      <div class="content-wrapper">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
