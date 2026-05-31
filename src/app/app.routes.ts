@@ -5,17 +5,19 @@ import { Home } from './home/home';
 import { Layout } from './components/layout/layout';
 import { ProduitComponent } from './components/produit/produit';
 import { Dashboard } from './components/dashboard/dashboard';
+import { UtilisateurComponent } from './components/utilisateur/utilisateur';
 
 export const routes: Routes = [
     {
-        path: '', 
+        path: 'admin', 
         component: Layout, 
         children:[
-            { path:'', component:Home },
-            { path:'login', component:Login  },
             { path:'dashboard', component:Dashboard },
-            { path:'produits', component:ProduitComponent }
-    
+            { path:'produits', component:ProduitComponent },
+            { path:'utilisateurs', component:UtilisateurComponent }
         ]
-    }
+    },
+    { path:'', component:Home },
+    { path:'login', component:Login  },
+
 ];

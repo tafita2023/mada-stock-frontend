@@ -1,12 +1,12 @@
-<div class="produits-container">
+<div class="utilisateurs-container">
     <!-- Header -->
     <div class="page-header">
-      <h1>Gestion des Produits</h1>
+      <h1>Gestion des utilisateurs</h1>
       <button class="btn-primary" (click)="openAddModal()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M12 5v14M5 12h14"/>
         </svg>
-        Nouveau produit
+        Nouveau utilisateur
       </button>
     </div>
   
@@ -37,37 +37,33 @@
     <!-- Products Table -->
     <div class="table-card">
       <div class="table-responsive">
-        <table class="produits-table">
+        <table class="utilisateurs-table">
           <thead>
             <tr>
               <th>ID</th>
-              <th>Nom du produit</th>
-              <th>Prix (Ar)</th>
-              <th>Quantité</th>
+              <th>Nom </th>
+              <th>Email</th>
+              <th>Rôle</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let produit of paginatedProduits">
-              <td class="id-cell">{{ produit.id }}</td>
+            <tr *ngFor="let utilisateur of paginatedUtilisateurs">
+              <td class="id-cell">{{ utilisateur.id }}</td>
               <td class="nom-cell">
-                <strong>{{ produit.nom }}</strong>
-                <small>{{ produit.description }}</small>
+                <strong>{{ utilisateur.nom }}</strong>
               </td>
-              <td class="prix-cell">{{ produit.prix | number }} Ar</td>
-              <td>
-                <span [class.low-stock]="produit.quantite < 10">
-                  {{ produit.quantite }}
-                </span>
-              </td>
+              <td class="email-cell">{{ utilisateur.email }}</td>
+              <td class="role-cell">{{ utilisateur.role }}</td>
+
               <td>
                 <div class="actions-cell">
-                  <button class="btn-edit" (click)="openEditModal(produit)">
+                  <button class="btn-edit" (click)="openEditModal(utilisateur)">
                     <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
                       </svg>                      
                   </button>
-                  <button class="btn-delete" (click)="openDeleteModal(produit)">
+                  <button class="btn-delete" (click)="openDeleteModal(utilisateur)">
                     <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
                       </svg>                      
@@ -75,10 +71,10 @@
                 </div>
               </td>
             </tr>
-            <tr *ngIf="paginatedProduits.length === 0">
+            <tr *ngIf="paginatedUtilisateurs.length === 0">
               <td colspan="5" class="empty-state">
-                <p>Aucun produit trouvé</p>
-                <button class="btn-primary" (click)="openAddModal()">Ajouter un produit</button>
+                <p>Aucun utilisateur trouvé</p>
+                <button class="btn-primary" (click)="openAddModal()">Ajouter un utilisateur</button>
               </td>
             </tr>
           </tbody>
@@ -86,9 +82,9 @@
       </div>
   
       <!-- Pagination -->
-      <div class="pagination-container" *ngIf="filteredProduits.length > 0">
+      <div class="pagination-container" *ngIf="filteredUtilisateurs.length > 0">
         <div class="pagination-info">
-          Affichage de {{ getStartIndex() }} à {{ getEndIndex() }} sur {{ getTotalProduits() }} produits
+          Affichage de {{ getStartIndex() }} à {{ getEndIndex() }} sur {{ getTotalUtilisateurs() }} utilisateurs
         </div>
         <div class="pagination-controls">
           <button 
@@ -126,19 +122,19 @@
   <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
     <div class="modal-container" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <h2>{{ isEditing ? 'Modifier le produit' : 'Ajouter un produit' }}</h2>
+        <h2>{{ isEditing ? 'Modifier le utilisateur' : 'Ajouter un utilisateur' }}</h2>
         <button class="modal-close" (click)="closeModal()">×</button>
       </div>
       
       <div class="modal-body">
-        <form #produitForm="ngForm">
+        <form #utilisateurForm="ngForm">
   
           <div class="form-row">
             <div class="form-group full-width">
-              <label>Nom du produit *</label>
+              <label>Nom</label>
               <input 
                 type="text" 
-                [(ngModel)]="currentProduit.nom" 
+                [(ngModel)]="currentUtilisateur.nom" 
                 name="nom"
                 required
                 placeholder="ex: Marlboro Red"
@@ -148,38 +144,29 @@
   
           <div class="form-row">
             <div class="form-group">
-              <label>Prix unitaire (Ar) *</label>
+              <label>Email</label>
               <input 
-                type="number" 
-                [(ngModel)]="currentProduit.prix" 
-                name="prix"
+                type="text" 
+                [(ngModel)]="currentUtilisateur.email" 
+                name="email"
                 required
-                min="0"
-                step="100"
+                placeholder="exemple@gmail.com"
+
               />
             </div>
             
             <div class="form-group">
-              <label>Quantité en stock *</label>
+              <label>Role</label>
               <input 
-                type="number" 
-                [(ngModel)]="currentProduit.quantite" 
-                name="quantite"
+                type="text" 
+                [(ngModel)]="currentUtilisateur.role" 
+                name="role"
                 required
                 min="0"
               />
             </div>
           </div>
   
-          <div class="form-group full-width">
-            <label>Description</label>
-            <textarea 
-              [(ngModel)]="currentProduit.description" 
-              name="description"
-              rows="3"
-              placeholder="Description du produit..."
-            ></textarea>
-          </div>
         </form>
       </div>
       
@@ -188,8 +175,8 @@
         <button 
           type="button" 
           class="btn-save" 
-          (click)="saveProduit()"
-          [disabled]="!produitForm.form.valid"
+          (click)="saveUtilisateur()"
+          [disabled]="!utilisateurForm.form.valid"
         >
           {{ isEditing ? 'Mettre à jour' : 'Enregistrer' }}
         </button>
@@ -208,7 +195,7 @@
   
       <div class="modal-body">
         <p>Voulez-vous vraiment supprimer :</p>
-        <strong>{{ produitToDelete?.nom }}</strong>
+        <strong>{{ UtilisateurToDelete?.nom }}</strong>
         <p class="warning-text">Cette action est irréversible.</p>
       </div>
   
