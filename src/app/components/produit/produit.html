@@ -56,8 +56,8 @@
               </td>
               <td class="prix-cell">{{ produit.prix | number }} Ar</td>
               <td>
-                <span [class.low-stock]="produit.quantite < 10">
-                  {{ produit.quantite }}
+                <span [class.low-stock]="produit.stock < 10">
+                  {{ produit.stock }}
                 </span>
               </td>
               <td>
@@ -122,80 +122,132 @@
     </div>
   </div>
   
-  <!-- MODAL AJOUT -->
-  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
-    <div class="modal-container" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h2>{{ isEditing ? 'Modifier le produit' : 'Ajouter un produit' }}</h2>
-        <button class="modal-close" (click)="closeModal()">×</button>
-      </div>
-      
-      <div class="modal-body">
-        <form #produitForm="ngForm">
-  
-          <div class="form-row">
-            <div class="form-group full-width">
-              <label>Nom du produit *</label>
-              <input 
-                type="text" 
-                [(ngModel)]="currentProduit.nom" 
-                name="nom"
-                required
-                placeholder="ex: Marlboro Red"
-              />
-            </div>
-          </div>
-  
-          <div class="form-row">
-            <div class="form-group">
-              <label>Prix unitaire (Ar) *</label>
-              <input 
-                type="number" 
-                [(ngModel)]="currentProduit.prix" 
-                name="prix"
-                required
-                min="0"
-                step="100"
-              />
-            </div>
-            
-            <div class="form-group">
-              <label>Quantité en stock *</label>
-              <input 
-                type="number" 
-                [(ngModel)]="currentProduit.quantite" 
-                name="quantite"
-                required
-                min="0"
-              />
-            </div>
-          </div>
-  
-          <div class="form-group full-width">
-            <label>Description</label>
-            <textarea 
-              [(ngModel)]="currentProduit.description" 
-              name="description"
-              rows="3"
-              placeholder="Description du produit..."
-            ></textarea>
-          </div>
-        </form>
-      </div>
-      
-      <div class="modal-footer">
-        <button type="button" class="btn-cancel" (click)="closeModal()">Annuler</button>
-        <button 
-          type="button" 
-          class="btn-save" 
-          (click)="saveProduit()"
-          [disabled]="!produitForm.form.valid"
-        >
-          {{ isEditing ? 'Mettre à jour' : 'Enregistrer' }}
-        </button>
-      </div>
+<!-- MODAL AJOUT -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <h2>{{ isEditing ? 'Modifier le produit' : 'Ajouter un produit' }}</h2>
+      <button class="modal-close" (click)="closeModal()">×</button>
     </div>
+
+    <div class="modal-body">
+      <form #produitForm="ngForm">
+
+        <!-- IMAGE -->
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label>Image du produit *</label>
+
+            <div class="image-upload-wrapper">
+
+              <input
+                type="file"
+                accept="image/*"
+                (change)="onFileSelected($event)"
+                id="imageInput"
+                hidden
+              />
+
+              <label for="imageInput" class="image-upload-box">
+
+                <!-- PREVIEW IMAGE -->
+                <ng-container *ngIf="imagePreview; else uploadIcon">
+
+                  <img
+                    [src]="imagePreview"
+                    class="preview-image"
+                    alt="image preview"
+                  />
+
+                </ng-container>
+
+                <!-- ICON SI PAS D'IMAGE -->
+                <ng-template #uploadIcon>
+
+                  <div class="upload-text">
+                    <strong>Choisir une image</strong>
+                  </div>
+                </ng-template>
+
+              </label>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- NOM -->
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label>Nom du produit *</label>
+            <input
+              type="text"
+              [(ngModel)]="currentProduit.nom"
+              name="nom"
+              required
+              placeholder="ex: Marlboro Red"
+            />
+          </div>
+        </div>
+
+        <!-- PRIX + STOCK -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Prix unitaire (Ar) *</label>
+            <input
+              type="number"
+              [(ngModel)]="currentProduit.prix"
+              name="prix"
+              required
+              min="0"
+              step="100"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Quantité en stock *</label>
+            <input
+              type="number"
+              [(ngModel)]="currentProduit.stock"
+              name="stock"
+              required
+              min="0"
+            />
+          </div>
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="form-group full-width">
+          <label>Description</label>
+          <textarea
+            [(ngModel)]="currentProduit.description"
+            name="description"
+            rows="3"
+            placeholder="Description du produit..."
+          ></textarea>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="modal-footer">
+      <button type="button" class="btn-cancel" (click)="closeModal()">
+        Annuler
+      </button>
+
+      <button
+        type="button"
+        class="btn-save"
+        (click)="produitForm.valid && saveProduit()"
+        [disabled]="!produitForm.form.valid"
+      >
+        {{ isEditing ? 'Mettre à jour' : 'Enregistrer' }}
+      </button>
+    </div>
+
   </div>
+</div>
 
   <!-- MODAL SUPPRIMER -->
   <div class="modal-overlay" *ngIf="showDeleteModal">

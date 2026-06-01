@@ -1,13 +1,15 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ProduitService } from '../services/produit';
 
 export interface Produit {
   id?: number;
   nom: string;
   prix: number;
-  quantite: number;
+  stock: number;
   description: string;
+  image?: string;
   dateCreation?: Date;
 }
 
@@ -20,85 +22,96 @@ export interface Produit {
 })
 export class ProduitComponent implements OnInit {
 
-  // ========================
-  // NOTIFICATIONS (TOAST)
-  // ========================
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private produitService: ProduitService
+  ) {}
+
+  // ================= NOTIFICATIONS =================
   showNotification = false;
   notificationMessage = '';
   notificationType: 'success' | 'error' = 'success';
-
   private toastTimeout: any = null;
 
-  constructor(private cdr: ChangeDetectorRef) {}
-
-  // ========================
-  // DATA
-  // ========================
+  // ================= DATA =================
   produits: Produit[] = [];
   filteredProduits: Produit[] = [];
   paginatedProduits: Produit[] = [];
 
-  // ========================
-  // MODAL AJOUT / EDIT
-  // ========================
+  // ================= FILE IMAGE =================
+  selectedFile: File | null = null;
+  imagePreview: string | null = null;
+
+
+  // ================= MODAL =================
   showModal = false;
   isEditing = false;
   currentProduit: Produit = this.getEmptyProduit();
 
-  // ========================
-  // DELETE MODAL
-  // ========================
+  // ================= DELETE =================
   showDeleteModal = false;
   produitToDelete: Produit | null = null;
 
-  // ========================
-  // SEARCH
-  // ========================
+  // ================= SEARCH =================
   searchTerm = '';
 
-  // ========================
-  // PAGINATION
-  // ========================
-  currentPage: number = 1;
-  itemsPerPage: number = 10;
-  totalPages: number = 1;
+  // ================= PAGINATION =================
+  currentPage = 1;
+  itemsPerPage = 10;
+  totalPages = 1;
 
-  // ========================
-  // INIT
-  // ========================
+  
   ngOnInit() {
     this.loadProduits();
   }
 
-  // ========================
-  // LOAD DATA
-  // ========================
+  // ================= LOAD =================
   loadProduits() {
-    this.produits = [
-      { id: 1, nom: 'Cigarette Marlboro', prix: 500, quantite: 100, description: 'Marlboro Red', dateCreation: new Date() },
-      { id: 2, nom: 'Cigarette Camel', prix: 450, quantite: 75, description: 'Camel Yellow', dateCreation: new Date() },
-      { id: 3, nom: 'Papier OCB', prix: 200, quantite: 200, description: 'Papier à rouler', dateCreation: new Date() }
-    ];
+    this.produitService.getProduits().subscribe({
+      next: (res: any) => {
 
-    this.filteredProduits = [...this.produits];
-    this.updatePagination();
+        const data = res.data ?? res;
+
+        // TRI CROISSANT (ancien → nouveau)
+        this.produits = data.sort((a: any, b: any) => a.id - b.id);
+
+        this.filteredProduits = [...this.produits];
+        this.updatePagination();
+      },
+      error: () => this.showToast('Erreur chargement produits', 'error')
+    });
   }
 
+  // ================= EMPTY =================
   getEmptyProduit(): Produit {
     return {
       nom: '',
       prix: 0,
-      quantite: 0,
+      stock: 0,
       description: ''
     };
   }
 
-  // ========================
-  // MODAL AJOUT / EDIT
-  // ========================
+  // ================= IMAGE =================
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
+  
+    this.selectedFile = file;
+  
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview = reader.result as string;
+    };
+  
+    reader.readAsDataURL(file);
+  }
+  
+  // ================= MODAL =================
   openAddModal() {
     this.isEditing = false;
     this.currentProduit = this.getEmptyProduit();
+    this.selectedFile = null;
     this.showModal = true;
   }
 
@@ -111,53 +124,58 @@ export class ProduitComponent implements OnInit {
   closeModal() {
     this.showModal = false;
     this.currentProduit = this.getEmptyProduit();
+    this.selectedFile = null;
   }
 
-  // ========================
-  // SAVE PRODUIT
-  // ========================
+  // ================= SAVE =================
   saveProduit() {
-    try {
-      if (this.isEditing) {
-        const index = this.produits.findIndex(
-          p => p.id === this.currentProduit.id
-        );
 
-        if (index !== -1) {
-          this.produits[index] = {
-            ...this.currentProduit,
-            dateCreation: this.produits[index].dateCreation
-          };
+    const formData = new FormData();
+    formData.append('nom', this.currentProduit.nom);
+    formData.append('prix', this.currentProduit.prix.toString());
+    formData.append('stock', this.currentProduit.stock.toString());
+    formData.append('description', this.currentProduit.description);
 
-          this.showToast('Produit modifié avec succès', 'success');
-        } else {
-          this.showToast('Produit introuvable', 'error');
-        }
-
-      } else {
-        const newId = Math.max(...this.produits.map(p => p.id || 0), 0) + 1;
-
-        this.currentProduit.id = newId;
-        this.currentProduit.dateCreation = new Date();
-
-        this.produits.push({ ...this.currentProduit });
-
-        this.showToast('Produit ajouté avec succès', 'success');
-      }
-
-      this.applyFilters();
-      this.closeModal();
-
-    } catch (error) {
-      this.showToast('Erreur lors de l’enregistrement', 'error');
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile);
     }
+
+    // CREATE
+    if (!this.isEditing) {
+
+      this.produitService.createProduit(formData).subscribe({
+        next: () => {
+          this.loadProduits();
+          this.closeModal();
+          this.showToast('Produit ajouté avec succès', 'success');
+        },
+        error: (err) => {
+          console.error(err);
+          this.showToast('Erreur ajout produit', 'error');
+        }
+      });
+
+      return;
+    }
+
+    // UPDATE
+    this.produitService.updateProduit(this.currentProduit.id!, formData)
+      .subscribe({
+        next: () => {
+          this.loadProduits();
+          this.closeModal();
+          this.showToast('Produit modifié avec succès', 'success');
+        },
+        error: (err) => {
+          console.error(err);
+          this.showToast('Erreur modification produit', 'error');
+        }
+      });
   }
 
-  // ========================
-  // DELETE
-  // ========================
-  openDeleteModal(produit: Produit) {
-    this.produitToDelete = produit;
+  // ================= DELETE =================
+  openDeleteModal(p: Produit) {
+    this.produitToDelete = p;
     this.showDeleteModal = true;
   }
 
@@ -167,27 +185,23 @@ export class ProduitComponent implements OnInit {
   }
 
   confirmDelete() {
-    try {
-      if (!this.produitToDelete) return;
 
-      this.produits = this.produits.filter(
-        p => p.id !== this.produitToDelete!.id
-      );
+    if (!this.produitToDelete?.id) return;
 
-      this.applyFilters();
-      this.closeDeleteModal();
-
-      this.showToast('Produit supprimé avec succès', 'success');
-
-    } catch (error) {
-      this.showToast('Erreur lors de la suppression', 'error');
-    }
+    this.produitService.deleteProduit(this.produitToDelete.id)
+      .subscribe({
+        next: () => {
+          this.loadProduits();
+          this.closeDeleteModal();
+          this.showToast('Produit supprimé', 'success');
+        },
+        error: () => this.showToast('Erreur suppression', 'error')
+      });
   }
 
-  // ========================
-  // FILTERS
-  // ========================
+  // ================= FILTER =================
   applyFilters() {
+
     let result = [...this.produits];
 
     if (this.searchTerm) {
@@ -198,7 +212,6 @@ export class ProduitComponent implements OnInit {
     }
 
     this.filteredProduits = result;
-
     this.currentPage = 1;
     this.updatePagination();
   }
@@ -212,19 +225,18 @@ export class ProduitComponent implements OnInit {
     this.applyFilters();
   }
 
-  // ========================
-  // PAGINATION
-  // ========================
+  // ================= PAGINATION =================
   updatePagination() {
+
     this.totalPages = Math.ceil(
       this.filteredProduits.length / this.itemsPerPage
     );
 
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    const end = start + this.itemsPerPage;
 
     this.paginatedProduits =
-      this.filteredProduits.slice(startIndex, endIndex);
+      this.filteredProduits.slice(start, end);
   }
 
   goToPage(page: number) {
@@ -246,15 +258,8 @@ export class ProduitComponent implements OnInit {
     const pages: number[] = [];
     const maxVisible = 5;
 
-    let start = Math.max(
-      1,
-      this.currentPage - Math.floor(maxVisible / 2)
-    );
-
-    let end = Math.min(
-      this.totalPages,
-      start + maxVisible - 1
-    );
+    let start = Math.max(1, this.currentPage - Math.floor(maxVisible / 2));
+    let end = Math.min(this.totalPages, start + maxVisible - 1);
 
     for (let i = start; i <= end; i++) {
       pages.push(i);
@@ -263,41 +268,33 @@ export class ProduitComponent implements OnInit {
     return pages;
   }
 
-  // ========================
-  // TOAST (CORRIGÉ + ROBUSTE)
-  // ========================
-  showToast(message: string, type: 'success' | 'error' = 'success') {
+  // ================= TOAST =================
+  showToast(message: string, type: 'success' | 'error') {
+
     this.notificationMessage = message;
     this.notificationType = type;
     this.showNotification = true;
 
-    // force update UI
     this.cdr.detectChanges();
 
-    // clear ancien timer
-    if (this.toastTimeout) {
-      clearTimeout(this.toastTimeout);
-      this.toastTimeout = null;
-    }
+    if (this.toastTimeout) clearTimeout(this.toastTimeout);
 
     this.toastTimeout = setTimeout(() => {
       this.showNotification = false;
       this.cdr.detectChanges();
-    }, 5000);
+    }, 4000);
   }
 
-  // ========================
-  // HELPERS
-  // ========================
-  getTotalProduits(): number {
+  // ================= HELPERS =================
+  getTotalProduits() {
     return this.filteredProduits.length;
   }
 
-  getStartIndex(): number {
+  getStartIndex() {
     return (this.currentPage - 1) * this.itemsPerPage + 1;
   }
 
-  getEndIndex(): number {
+  getEndIndex() {
     return Math.min(
       this.currentPage * this.itemsPerPage,
       this.filteredProduits.length
