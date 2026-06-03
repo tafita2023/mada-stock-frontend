@@ -1,7 +1,9 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProduitService } from '../services/produit';
+import { finalize, catchError } from 'rxjs/operators';
+import { of, Subscription, timeout } from 'rxjs';
 
 export interface Produit {
   id?: number;
@@ -20,7 +22,7 @@ export interface Produit {
   templateUrl: './produit.html',
   styleUrls: ['./produit.css']
 })
-export class ProduitComponent implements OnInit {
+export class ProduitComponent implements OnInit, OnDestroy {
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -38,10 +40,13 @@ export class ProduitComponent implements OnInit {
   filteredProduits: Produit[] = [];
   paginatedProduits: Produit[] = [];
 
+  // ================= LOADING STATE =================
+  isLoading = true;  // Commencer à true
+  loadingError = false;  // Pour tracker les erreurs de chargement
+
   // ================= FILE IMAGE =================
   selectedFile: File | null = null;
   imagePreview: string | null = null;
-
 
   // ================= MODAL =================
   showModal = false;
@@ -60,31 +65,90 @@ export class ProduitComponent implements OnInit {
   itemsPerPage = 10;
   totalPages = 1;
 
-  
+  private subscriptions: Subscription = new Subscription();
+
   ngOnInit() {
+    console.log('ngOnInit - Chargement des produits');
     this.loadProduits();
+  }
+
+  ngOnDestroy() {
+    // Nettoyer les subscriptions pour éviter les fuites mémoire
+    if (this.subscriptions) {
+      this.subscriptions.unsubscribe();
+    }
+    if (this.toastTimeout) {
+      clearTimeout(this.toastTimeout);
+    }
   }
 
   // ================= LOAD =================
   loadProduits() {
-    this.produitService.getProduits().subscribe({
-      next: (res: any) => {
+    console.log('loadProduits - Début du chargement');
+    this.isLoading = true;
+    this.loadingError = false;
+    this.cdr.detectChanges();
 
-        const data = res.data ?? res;
-
-        // TRI CROISSANT (ancien → nouveau)
-        this.produits = data.sort((a: any, b: any) => a.id - b.id);
-
-        this.filteredProduits = [...this.produits];
-        this.updatePagination();
-      },
-      error: () => this.showToast('Erreur chargement produits', 'error')
-    });
+    const sub = this.produitService.getProduits()
+      .pipe(
+        timeout(30000), // Timeout de 30 secondes
+        catchError(error => {
+          console.error('Erreur détaillée:', error);
+          this.loadingError = true;
+          this.showToast('Erreur de connexion au serveur', 'error');
+          return of({ data: [] }); // Retourner un tableau vide en cas d'erreur
+        }),
+        finalize(() => {
+          console.log('loadProduits - Finalisation');
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (res: any) => {
+          console.log('Réponse reçue:', res);
+          try {
+            const data = res.data ?? res ?? [];
+            
+            if (Array.isArray(data)) {
+              this.produits = [...data].sort((a: any, b: any) => (a.id || 0) - (b.id || 0));
+            } else {
+              console.warn('Les données ne sont pas un tableau:', data);
+              this.produits = [];
+            }
+            
+            this.filteredProduits = [...this.produits];
+            this.currentPage = 1;
+            this.updatePagination();
+            
+            console.log(`${this.produits.length} produits chargés`);
+            
+            if (this.produits.length === 0 && !this.loadingError) {
+              this.showToast('Aucun produit trouvé', 'success');
+            }
+          } catch (error) {
+            console.error('Erreur lors du traitement des données:', error);
+            this.loadingError = true;
+            this.showToast('Erreur lors du traitement des données', 'error');
+          }
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Erreur dans subscribe:', error);
+          // Déjà géré par catchError, mais par sécurité
+          this.loadingError = true;
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }
+      });
+    
+    this.subscriptions.add(sub);
   }
 
   // ================= EMPTY =================
   getEmptyProduit(): Produit {
     return {
+      image: '',
       nom: '',
       prix: 0,
       stock: 0,
@@ -102,6 +166,7 @@ export class ProduitComponent implements OnInit {
     const reader = new FileReader();
     reader.onload = () => {
       this.imagePreview = reader.result as string;
+      this.cdr.detectChanges();
     };
   
     reader.readAsDataURL(file);
@@ -112,12 +177,15 @@ export class ProduitComponent implements OnInit {
     this.isEditing = false;
     this.currentProduit = this.getEmptyProduit();
     this.selectedFile = null;
+    this.imagePreview = null;
     this.showModal = true;
   }
 
   openEditModal(produit: Produit) {
     this.isEditing = true;
     this.currentProduit = { ...produit };
+    this.selectedFile = null;
+    this.imagePreview = null;
     this.showModal = true;
   }
 
@@ -125,12 +193,14 @@ export class ProduitComponent implements OnInit {
     this.showModal = false;
     this.currentProduit = this.getEmptyProduit();
     this.selectedFile = null;
+    this.imagePreview = null;
   }
 
   // ================= SAVE =================
   saveProduit() {
-
     const formData = new FormData();
+
+    formData.append('_method', 'PUT');
     formData.append('nom', this.currentProduit.nom);
     formData.append('prix', this.currentProduit.prix.toString());
     formData.append('stock', this.currentProduit.stock.toString());
@@ -142,8 +212,7 @@ export class ProduitComponent implements OnInit {
 
     // CREATE
     if (!this.isEditing) {
-
-      this.produitService.createProduit(formData).subscribe({
+      const sub = this.produitService.createProduit(formData).subscribe({
         next: () => {
           this.loadProduits();
           this.closeModal();
@@ -154,12 +223,12 @@ export class ProduitComponent implements OnInit {
           this.showToast('Erreur ajout produit', 'error');
         }
       });
-
+      this.subscriptions.add(sub);
       return;
     }
 
     // UPDATE
-    this.produitService.updateProduit(this.currentProduit.id!, formData)
+    const sub = this.produitService.updateProduit(this.currentProduit.id!, formData)
       .subscribe({
         next: () => {
           this.loadProduits();
@@ -168,9 +237,11 @@ export class ProduitComponent implements OnInit {
         },
         error: (err) => {
           console.error(err);
+          console.log(err.error.errors);
           this.showToast('Erreur modification produit', 'error');
         }
       });
+    this.subscriptions.add(sub);
   }
 
   // ================= DELETE =================
@@ -185,23 +256,25 @@ export class ProduitComponent implements OnInit {
   }
 
   confirmDelete() {
-
     if (!this.produitToDelete?.id) return;
 
-    this.produitService.deleteProduit(this.produitToDelete.id)
+    const sub = this.produitService.deleteProduit(this.produitToDelete.id)
       .subscribe({
         next: () => {
           this.loadProduits();
           this.closeDeleteModal();
-          this.showToast('Produit supprimé', 'success');
+          this.showToast('Produit supprimé avec succès', 'success');
         },
-        error: () => this.showToast('Erreur suppression', 'error')
+        error: (err) => {
+          console.error(err);
+          this.showToast('Erreur suppression', 'error');
+        }
       });
+    this.subscriptions.add(sub);
   }
 
   // ================= FILTER =================
   applyFilters() {
-
     let result = [...this.produits];
 
     if (this.searchTerm) {
@@ -214,6 +287,7 @@ export class ProduitComponent implements OnInit {
     this.filteredProduits = result;
     this.currentPage = 1;
     this.updatePagination();
+    this.cdr.detectChanges();
   }
 
   onSearchChange() {
@@ -227,18 +301,25 @@ export class ProduitComponent implements OnInit {
 
   // ================= PAGINATION =================
   updatePagination() {
-
-    this.totalPages = Math.ceil(
-      this.filteredProduits.length / this.itemsPerPage
+    const list = this.filteredProduits ?? [];
+    
+    this.totalPages = Math.max(
+      1,
+      Math.ceil(list.length / this.itemsPerPage)
     );
-
+    
+    // Vérifier que la page courante existe toujours
+    if (this.currentPage > this.totalPages) {
+      this.currentPage = this.totalPages;
+    }
+    
     const start = (this.currentPage - 1) * this.itemsPerPage;
     const end = start + this.itemsPerPage;
-
-    this.paginatedProduits =
-      this.filteredProduits.slice(start, end);
+    
+    this.paginatedProduits = list.slice(start, end);
+    this.cdr.detectChanges();
   }
-
+  
   goToPage(page: number) {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
@@ -257,24 +338,22 @@ export class ProduitComponent implements OnInit {
   getPages(): number[] {
     const pages: number[] = [];
     const maxVisible = 5;
-
+    
     let start = Math.max(1, this.currentPage - Math.floor(maxVisible / 2));
     let end = Math.min(this.totalPages, start + maxVisible - 1);
-
+    
     for (let i = start; i <= end; i++) {
       pages.push(i);
     }
-
+    
     return pages;
   }
 
   // ================= TOAST =================
   showToast(message: string, type: 'success' | 'error') {
-
     this.notificationMessage = message;
     this.notificationType = type;
     this.showNotification = true;
-
     this.cdr.detectChanges();
 
     if (this.toastTimeout) clearTimeout(this.toastTimeout);
@@ -299,5 +378,11 @@ export class ProduitComponent implements OnInit {
       this.currentPage * this.itemsPerPage,
       this.filteredProduits.length
     );
+  }
+
+  // ================= RETRY LOADING =================
+  retryLoading() {
+    console.log('Retentative de chargement');
+    this.loadProduits();
   }
 }

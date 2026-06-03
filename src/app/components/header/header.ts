@@ -1,6 +1,8 @@
 import { Component, HostListener, Inject, PLATFORM_ID, OnInit } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { RouterOutlet, RouterLinkWithHref } from '@angular/router';
+import { Router } from '@angular/router';
+import { AuthService } from '../services/auth-service'; 
 
 @Component({
   selector: 'app-header',
@@ -12,11 +14,16 @@ export class Header implements OnInit {
   sidebarOpen = true;
   private isBrowser: boolean;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: object,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
-
+  
   ngOnInit() {
+    
     if (this.isBrowser) {
       this.checkScreenSize();
     }
@@ -42,4 +49,16 @@ export class Header implements OnInit {
       }
     }
   }
-}
+
+  logout(): void {
+    this.authService.logout().subscribe({
+      next: () => {
+        this.authService.clearStorage();
+        this.router.navigate(['/login']);
+      },
+      error: () => {
+        this.authService.clearStorage();
+        this.router.navigate(['/login']);
+      }
+    });
+  }}

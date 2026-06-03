@@ -25,8 +25,8 @@ export class ProduitService {
   }
 
   // UPDATE
-  updateProduit(id: number, data: any) {
-    return this.http.put(`${this.apiUrl}/${id}`, data);
+  updateProduit(id: number, data: FormData) {
+    return this.http.post(`${this.apiUrl}/${id}`, data);
   }
 
   // DELETE

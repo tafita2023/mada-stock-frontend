@@ -1,23 +1,30 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { AuthService } from '../services/auth-service';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
 export class Login {
+
   loginForm: FormGroup;
   showPassword = false;
   isLoading = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      rememberMe: [false]
     });
   }
 
@@ -26,26 +33,36 @@ export class Login {
   }
 
   onSubmit(): void {
-    if (this.loginForm.valid) {
-      this.isLoading = true;
-      
-      // Simulate API call
-      setTimeout(() => {
-        console.log('Login data:', this.loginForm.value);
-        this.isLoading = false;
-        
-        // Here you would typically call your auth service
-        // this.authService.login(this.loginForm.value).subscribe(...)
-        
-        // Show success message (you can replace with toast/notification)
-        alert('Connexion réussie!');
-      }, 2000);
-    } else {
-      // Mark all fields as touched to show validation errors
+
+    if (this.loginForm.invalid) {
       Object.keys(this.loginForm.controls).forEach(key => {
-        const control = this.loginForm.get(key);
-        control?.markAsTouched();
+        this.loginForm.get(key)?.markAsTouched();
       });
+      return;
     }
+
+    this.isLoading = true;
+
+    this.authService.login(this.loginForm.value).subscribe({
+      next: (res: any) => {
+
+        this.isLoading = false;
+
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('user', JSON.stringify(res.user));
+
+        if (res.user.role === 'admin') {
+          this.router.navigate(['/admin/dashboard']);
+        } else {
+          this.router.navigate(['/']);
+        }
+      },
+
+      error: (err) => {
+        console.error(err);
+        this.isLoading = false;
+        alert(err.error?.message || 'Erreur de connexion');
+      }
+    });
   }
 }
