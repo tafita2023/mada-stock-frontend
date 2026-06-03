@@ -1,90 +1,116 @@
 <div class="dashboard-container">
-    <!-- En-tête -->
-    <div class="dashboard-header">
+  <!-- En-tête -->
+  <div class="dashboard-header">
+    <div>
       <h1>Tableau de bord</h1>
     </div>
-  
-    <!-- Cartes statistiques -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon">
-            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                <path fill-rule="evenodd" d="M9 15a6 6 0 1 1 12 0 6 6 0 0 1-12 0Zm3.845-1.855a2.4 2.4 0 0 1 1.2-1.226 1 1 0 0 1 1.992-.026c.426.15.809.408 1.111.749a1 1 0 1 1-1.496 1.327.682.682 0 0 0-.36-.213.997.997 0 0 1-.113-.032.4.4 0 0 0-.394.074.93.93 0 0 0 .455.254 2.914 2.914 0 0 1 1.504.9c.373.433.669 1.092.464 1.823a.996.996 0 0 1-.046.129c-.226.519-.627.94-1.132 1.192a1 1 0 0 1-1.956.093 2.68 2.68 0 0 1-1.227-.798 1 1 0 1 1 1.506-1.315.682.682 0 0 0 .363.216c.038.009.075.02.111.032a.4.4 0 0 0 .395-.074.93.93 0 0 0-.455-.254 2.91 2.91 0 0 1-1.503-.9c-.375-.433-.666-1.089-.466-1.817a.994.994 0 0 1 .047-.134Zm1.884.573.003.008c-.003-.005-.003-.008-.003-.008Zm.55 2.613s-.002-.002-.003-.007a.032.032 0 0 1 .003.007ZM4 14a1 1 0 0 1 1 1v4a1 1 0 1 1-2 0v-4a1 1 0 0 1 1-1Zm3-2a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Zm6.5-8a1 1 0 0 1 1-1H18a1 1 0 0 1 1 1v3a1 1 0 1 1-2 0v-.796l-2.341 2.049a1 1 0 0 1-1.24.06l-2.894-2.066L6.614 9.29a1 1 0 1 1-1.228-1.578l4.5-3.5a1 1 0 0 1 1.195-.025l2.856 2.04L15.34 5h-.84a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>
-              </svg>
-              
-        </div>
-        <div class="stat-info">
-          <h3>{{ totalRevenue }}</h3>
-          <p>Revenus totaux</p>
-        </div>
+    <div class="header-actions">
+      <div class="date-range">
+        <input type="date" class="date-input" />
+        <span> - </span>
+        <input type="date" class="date-input" />
+        <button class="btn-filter">Filtrer</button>
       </div>
-  
-      <div class="stat-card">
-        <div class="stat-icon">
-            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                <path fill-rule="evenodd" d="M12 6a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm-1.5 8a4 4 0 0 0-4 4 2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-3Zm6.82-3.096a5.51 5.51 0 0 0-2.797-6.293 3.5 3.5 0 1 1 2.796 6.292ZM19.5 18h.5a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-1.1a5.503 5.503 0 0 1-.471.762A5.998 5.998 0 0 1 19.5 18ZM4 7.5a3.5 3.5 0 0 1 5.477-2.889 5.5 5.5 0 0 0-2.796 6.293A3.501 3.501 0 0 1 4 7.5ZM7.1 12H6a4 4 0 0 0-4 4 2 2 0 0 0 2 2h.5a5.998 5.998 0 0 1 3.071-5.238A5.505 5.505 0 0 1 7.1 12Z" clip-rule="evenodd"/>
-              </svg>              
-        </div>
-        <div class="stat-info">
-          <h3>{{ totalUsers }}</h3>
-          <p>Utilisateurs</p>
-        </div>
+    </div>
+  </div>
+
+  <!-- Cartes statistiques -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon revenue">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
       </div>
-  
-      <div class="stat-card">
-        <div class="stat-icon">
-            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v4m6-6v6m6-4v4m6-6v6M3 11l6-5 6 5 5.5-5.5"/>
-              </svg>              
-        </div>
-        <div class="stat-info">
-          <h3>{{ totalSales }}</h3>
-          <p>Ventes</p>
-        </div>
+      <div class="stat-info">
+        <h3>{{ totalRevenue | number:'1.0-0' }} Ar</h3>
+        <p>Revenus totaux</p>
       </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon users">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
       </div>
-  
-    <!-- Liste des projets récents -->
-    <div class="projects-card">
+      <div class="stat-info">
+        <h3>{{ totalUsers }}</h3>
+        <p>Utilisateurs</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon products">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+        </svg>
+      </div>
+      <div class="stat-info">
+        <h3>{{ totalProducts }}</h3>
+        <p>Produits</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon orders">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+      </div>
+      <div class="stat-info">
+        <h3>{{ totalOrders }}</h3>
+        <p>Commandes</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Graphiques -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <canvas id="revenueChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <canvas id="salesChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Top Produits et Ventes récentes -->
+  <div class="data-grid">
+    <div class="data-card">
       <div class="card-header">
-        <h3>📁 Projets récents</h3>
-        <a href="#" class="view-all">Voir tout →</a>
+        <h3>Top Produits</h3>
+        <a routerLink="/admin/produits" class="view-all">Voir tout →</a>
       </div>
-      <div class="project-list">
-        <div class="project-item" *ngFor="let project of projects">
-          <div class="project-icon">{{ project.icon }}</div>
-          <div class="project-details">
-            <h4>{{ project.name }}</h4>
-            <p>{{ project.description }}</p>
-            <div class="project-progress">
-              <div class="progress-bar">
-                <div class="progress-fill" [style.width]="project.progress + '%'"></div>
-              </div>
-              <span>{{ project.progress }}%</span>
-            </div>
+      <div class="product-list">
+        <div *ngFor="let product of topProducts" class="product-item">
+          <div class="product-info">
+            <span class="product-name">{{ product.nom }}</span>
+            <span class="product-stock">Stock: {{ product.stock }}</span>
           </div>
+          <span class="product-price">{{ product.prix }} Ar</span>
         </div>
       </div>
     </div>
-  
-    <!-- Activités récentes -->
-    <div class="activities-card">
+
+    <div class="data-card">
       <div class="card-header">
-        <h3>🔄 Activités récentes</h3>
-        <a href="#" class="view-all">Voir tout →</a>
+        <h3>Ventes récentes</h3>
+        <a routerLink="/admin/commandes" class="view-all">Voir tout →</a>
       </div>
-      <div class="activity-list">
-        <div class="activity-item" *ngFor="let activity of activities">
-          <div class="activity-avatar">{{ activity.avatar }}</div>
-          <div class="activity-details">
-            <p>
-              <strong>{{ activity.user }}</strong>
-              <span>{{ activity.action }}</span>
-            </p>
-            <small>{{ activity.time }}</small>
+      <div class="sales-list">
+        <div *ngFor="let sale of recentSales" class="sale-item">
+          <div class="sale-info">
+            <span class="customer-name">{{ sale.customer }}</span>
+            <span class="product-name">{{ sale.product }}</span>
           </div>
-          <div class="activity-status" [class]="activity.status"></div>
+          <div class="sale-details">
+            <span class="sale-amount">{{ sale.amount }} Ar</span>
+            <span class="sale-date">{{ sale.date | date:'dd/MM/yyyy' }}</span>
+            <span class="status {{ getStatusClass(sale.status) }}">{{ getStatusText(sale.status) }}</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
+</div>

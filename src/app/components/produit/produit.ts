@@ -200,7 +200,6 @@ export class ProduitComponent implements OnInit, OnDestroy {
   saveProduit() {
     const formData = new FormData();
 
-    formData.append('_method', 'PUT');
     formData.append('nom', this.currentProduit.nom);
     formData.append('prix', this.currentProduit.prix.toString());
     formData.append('stock', this.currentProduit.stock.toString());

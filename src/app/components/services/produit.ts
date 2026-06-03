@@ -19,15 +19,17 @@ export class ProduitService {
     return this.http.get(`${this.apiUrl}/${id}`);
   }
 
-  // CREATE
-  createProduit(data: any) {
-    return this.http.post(this.apiUrl, data);
+  // CREATE - Modifié pour accepter FormData
+  createProduit(formData: FormData) {
+    // Important : Ne pas définir Content-Type, laissez le navigateur le faire
+    return this.http.post(this.apiUrl, formData);
   }
 
   // UPDATE
   updateProduit(id: number, data: FormData) {
+    data.append('_method', 'PUT');
     return this.http.post(`${this.apiUrl}/${id}`, data);
-  }
+      }
 
   // DELETE
   deleteProduit(id: number) {
