@@ -8,6 +8,6 @@ import { Header } from "../header/header";
   templateUrl: './layout.html',
   styleUrl: './layout.css',
 })
-export class Layout {
+export class LayoutAdmin {
 
 }

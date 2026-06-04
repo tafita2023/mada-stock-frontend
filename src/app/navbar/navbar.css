@@ -16,13 +16,14 @@
   
   /* Navigation principale */
   .custom-nav {
-    position: sticky;
+    position: fixed;
     top: 0;
-    z-index: 50;
+    left: 0;
+    width: 100%;
+    height: 90px;
+    z-index: 1000;
     background: #000000;
     border-bottom: 2px solid var(--border-color);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
   
   .nav-container {

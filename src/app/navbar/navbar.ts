@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-header',
+  selector: 'app-navbar',
   imports: [CommonModule],
-  templateUrl: './header.html',
-  styleUrl: './header.css',
+  templateUrl: './navbar.html',
+  styleUrl: './navbar.css',
 })
-export class Header {
+export class Navbar {
   isMobileMenuOpen = false;
 
   toggleMobileMenu() {

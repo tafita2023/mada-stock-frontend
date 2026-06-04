@@ -1,0 +1,319 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  .contact-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  /* En-tête */
+  .contact-header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+  
+  .contact-header h1 {
+    font-size: 2.5rem;
+    color: #f1f1f1;
+    margin-top: 70px;
+    margin-bottom: 15px;
+    position: relative;
+    display: inline-block;
+  }
+  
+  .contact-header h1::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+  
+  .contact-header p {
+    color: #f1f1f1;
+    font-size: 1.1rem;
+    margin-top: 20px;
+  }
+  
+  /* Wrapper pour les 2 cartes */
+  .contact-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 50px;
+  }
+  
+  /* Carte gauche - Informations */
+  .info-card {
+    background: #222;
+    padding: 35px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+    
+  .info-card h2 {
+    font-size: 1.8rem;
+    color: #f1f1f1;
+    margin-bottom: 30px;
+    position: relative;
+    padding-bottom: 10px;
+  }
+  
+  .info-card h2::after {
+    content: '';
+    position: absolute;
+    align-items: center;
+    bottom: 0;
+    left: 0;
+    width: 400px;
+    height: 3px;
+    background: #2C3947;
+  }
+  
+  .info-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 5px;
+    padding: 15px;
+    border-radius: 10px;
+  }
+    
+  .info-icon {
+    width: 50px;
+    height: 50px;
+    background: #2C3947;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    flex-shrink: 0;
+  }
+    
+  .info-content h3 {
+    font-size: 1.1rem;
+    color: #f1f1f1;
+    margin-bottom: 8px;
+  }
+  
+  .info-content p {
+    color: #f1f1f1;
+    line-height: 1.5;
+    margin: 0;
+  }
+  
+  .info-hours {
+    font-size: 0.85rem;
+    color: #999;
+    margin-top: 5px;
+  }
+  
+  /* Réseaux sociaux */
+  .social-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e1e5e9;
+  }
+  
+  .social-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+  
+  .social-icon:hover {
+    transform: translateY(-3px);
+  }
+  
+  /* Carte droite - Formulaire */
+  .form-card {
+    background: #222;
+    padding: 35px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+    
+  .form-card h2 {
+    font-size: 1.8rem;
+    color: #f1f1f1;
+    margin-bottom: 30px;
+    position: relative;
+  }
+  
+  .form-card h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: #222;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #f1f1f1;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    color: white;
+  }
+  
+  .form-control:focus {
+    outline: none;
+    border-color: #667eea;
+  }
+  
+  .form-control.is-invalid {
+    border-color: #dc3545;
+  }
+  
+  textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+  }
+  
+  .invalid-feedback {
+    color: #dc3545;
+    font-size: 0.8rem;
+    margin-top: 5px;
+  }
+  
+  /* Alertes */
+  .alert {
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    animation: slideDown 0.5s ease;
+  }
+  
+  .alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+  
+  /* Bouton */
+  .submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #1591DC, #232F72);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+  }
+  
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  }
+  
+  .submit-btn:active {
+    transform: translateY(0);
+  }
+  
+  /* Carte Google Maps */
+  .map-container {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Animation */
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .contact-wrapper {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    
+    .contact-header h1 {
+      font-size: 2rem;
+    }
+    
+    .info-card, .form-card {
+      padding: 25px;
+    }
+    
+    .info-card h2, .form-card h2 {
+      font-size: 1.5rem;
+    }
+    
+    .info-item {
+      padding: 10px;
+    }
+    
+    .info-icon {
+      width: 40px;
+      height: 40px;
+    }
+    
+    .info-icon i {
+      font-size: 16px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .contact-container {
+      padding: 20px;
+    }
+    
+    .contact-header h1 {
+      font-size: 1.5rem;
+    }
+    
+    .contact-header p {
+      font-size: 0.9rem;
+    }
+    
+    .info-card, .form-card {
+      padding: 20px;
+    }
+  }
