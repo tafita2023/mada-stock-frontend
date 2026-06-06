@@ -230,9 +230,9 @@
   }
   
   .actions-cell {
-    white-space: nowrap;
+    display: flex;
   }
-
+  
   /* Cellule email */
   .utilisateurs-table td:nth-child(3) {
     font-weight: 600;

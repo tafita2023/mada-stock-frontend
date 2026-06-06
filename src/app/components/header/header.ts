@@ -11,6 +11,7 @@ import { AuthService } from '../services/auth-service';
   styleUrls: ['./header.css']
 })
 export class Header implements OnInit {
+  user: any = null;
   sidebarOpen = true;
   private isBrowser: boolean;
 
@@ -26,6 +27,8 @@ export class Header implements OnInit {
     
     if (this.isBrowser) {
       this.checkScreenSize();
+
+      this.user = this.authService.getUser();
     }
   }
 
@@ -54,11 +57,11 @@ export class Header implements OnInit {
     this.authService.logout().subscribe({
       next: () => {
         this.authService.clearStorage();
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']);
       },
       error: () => {
         this.authService.clearStorage();
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']);
       }
     });
   }}

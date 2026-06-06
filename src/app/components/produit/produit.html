@@ -199,7 +199,7 @@
           </div>
         </div>
 
-        <!-- PRIX + STOCK -->
+        <!-- PRIX -->
         <div class="form-row">
           <div class="form-group">
             <label>Prix unitaire (Ar) *</label>
@@ -208,8 +208,8 @@
               [(ngModel)]="currentProduit.prix"
               name="prix"
               required
-              min="0"
-              step="100"
+              min="1"
+              step="1"
             />
           </div>
 

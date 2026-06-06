@@ -37,10 +37,19 @@ export class AuthService {
   }
 
   getUser(): any {
+
+    if (typeof window === 'undefined') {
+      return {};
+    }
+
     return JSON.parse(localStorage.getItem('user') || '{}');
   }
 
   getToken(): string | null {
+
+    if (typeof window === 'undefined') {
+      return null;
+    }
     return localStorage.getItem('token');
   }
 
@@ -51,7 +60,12 @@ export class AuthService {
 
   // ================= AUTH CHECK =================
   isLoggedIn(): boolean {
-    return !!this.getToken();
+
+    if (typeof window === 'undefined') {
+      return false;
+    }
+
+    return !!localStorage.getItem('token');
   }
 
   isAdmin(): boolean {

@@ -200,9 +200,26 @@ export class ProduitComponent implements OnInit, OnDestroy {
   saveProduit() {
     const formData = new FormData();
 
+    const prix = Number(this.currentProduit.prix);
+    const stock = Number(this.currentProduit.stock);
+    
+    if (!this.currentProduit.nom) {
+      this.showToast('Nom obligatoire', 'error');
+      return;
+    }
+  
+    if (isNaN(prix) || prix <= 0) {
+      this.showToast('Prix invalide', 'error');
+      return;
+    }
+  
+    if (isNaN(stock) || stock < 0) {
+      this.showToast('Stock invalide', 'error');
+      return;
+    }
     formData.append('nom', this.currentProduit.nom);
-    formData.append('prix', this.currentProduit.prix.toString());
-    formData.append('stock', this.currentProduit.stock.toString());
+    formData.append('prix', prix.toString());
+    formData.append('stock', stock.toString());
     formData.append('description', this.currentProduit.description);
 
     if (this.selectedFile) {

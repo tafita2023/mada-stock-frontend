@@ -85,7 +85,7 @@
   
   .btn-clear {
     background: #6c757d;
-    color: white;
+    color: #f1f1f1;
     border: none;
     padding: 8px 16px;
     border-radius: 8px;
@@ -719,7 +719,7 @@
   }
 
   .image-upload-box {
-    width: 40%;
+    width: 50%;
     min-height: 180px;
     border: 2px dashed #cbd5e1;
     border-radius: 12px;
@@ -758,7 +758,7 @@
 }
 
 .loading-spinner {
-  background: #003049;
+  background: #222222;
   padding: 30px;
   border-radius: 8px;
   text-align: center;
@@ -842,7 +842,7 @@
 }
 
 .btn-edit:hover {
-  background-color: #1976d2;
+  background-color: #e0a800;
   transform: translateY(-1px);
 }
 
