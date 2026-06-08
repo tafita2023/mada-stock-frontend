@@ -1,12 +1,12 @@
 import { Component, HostListener, Inject, PLATFORM_ID, OnInit } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterOutlet, RouterLinkWithHref } from '@angular/router';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth-service'; 
 
 @Component({
   selector: 'app-header',
-  imports: [RouterOutlet, RouterLinkWithHref],
+  imports: [CommonModule, RouterOutlet, RouterLinkWithHref],
   templateUrl: './header.html',
   styleUrls: ['./header.css']
 })

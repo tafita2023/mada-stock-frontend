@@ -147,7 +147,6 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  
   .produits-table {
     width: 100%;
     min-width: 750px;
@@ -186,7 +185,6 @@
     width: 180px;
   }
 
-  
   /* Style des en-têtes */
   .produits-table th {
     background: #0a0a1a;

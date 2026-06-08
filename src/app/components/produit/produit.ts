@@ -1,6 +1,7 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ChangeDetectorRef, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { ProduitService } from '../services/produit';
 import { finalize, catchError } from 'rxjs/operators';
 import { of, Subscription, timeout } from 'rxjs';
@@ -26,7 +27,8 @@ export class ProduitComponent implements OnInit, OnDestroy {
 
   constructor(
     private cdr: ChangeDetectorRef,
-    private produitService: ProduitService
+    private produitService: ProduitService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   // ================= NOTIFICATIONS =================
@@ -41,8 +43,8 @@ export class ProduitComponent implements OnInit, OnDestroy {
   paginatedProduits: Produit[] = [];
 
   // ================= LOADING STATE =================
-  isLoading = true;  // Commencer à true
-  loadingError = false;  // Pour tracker les erreurs de chargement
+  isLoading = true;
+  loadingError = false;
 
   // ================= FILE IMAGE =================
   selectedFile: File | null = null;
@@ -67,13 +69,30 @@ export class ProduitComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription = new Subscription();
 
-  ngOnInit() {
-    console.log('ngOnInit - Chargement des produits');
-    this.loadProduits();
+  ngOnInit() {    
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadProduits();
+    } else {
+      // Côté serveur, on arrête le chargement immédiatement
+      this.isLoading = false;
+      this.produits = [];
+      this.filteredProduits = [];
+      this.paginatedProduits = [];
+      this.cdr.detectChanges();
+    }
+  }
+
+  ngAfterViewInit() {
+    // CRUCIAL: Charger les données après que la vue soit initialisée côté client
+    if (isPlatformBrowser(this.platformId)) {
+      // Petit délai pour s'assurer que tout est prêt
+      setTimeout(() => {
+        this.loadProduits();
+      }, 100);
+    }
   }
 
   ngOnDestroy() {
-    // Nettoyer les subscriptions pour éviter les fuites mémoire
     if (this.subscriptions) {
       this.subscriptions.unsubscribe();
     }
@@ -84,29 +103,51 @@ export class ProduitComponent implements OnInit, OnDestroy {
 
   // ================= LOAD =================
   loadProduits() {
-    console.log('loadProduits - Début du chargement');
+    // Vérification supplémentaire côté serveur
+    if (isPlatformServer(this.platformId)) {
+      this.isLoading = false;
+      return;
+    }
+
+    // Vérifier le token avant le chargement
+    const token = localStorage.getItem('token');
+    if (!token) {
+      this.isLoading = false;
+      this.loadingError = true;
+      this.showToast('Vous devez être connecté', 'error');
+      return;
+    }
+
     this.isLoading = true;
     this.loadingError = false;
     this.cdr.detectChanges();
 
     const sub = this.produitService.getProduits()
       .pipe(
-        timeout(30000), // Timeout de 30 secondes
+        timeout(30000),
         catchError(error => {
           console.error('Erreur détaillée:', error);
           this.loadingError = true;
-          this.showToast('Erreur de connexion au serveur', 'error');
-          return of({ data: [] }); // Retourner un tableau vide en cas d'erreur
+          
+          if (error.status === 401) {
+            this.showToast('Session expirée, veuillez vous reconnecter', 'error');
+            // Rediriger vers login après 2 secondes
+            setTimeout(() => {
+              window.location.href = '/login';
+            }, 2000);
+          } else {
+            this.showToast('Erreur de connexion au serveur', 'error');
+          }
+          
+          return of({ data: [] });
         }),
         finalize(() => {
-          console.log('loadProduits - Finalisation');
           this.isLoading = false;
           this.cdr.detectChanges();
         })
       )
       .subscribe({
         next: (res: any) => {
-          console.log('Réponse reçue:', res);
           try {
             const data = res.data ?? res ?? [];
             
@@ -120,9 +161,7 @@ export class ProduitComponent implements OnInit, OnDestroy {
             this.filteredProduits = [...this.produits];
             this.currentPage = 1;
             this.updatePagination();
-            
-            console.log(`${this.produits.length} produits chargés`);
-            
+                        
             if (this.produits.length === 0 && !this.loadingError) {
               this.showToast('Aucun produit trouvé', 'success');
             }
@@ -135,7 +174,6 @@ export class ProduitComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Erreur dans subscribe:', error);
-          // Déjà géré par catchError, mais par sécurité
           this.loadingError = true;
           this.isLoading = false;
           this.cdr.detectChanges();
@@ -158,6 +196,8 @@ export class ProduitComponent implements OnInit, OnDestroy {
 
   // ================= IMAGE =================
   onFileSelected(event: any) {
+    if (!isPlatformBrowser(this.platformId)) return;
+    
     const file = event.target.files[0];
     if (!file) return;
   
@@ -174,6 +214,8 @@ export class ProduitComponent implements OnInit, OnDestroy {
   
   // ================= MODAL =================
   openAddModal() {
+    if (!isPlatformBrowser(this.platformId)) return;
+    
     this.isEditing = false;
     this.currentProduit = this.getEmptyProduit();
     this.selectedFile = null;
@@ -182,6 +224,8 @@ export class ProduitComponent implements OnInit, OnDestroy {
   }
 
   openEditModal(produit: Produit) {
+    if (!isPlatformBrowser(this.platformId)) return;
+    
     this.isEditing = true;
     this.currentProduit = { ...produit };
     this.selectedFile = null;
@@ -198,6 +242,8 @@ export class ProduitComponent implements OnInit, OnDestroy {
 
   // ================= SAVE =================
   saveProduit() {
+    if (!isPlatformBrowser(this.platformId)) return;
+    
     const formData = new FormData();
 
     const prix = Number(this.currentProduit.prix);
@@ -217,6 +263,7 @@ export class ProduitComponent implements OnInit, OnDestroy {
       this.showToast('Stock invalide', 'error');
       return;
     }
+    
     formData.append('nom', this.currentProduit.nom);
     formData.append('prix', prix.toString());
     formData.append('stock', stock.toString());
@@ -226,7 +273,6 @@ export class ProduitComponent implements OnInit, OnDestroy {
       formData.append('image', this.selectedFile);
     }
 
-    // CREATE
     if (!this.isEditing) {
       const sub = this.produitService.createProduit(formData).subscribe({
         next: () => {
@@ -243,7 +289,6 @@ export class ProduitComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // UPDATE
     const sub = this.produitService.updateProduit(this.currentProduit.id!, formData)
       .subscribe({
         next: () => {
@@ -253,7 +298,6 @@ export class ProduitComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.error(err);
-          console.log(err.error.errors);
           this.showToast('Erreur modification produit', 'error');
         }
       });
@@ -262,6 +306,7 @@ export class ProduitComponent implements OnInit, OnDestroy {
 
   // ================= DELETE =================
   openDeleteModal(p: Produit) {
+    if (!isPlatformBrowser(this.platformId)) return;
     this.produitToDelete = p;
     this.showDeleteModal = true;
   }
@@ -319,12 +364,8 @@ export class ProduitComponent implements OnInit, OnDestroy {
   updatePagination() {
     const list = this.filteredProduits ?? [];
     
-    this.totalPages = Math.max(
-      1,
-      Math.ceil(list.length / this.itemsPerPage)
-    );
+    this.totalPages = Math.max(1, Math.ceil(list.length / this.itemsPerPage));
     
-    // Vérifier que la page courante existe toujours
     if (this.currentPage > this.totalPages) {
       this.currentPage = this.totalPages;
     }
@@ -367,6 +408,8 @@ export class ProduitComponent implements OnInit, OnDestroy {
 
   // ================= TOAST =================
   showToast(message: string, type: 'success' | 'error') {
+    if (!isPlatformBrowser(this.platformId)) return;
+    
     this.notificationMessage = message;
     this.notificationType = type;
     this.showNotification = true;
@@ -390,15 +433,13 @@ export class ProduitComponent implements OnInit, OnDestroy {
   }
 
   getEndIndex() {
-    return Math.min(
-      this.currentPage * this.itemsPerPage,
-      this.filteredProduits.length
-    );
+    return Math.min(this.currentPage * this.itemsPerPage, this.filteredProduits.length);
   }
 
   // ================= RETRY LOADING =================
   retryLoading() {
-    console.log('Retentative de chargement');
-    this.loadProduits();
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadProduits();
+    }
   }
 }

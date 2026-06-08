@@ -9,11 +9,17 @@
       <div class="navbar-brand">
         <img src="/logo.jpg" alt="Logo Mada-stock">
       </div>
-      <div class="navbar-user">
-        <img src="{{ user.avatar_url }}" alt="Photo de profil" class="user-avatar">
-        <h1>{{ user.name }}</h1>
+      <div class="navbar-user" *ngIf="user">
+        <!-- Avatar avec image par défaut -->
+        <img 
+          [src]="user.avatar_url || 'assets/default-avatar.png'" 
+          alt="Photo de profil" 
+          class="user-avatar"
+          (error)="user.avatar_url = 'assets/default-avatar.png'"
+        >
+        <h1>{{ user.name || user.email?.split('@')[0] || 'Utilisateur' }}</h1>
       </div>
-    </nav>
+      </nav>
   
     <!-- Sidebar -->
     <div class="sidebar" [class.sidebar-open]="sidebarOpen" [class.sidebar-closed]="!sidebarOpen">

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,12 +9,27 @@ import { Observable } from 'rxjs';
 export class AuthService {
 
   private apiUrl = 'http://127.0.0.1:8000/api';
-
+  private authState = new BehaviorSubject<boolean>(false);
+  authState$ = this.authState.asObservable();
+  
   constructor(
     private http: HttpClient,
     private router: Router
-  ) {}
+  ) {
+    this.initializeAuthState();
+  }
 
+  initializeAuthState(): void {
+    // Vérifier si on est dans le navigateur
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const token = this.getToken();
+      const isLoggedIn = !!token;
+      this.authState.next(isLoggedIn);
+    } else {
+      this.authState.next(false);
+    }
+  }
+  
   // ================= LOGIN =================
   login(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, data);
@@ -27,45 +42,71 @@ export class AuthService {
 
   // ================= LOGOUT =================
   logout(): Observable<any> {
-    return this.http.post(`${this.apiUrl}/logout`, {});
-  }
+    const token = this.getToken();
+    return this.http.post(`${this.apiUrl}/logout`, {}, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    }).pipe(
+      tap(() => {
+        this.clearStorage();
+        this.authState.next(false);
+        this.router.navigate(['/login']);
+      })
+    );
+  }  
   
   // ================= STORAGE =================
   saveUser(data: any): void {
-    localStorage.setItem('user', JSON.stringify(data.user));
-    localStorage.setItem('token', data.token);
+    // Vérifier si on est dans le navigateur
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      
+      if (data && data.token) {
+        localStorage.setItem('token', data.token);
+      }
+      
+      if (data && data.user) {
+        localStorage.setItem('user', JSON.stringify(data.user));
+      }
+      
+      this.authState.next(true);
+      
+      // Vérification
+      const savedToken = localStorage.getItem('token');
+    }
   }
 
   getUser(): any {
-
-    if (typeof window === 'undefined') {
-      return {};
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const user = localStorage.getItem('user');
+      return user ? JSON.parse(user) : {};
     }
-
-    return JSON.parse(localStorage.getItem('user') || '{}');
+    return {};
   }
 
   getToken(): string | null {
-
-    if (typeof window === 'undefined') {
-      return null;
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const token = localStorage.getItem('token');
+      return token;
     }
-    return localStorage.getItem('token');
+    return null;
   }
 
   clearStorage(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+    }
   }
 
   // ================= AUTH CHECK =================
   isLoggedIn(): boolean {
-
-    if (typeof window === 'undefined') {
-      return false;
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const token = localStorage.getItem('token');
+      const isLogged = !!token && token !== 'undefined' && token !== 'null';
+      return isLogged;
     }
-
-    return !!localStorage.getItem('token');
+    return false;
   }
 
   isAdmin(): boolean {

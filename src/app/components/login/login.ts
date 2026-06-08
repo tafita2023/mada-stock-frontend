@@ -16,6 +16,7 @@ export class Login {
   loginForm: FormGroup;
   showPassword = false;
   isLoading = false;
+  errorMessage = '';
 
   constructor(
     private fb: FormBuilder,
@@ -26,6 +27,12 @@ export class Login {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
+    
+    // Rediriger si déjà connecté
+    if (this.authService.isLoggedIn()) {
+      console.log('Utilisateur déjà connecté, redirection');
+      this.router.navigate(['/admin/dashboard']);
+    }
   }
 
   togglePasswordVisibility(): void {
@@ -33,7 +40,6 @@ export class Login {
   }
 
   onSubmit(): void {
-
     if (this.loginForm.invalid) {
       Object.keys(this.loginForm.controls).forEach(key => {
         this.loginForm.get(key)?.markAsTouched();
@@ -42,28 +48,39 @@ export class Login {
     }
 
     this.isLoading = true;
+    this.errorMessage = '';
+
+    console.log('📤 Tentative de connexion avec:', this.loginForm.value);
 
     this.authService.login(this.loginForm.value).subscribe({
       next: (res: any) => {
-
-        this.isLoading = false;
-
+        console.log('📥 Réponse reçue:', res);
+        
+        // Sauvegarder les données
         this.authService.saveUser(res);
-
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('user', JSON.stringify(res.user));
-
-        if (res.user.role === 'admin') {
-          this.router.navigate(['/admin/dashboard']);
+        
+        // Vérifier immédiatement
+        const token = localStorage.getItem('token');
+        console.log('🔑 Token après sauvegarde:', token ? 'Présent' : 'Absent');
+        
+        this.isLoading = false;
+        
+        if (token) {
+          console.log('✅ Connexion réussie, redirection...');
+          if (res.role === 'admin' || res.user?.role === 'admin') {
+            this.router.navigate(['/admin/dashboard']);
+          } else {
+            this.router.navigate(['/']);
+          }
         } else {
-          this.router.navigate(['/']);
+          this.errorMessage = 'Erreur lors de la sauvegarde de la connexion';
         }
       },
 
       error: (err) => {
-        console.error(err);
+        console.error('❌ Erreur de connexion:', err);
         this.isLoading = false;
-        alert(err.error?.message || 'Erreur de connexion');
+        this.errorMessage = err.error?.message || 'Erreur de connexion';
       }
     });
   }
