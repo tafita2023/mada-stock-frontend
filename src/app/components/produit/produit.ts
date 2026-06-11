@@ -73,7 +73,6 @@ export class ProduitComponent implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       this.loadProduits();
     } else {
-      // Côté serveur, on arrête le chargement immédiatement
       this.isLoading = false;
       this.produits = [];
       this.filteredProduits = [];

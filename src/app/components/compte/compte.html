@@ -1,0 +1,143 @@
+<div class="mon-compte-container">
+    <div class="profile-card">
+      <!-- Section gauche - Photo agrandie -->
+      <div class="left-section">
+        <div class="avatar-container">
+          <img 
+            [src]="'http://localhost:8000/storage/' + user.avatar" 
+            alt="{{ user.name }}"
+            class="avatar">
+        </div>
+      </div>
+  
+      <!-- Section droite - Informations -->
+      <div class="right-section">
+        <div class="header">
+            Mes informations
+        </div>
+
+        <div class="espace"></div>
+
+        <div class="info-row">
+          <label>Nom :</label>
+          <span>{{ user.name }}</span>
+        </div>
+    
+        <div class="info-row">
+          <label>Email :</label>
+          <span>{{ user.email }}</span>
+        </div>
+
+        <div class="info-row">
+            <label>Rôle :</label>
+            <span>{{ user.role }}</span>
+          </div>
+    
+      </div>
+  
+      <!-- Bouton en bas -->
+      <div class="button-section">
+        <button class="btn-modifier" (click)="openPopup()">
+          Modifier
+        </button>
+      </div>
+    </div>
+  
+    <!-- Popup de modification -->
+    <div class="popup-overlay" *ngIf="showPopup" (click)="closePopupOnOverlay($event)">
+        <div class="popup-content">
+          <div class="popup-header">
+            <h2>Modifier mes informations</h2>
+            <button class="close-btn" (click)="closePopup()">&times;</button>
+          </div>
+      
+          <form (ngSubmit)="saveChanges()">
+            <!-- Section Photo de profil -->
+            <div class="form-group photo-group">
+              <label>Photo de profil</label>
+              <div class="photo-selection">
+                <div class="current-photo">
+                  <img [src]="editUser.avatar || 'assets/default-avatar.png'" alt="Photo de profil" class="preview-photo">
+                </div>
+                <div class="photo-options">
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    (change)="onFileSelected($event)" 
+                    #fileInput 
+                    style="display: none">
+                  <button type="button" class="btn-upload" (click)="fileInput.click()">
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m3 16 5-7 6 6.5m6.5 2.5L16 13l-4.286 6M14 10h.01M4 19h16a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Z"/>
+                      </svg>
+                    <span>Choisir une image</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+      
+            <!-- Informations personnelles -->
+            <div class="form-section">
+              <h3>Informations personnelles</h3>
+              
+              <div class="form-group">
+                <label>Nom :</label>
+                <input type="text" [(ngModel)]="editUser.name" name="nom" required>
+              </div>
+            
+              <div class="form-group">
+                <label>Email :</label>
+                <input type="email" [(ngModel)]="editUser.email" name="email" required>
+              </div>
+            </div>
+      
+            <!-- Section Mot de passe -->
+            <div class="form-section">
+              <h3>Changer le mot de passe</h3>
+              <p class="warning">Laisser vide pour ne pas changer</p>
+              <div class="form-group">
+                <label>Mot de passe actuel :</label>
+                <input 
+                  type="password" 
+                  [(ngModel)]="passwordData.currentPassword" 
+                  name="currentPassword"
+                  placeholder="Entrez votre mot de passe actuel">
+              </div>
+
+              <div class="form-group">
+                <label>Nouveau mot de passe :</label>
+                <input 
+                  type="password" 
+                  [(ngModel)]="passwordData.newPassword" 
+                  name="newPassword"
+                  placeholder="Votre nouveau mot de passe">
+              </div>
+      
+              <div class="form-group">
+                <label>Confirmer le mot de passe :</label>
+                <input 
+                  type="password" 
+                  [(ngModel)]="passwordData.confirmPassword" 
+                  name="confirmPassword"
+                  placeholder="Confirmez votre nouveau mot de passe">
+              </div>
+      
+              <div class="password-error" *ngIf="passwordError">
+                {{ passwordError }}
+              </div>
+            </div>
+      
+            <!-- Actions -->
+            <div class="popup-actions">
+              <button type="button" class="btn-annuler" (click)="closePopup()">Annuler</button>
+              <button type="submit" class="btn-sauvegarder">Sauvegarder</button>
+            </div>
+          </form>
+        </div>
+      </div>
+ </div>
+
+ <!-- NOTIFICATION TOAST -->
+<div class="toast-notification" *ngIf="showNotification" [class.success]="notificationType === 'success'" [class.error]="notificationType === 'error'">
+    {{ notificationMessage }}
+  </div>

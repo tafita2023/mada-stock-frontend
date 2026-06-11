@@ -84,6 +84,12 @@ export class AuthService {
     return {};
   }
 
+  setUser(user: any): void {
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      localStorage.setItem('user', JSON.stringify(user));
+    }
+  }
+  
   getToken(): string | null {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       const token = localStorage.getItem('token');

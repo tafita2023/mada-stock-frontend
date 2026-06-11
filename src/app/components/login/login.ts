@@ -50,23 +50,18 @@ export class Login {
     this.isLoading = true;
     this.errorMessage = '';
 
-    console.log('📤 Tentative de connexion avec:', this.loginForm.value);
-
     this.authService.login(this.loginForm.value).subscribe({
       next: (res: any) => {
-        console.log('📥 Réponse reçue:', res);
         
         // Sauvegarder les données
         this.authService.saveUser(res);
         
         // Vérifier immédiatement
         const token = localStorage.getItem('token');
-        console.log('🔑 Token après sauvegarde:', token ? 'Présent' : 'Absent');
         
         this.isLoading = false;
         
         if (token) {
-          console.log('✅ Connexion réussie, redirection...');
           if (res.role === 'admin' || res.user?.role === 'admin') {
             this.router.navigate(['/admin/dashboard']);
           } else {
@@ -78,7 +73,7 @@ export class Login {
       },
 
       error: (err) => {
-        console.error('❌ Erreur de connexion:', err);
+        console.error('Erreur de connexion:', err);
         this.isLoading = false;
         this.errorMessage = err.error?.message || 'Erreur de connexion';
       }

@@ -9,6 +9,7 @@ import { Dashboard } from './components/dashboard/dashboard';
 import { ProduitComponent } from './components/produit/produit';
 import { MaterielComponent } from './components/materiel/materiel';
 import { UtilisateurComponent } from './components/utilisateur/utilisateur';
+import { CompteComponent } from './components/compte/compte';
 
 import { LayoutClient } from './layout/layout';
 import { authGuard } from './guards/auth-guard';
@@ -23,7 +24,9 @@ export const routes: Routes = [
             { path:'dashboard', component:Dashboard },
             { path:'produits', component:ProduitComponent },
             { path:'materiels', component:MaterielComponent },
-            { path:'utilisateurs', component:UtilisateurComponent }
+            { path:'utilisateurs', component:UtilisateurComponent },
+            { path:'mon_compte', component:CompteComponent }
+
         ]
     },
     {
