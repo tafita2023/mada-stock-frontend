@@ -16,31 +16,25 @@
                 
                 <!-- Image du produit -->
                 <div class="product-image">
-                    <img [src]="product.image" [alt]="product.name">
-                    <div class="product-actions">
-                        <button class="action-btn" (click)="addToCart(product)">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="stock-badge" [class.out-of-stock]="!product.inStock">
-                        {{ product.inStock ? 'En stock' : 'Rupture' }}
+                    <img [src]="getImageUrl(product.image)" [alt]="product.nom">
+                    
+                    <div class="stock-badge" [class.out-of-stock]="!product.stock">
+                        {{ product.stock ? 'En stock' : 'Rupture' }}
                     </div>
                 </div>
 
                 <!-- Informations produit -->
                 <div class="product-info">
-                    <h3 class="product-name">{{ product.name }}</h3>
-                    
+                    <h3 class="product-name">{{ product.nom }}</h3>
+                    <h1 class="product-description">{{ product.description }}</h1>
                     <!-- Prix -->
                     <div class="product-price">
-                        <span class="current-price">Prix: {{ product.price | number }} Ar</span>
+                        <span class="current-price">Prix: {{ product.prix | number }} Ar</span>
                     </div>
 
                     <!-- Bouton ajouter -->
-                    <button class="add-to-cart-btn" (click)="addToCart(product)" [disabled]="!product.inStock">
-                        {{ product.inStock ? 'Ajouter au panier' : 'Indisponible' }}
+                    <button class="add-to-cart-btn" (click)="addToCart(product)" [disabled]="!product.stock">
+                        {{ product.stock ? 'Ajouter au panier' : 'Indisponible' }}
                     </button>
                 </div>
             </div>

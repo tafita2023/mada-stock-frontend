@@ -1,98 +1,87 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ProductService } from '../homeService/produit';
+import { CartService } from '../homeService/cart';
+
+export interface Product {
+  id: number;
+  nom: string;
+  description: string;
+  prix: number;
+  stock: number;
+  image?: string;
+}
 
 @Component({
   selector: 'app-product',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './product.html',
-  styleUrl: './product.css'
+  styleUrls: ['./product.css']
 })
-export class Product {
-  // Liste des produits
-  products = [
-    {
-      id: 1,
-      name: 'Whisky cola ICE',
-      price: 15000,
-      volume: '50ml',
-      flavor: 'Fruits rouges',
-      rating: 4.5,
-      inStock: true,
-      image: 'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=300&h=300&fit=crop',
-      description: 'Un mélange explosif de fruits rouges pour une vape fruitée et rafraîchissante.'
-    },
-    {
-      id: 2,
-      name: 'Mystic Red Astaire ICE',
-      price: 16000,
-      flavor: 'Menthe',
-      rating: 4.8,
-      inStock: true,
-      image: 'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=300&h=300&fit=crop',
-      description: 'Une sensation de fraîcheur intense avec un goût de menthe glaciale.'
-    },
-    {
-      id: 3,
-      name: 'Lemon cream ICE',
-      price: 18000,
-      volume: '50ml',
-      flavor: 'Citron',
-      rating: 4.7,
-      inStock: true,
-      image: 'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=300&h=300&fit=crop',
-      description: 'Un délicieux crème à la vanille pour une vape douce et gourmande.'
-    },
-    {
-      id: 4,
-      name: 'Lemon cream',
-      price: 17000,
-      volume: '50ml',
-      flavor: 'Citron',
-      rating: 4.3,
-      inStock: false,
-      image: 'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=300&h=300&fit=crop',
-      description: 'Le goût authentique du tabac pour une transition en douceur.'
-    },
-    {
-      id: 5,
-      name: 'Cookies',
-      price: 15500,
-      volume: '50ml',
-      flavor: 'Cookies',
-      rating: 4.9,
-      inStock: true,
-      image: 'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=300&h=300&fit=crop',
-      description: 'Un voyage exotique avec des saveurs de fruits tropicaux.'
-    },
-    {
-      id: 6,
-      name: 'Mojito',
-      price: 16500,
-      volume: '50ml',
-      flavor: 'Café',
-      rating: 4.6,
-      inStock: true,
-      image: 'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=300&h=300&fit=crop',
-      description: 'Le plaisir d\'un bon café en version vape.'
-    }
-  ];
+export class ProductsComponent implements OnInit {
 
-  // Méthode pour ajouter au panier
-  addToCart(product: any) {
-    console.log('Produit ajouté au panier:', product);
-    // Ajoutez votre logique de panier ici
-    alert(`${product.name} ajouté au panier !`);
+  products: Product[] = [];
+  isLoading = true;
+  loadingError = false;
+
+  constructor(
+    private productService: ProductService,
+    private cartService: CartService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadProducts();
   }
 
-  // Méthode pour voir les détails du produit
-  viewDetails(product: any) {
-    console.log('Voir détails:', product);
-    // Ajoutez votre logique de navigation ici
+  // ================= LOAD (MÊME LOGIQUE QUE ADMIN) =================
+  loadProducts(): void {
+
+    this.isLoading = true;
+    this.loadingError = false;
+
+    this.productService.getProducts().subscribe({
+      next: (res: any) => {
+
+        try {
+          const data = res.data ?? res ?? [];
+
+          if (Array.isArray(data)) {
+            this.products = [...data].sort(
+              (a: any, b: any) => (a.id || 0) - (b.id || 0)
+            );
+          } else {
+            console.warn('Les données ne sont pas un tableau:', data);
+            this.products = [];
+          }
+
+        } catch (error) {
+          console.error('Erreur traitement produits:', error);
+          this.loadingError = true;
+          this.products = [];
+        }
+
+        this.isLoading = false;
+      },
+
+      error: (err) => {
+        console.error('Erreur API produits:', err);
+        this.loadingError = true;
+        this.isLoading = false;
+        this.products = [];
+      }
+    });
   }
 
-  // Obtenir le nombre d'étoiles pour le rating
-  getStars(rating: number): number[] {
-    return Array(Math.floor(rating)).fill(0);
+  // ================= IMAGE (COMME ADMIN CONSEILLÉ) =================
+  getImageUrl(image: string | null | undefined): string {
+    if (!image) return 'assets/no-image.png';
+    return `http://127.0.0.1:8000/storage/${image}`;
+  }
+
+  // ================= CART =================
+  addToCart(product: Product): void {
+    this.cartService.addToCart(product);
+    alert(`${product.nom} ajouté au panier`);
   }
 }

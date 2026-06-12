@@ -11,6 +11,8 @@ import { MaterielComponent } from './components/materiel/materiel';
 import { UtilisateurComponent } from './components/utilisateur/utilisateur';
 import { CompteComponent } from './components/compte/compte';
 
+import { PanierComponent } from './panier/panier';
+
 import { LayoutClient } from './layout/layout';
 import { authGuard } from './guards/auth-guard';
 
@@ -34,7 +36,8 @@ export const routes: Routes = [
         component: LayoutClient,
         children: [
             { path:'', component:Home },
-            { path:'contact', component:Contact },        
+            { path:'contact', component:Contact },
+            { path:'panier', component:PanierComponent },        
         ]
     },
 
