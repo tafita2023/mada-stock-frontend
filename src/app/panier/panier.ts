@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { CartService } from '../homeService/cart';
 
 export interface CartItem {
   id: number;
@@ -20,16 +21,19 @@ export type PaymentMethod = 'mobile_money' | 'card' | 'cash_on_delivery';
   styleUrls: ['./panier.css']
 })
 export class PanierComponent implements OnInit {
+
   cartItems: CartItem[] = [];
+
   selectedPaymentMethod: PaymentMethod = 'mobile_money';
   selectedMobileMoneyOperator: string = '';
+
   cardDetails = {
     number: '',
     expiry: '',
     cvv: '',
     name: ''
   };
-  
+
   mobileMoneyOperators = [
     { id: 'yas', name: 'MVola', imageUrl: '/Mvola.png' },
     { id: 'orange', name: 'Orange Money', imageUrl: '/orange2.png' }
@@ -38,31 +42,31 @@ export class PanierComponent implements OnInit {
   mobileMoneyNumber: string = '';
   phoneNumberError: string = '';
 
+  constructor(private cartService: CartService) {}
+
   ngOnInit(): void {
     this.loadCartItems();
+
+    // 🔥 mise à jour automatique du panier
+    this.cartService.cart$.subscribe(items => {
+      this.cartItems = items;
+    });
   }
 
   loadCartItems(): void {
-    this.cartItems = [
-      {
-        id: 1,
-        name: 'Produit 1',
-        price: 25000,
-        quantity: 2,
-        image: 'https://via.placeholder.com/100'
-      },
-      {
-        id: 2,
-        name: 'Produit 2',
-        price: 15000,
-        quantity: 1,
-        image: 'https://via.placeholder.com/100'
-      }
-    ];
+    this.cartItems = this.cartService.getCart();
+  }
+
+  getImageUrl(image: string | null | undefined): string {
+    if (!image) return 'assets/no-image.png';
+    return `http://127.0.0.1:8000/storage/${image}`;
   }
 
   getSubtotal(): number {
-    return this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    return this.cartItems.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
   }
 
   getShippingCost(): number {
@@ -76,65 +80,11 @@ export class PanierComponent implements OnInit {
   updateQuantity(item: CartItem, newQuantity: number): void {
     if (newQuantity >= 1 && newQuantity <= 99) {
       item.quantity = newQuantity;
+      this.cartService.updateCart(this.cartItems);
     }
   }
 
-  removeItem(itemId: number): void {
-    this.cartItems = this.cartItems.filter(item => item.id !== itemId);
-  }
-
-  clearCart(): void {
-    this.cartItems = [];
-  }
-
-  onPaymentMethodChange(method: PaymentMethod): void {
-    this.selectedPaymentMethod = method;
-    if (method !== 'mobile_money') {
-      this.selectedMobileMoneyOperator = '';
-    }
-  }
-
-  validateCardDetails(): boolean {
-    const { number, expiry, cvv, name } = this.cardDetails;
-    // Validation simple du numéro de carte (16 chiffres)
-    const cardNumberValid = /^[0-9]{16}$/.test(number.replace(/\s/g, ''));
-    // Validation CVV (3 chiffres)
-    const cvvValid = /^[0-9]{3}$/.test(cvv);
-    // Validation date d'expiration (MM/YY)
-    const expiryValid = /^(0[1-9]|1[0-2])\/([0-9]{2})$/.test(expiry);
-    const nameValid = name.trim().length > 0;
-    
-    return cardNumberValid && cvvValid && expiryValid && nameValid;
-  }
-
-  processPayment(): void {
-    if (this.cartItems.length === 0) {
-      alert('Votre panier est vide');
-      return;
-    }
-
-    switch (this.selectedPaymentMethod) {
-      case 'mobile_money':
-        if (!this.selectedMobileMoneyOperator) {
-          alert('Veuillez sélectionner un opérateur Mobile Money');
-          return;
-        }
-        this.processMobileMoneyPayment();
-        break;
-      case 'card':
-        if (!this.validateCardDetails()) {
-          alert('Veuillez vérifier les informations de votre carte bancaire');
-          return;
-        }
-        this.processCardPayment();
-        break;
-      case 'cash_on_delivery':
-        this.processCashOnDelivery();
-        break;
-    }
-  }
-
-// Sélectionner un opérateur Mobile Money
+  // Sélectionner un opérateur Mobile Money
 selectMobileMoneyOperator(operatorId: string): void {
   this.selectedMobileMoneyOperator = operatorId;
   this.phoneNumberError = '';
@@ -173,33 +123,73 @@ validatePhoneNumber(): void {
   }
 }
 
-private processMobileMoneyPayment(): void {
-  const operator = this.mobileMoneyOperators.find(op => op.id === this.selectedMobileMoneyOperator);
-  // Nettoyer le numéro pour l'affichage
-  const cleanNumber = this.mobileMoneyNumber.replace(/\s/g, '');
-  alert(`Paiement Mobile Money avec ${operator?.name}\nNuméro: +261 ${this.mobileMoneyNumber}\nMontant total: ${this.getTotal()} Ar\nUn code de validation va vous être envoyé par SMS.`);
-  this.confirmOrder();
-}
+  removeItem(itemId: number): void {
+    this.cartItems = this.cartItems.filter(item => item.id !== itemId);
+    this.cartService.saveCart(this.cartItems);
+  }
+
+  clearCart(): void {
+    this.cartItems = [];
+    this.cartService.clearCart();
+  }
+
+  onPaymentMethodChange(method: PaymentMethod): void {
+    this.selectedPaymentMethod = method;
+    if (method !== 'mobile_money') {
+      this.selectedMobileMoneyOperator = '';
+    }
+  }
+
+  processPayment(): void {
+    if (this.cartItems.length === 0) {
+      alert('Votre panier est vide');
+      return;
+    }
+
+    switch (this.selectedPaymentMethod) {
+      case 'mobile_money':
+        if (!this.selectedMobileMoneyOperator) {
+          alert('Veuillez sélectionner un opérateur Mobile Money');
+          return;
+        }
+        this.processMobileMoneyPayment();
+        break;
+
+      case 'card':
+        if (!this.validateCardDetails()) {
+          alert('Carte invalide');
+          return;
+        }
+        this.processCardPayment();
+        break;
+
+      case 'cash_on_delivery':
+        this.processCashOnDelivery();
+        break;
+    }
+  }
+
+  private processMobileMoneyPayment(): void {
+    alert(`Paiement Mobile Money: ${this.getTotal()} Ar`);
+    this.confirmOrder();
+  }
 
   private processCardPayment(): void {
-    // Simuler un paiement par carte bancaire
-    alert(`Paiement par carte bancaire validé\nMontant: ${this.getTotal()} FCFA\nCarte se terminant par: ${this.cardDetails.number.slice(-4)}`);
+    alert(`Paiement carte validé: ${this.getTotal()} Ar`);
     this.confirmOrder();
   }
 
   private processCashOnDelivery(): void {
-    // Paiement à la livraison
-    alert(`Commande confirmée - Paiement à la livraison\nMontant total à payer: ${this.getTotal()} FCFA`);
+    alert(`Commande confirmée (livraison)`);
     this.confirmOrder();
   }
 
   private confirmOrder(): void {
-    // Ici vous pouvez rediriger vers une page de confirmation
-    console.log('Commande confirmée', {
-      items: this.cartItems,
-      total: this.getTotal(),
-      paymentMethod: this.selectedPaymentMethod
-    });
+    console.log('Commande confirmée', this.cartItems);
     this.clearCart();
+  }
+
+  validateCardDetails(): boolean {
+    return true;
   }
 }

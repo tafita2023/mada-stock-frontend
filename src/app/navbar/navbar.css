@@ -86,6 +86,120 @@
   .nav-link.active {
     color: white;
   }
+
+  .nav-dropdown {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .dropdown-toggle {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+
+  /* Icône */
+.dropdown-icon {
+  width: 16px;
+  height: 16px;
+  margin-left: 8px;
+  transition: transform 0.3s ease;
+  color: var(--text-gray);
+}
+
+/* Rotation quand ouvert */
+.dropdown-icon.open {
+  transform: rotate(180deg);
+  color: white;
+}
+
+/* Menu show */
+.dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+  .dropdown-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+  
+    background: black;
+    min-width: 200px;
+  
+    border: 1px solid var(--border-color);
+  
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: 0.3s ease;
+  
+    z-index: 1000;
+  }
+
+  .nav-dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  .dropdown-item {
+    display: block;
+    padding: 10px 15px;
+    color: #f1f1f1;
+    text-decoration: none;
+    transition: 0.2s;
+  }
+  
+  .dropdown-item:hover {
+    background: #111844;
+  }
+  
+  .mobile-dropdown {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .mobile-nav-link.dropdown-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .mobile-dropdown-icon {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.3s ease;
+  }
+  
+  .mobile-dropdown-icon.open {
+    transform: rotate(180deg);
+  }
+  
+  .mobile-submenu {
+    display: flex;
+    flex-direction: column;
+    padding-left: 1rem;
+    margin-top: 0.3rem;
+    border-left: 2px solid rgba(255,255,255,0.1);
+  }
+  
+  .mobile-subitem {
+    padding: 0.7rem 0;
+    color: var(--text-gray);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: 0.2s;
+  }
+  
+  .mobile-subitem:hover {
+    color: white;
+  }
   
   /* ===== RIGHT SECTION ===== */
   .right-section {

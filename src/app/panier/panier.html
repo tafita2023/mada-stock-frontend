@@ -16,13 +16,12 @@
             
             <div *ngIf="cartItems.length === 0" class="empty-cart">
                 <p>Votre panier est vide</p>
-                <button class="continue-shopping-btn">Continuer mes achats</button>
             </div>
             
             <!-- Version desktop - affichage ligne (visible sur desktop, caché sur mobile) -->
             <div *ngFor="let item of cartItems" class="cart-item desktop-only">
                 <div class="item-image-container">
-                    <img [src]="item.image" [alt]="item.name" class="item-image">
+                    <img [src]="getImageUrl(item.image)" [alt]="item.name" class="item-image">
                 </div>
                 <div class="item-name">{{ item.name }}</div>
                 <div class="item-price">{{ item.price | number }} Ar</div>
@@ -45,7 +44,7 @@
                 <div class="mobile-card">
                     <div class="mobile-card-header">
                         <div class="mobile-image">
-                            <img [src]="item.image" [alt]="item.name" class="item-image-mobile">
+                            <img [src]="getImageUrl(item.image)" [alt]="item.name" class="item-image-mobile">
                         </div>
                         <button (click)="removeItem(item.id)" class="remove-btn-mobile">
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">

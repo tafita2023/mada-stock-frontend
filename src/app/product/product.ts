@@ -82,6 +82,5 @@ export class ProductsComponent implements OnInit {
   // ================= CART =================
   addToCart(product: Product): void {
     this.cartService.addToCart(product);
-    alert(`${product.nom} ajouté au panier`);
   }
 }

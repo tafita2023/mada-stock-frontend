@@ -18,6 +18,28 @@
             <span>Accueil</span>
             <span class="nav-link-bg"></span>
           </a>
+
+           <!-- MENU DROPDOWN -->
+          <div class="nav-dropdown"
+            (mouseenter)="isDropdownOpen = true"
+            (mouseleave)="isDropdownOpen = false" 
+          >
+            <a href="#" class="nav-link dropdown-toggle">
+              <span>Produits</span>
+              <svg class="w-6 h-6 dropdown-icon" [class.open]="isDropdownOpen" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
+              </svg>
+
+              <span class="nav-link-bg"></span>
+            </a>
+
+            <div class="dropdown-menu">
+              <a href="/produits" class="dropdown-item">Produits</a>
+              <a href="/materiels" class="dropdown-item">Matériels</a>
+              <a href="/promotions" class="dropdown-item">Promotions</a>
+            </div>
+          </div>
+
           <a href="#" class="nav-link">
             <span>Madélice</span>
             <span class="nav-link-bg"></span>
@@ -35,7 +57,7 @@
             <svg class="cart-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10V6a3 3 0 0 1 3-3v0a3 3 0 0 1 3 3v4m3-2 .917 11.923A1 1 0 0 1 17.92 21H6.08a1 1 0 0 1-.997-1.077L6 8h12Z"></path>
             </svg>
-            <span class="cart-badge">0</span>
+            <span class="cart-badge">{{ cartCount }}</span>
           </button>
           
           <!-- Mobile Menu Button -->
@@ -53,6 +75,25 @@
           <a href="/" class="mobile-nav-link">
             <span>Accueil</span>
           </a>
+          <div class="mobile-dropdown">
+
+            <div class="mobile-nav-link dropdown-toggle"
+                 (click)="toggleMobileDropdown()">
+              <span>Produits</span>
+              <svg class="w-6 h-6 dropdown-icon" [class.open]="isDropdownOpen" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
+              </svg>      
+            </div>
+      
+            <div class="mobile-submenu" *ngIf="isMobileDropdownOpen">
+      
+              <a href="#" class="mobile-subitem">Produits</a>
+              <a href="#" class="mobile-subitem">Matériels</a>
+              <a href="#" class="mobile-subitem">Promotions</a>
+      
+            </div>
+      
+          </div>
           <a href="#" class="mobile-nav-link">
             <span>Madélice</span>
           </a>
