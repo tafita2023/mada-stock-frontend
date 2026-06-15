@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject, tap } from 'rxjs';
+import { ProductService } from '../../homeService/produit';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class AuthService {
 
   private apiUrl = 'http://127.0.0.1:8000/api';
@@ -14,7 +16,7 @@ export class AuthService {
   
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
   ) {
     this.initializeAuthState();
   }
@@ -51,7 +53,9 @@ export class AuthService {
       tap(() => {
         this.clearStorage();
         this.authState.next(false);
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']).then(() => {
+          window.location.reload();
+        });
       })
     );
   }  

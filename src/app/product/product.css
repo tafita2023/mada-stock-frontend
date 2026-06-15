@@ -35,13 +35,6 @@
     }
 }
 
-.products-subtitle {
-    font-size: 1rem;
-    color: #f1f1f1;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
 /* Grille de produits - 4 cartes par ligne */
 .products-grid {
     display: grid;
@@ -147,6 +140,7 @@
 .product-name {
     font-size: 0.95rem;
     font-weight: 600;
+    letter-spacing: 1px;
     color: #f1f1f1;
     margin-bottom: 0.5rem;
     line-height: 1.3;

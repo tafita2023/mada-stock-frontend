@@ -1,1 +1,39 @@
-<p>materiel works!</p>
+<section class="materiels-section">
+    <div class="materiels-container">
+        <!-- En-tête -->
+        <div class="materiels-header">
+            <h2 class="materiels-title">
+                E-cigarettes
+            </h2>
+        </div>
+
+        <!-- Grille de materiels -->
+        <div class="materiels-grid">
+            <div class="materiel-card" *ngFor="let materiel of materiels">
+                
+                <!-- Image du materiel -->
+                <div class="materiel-image">
+                    <img [src]="getImageUrl(materiel.image)" [alt]="materiel.nom">
+                    
+                    <div class="stock-badge" [class.out-of-stock]="!materiel.stock">
+                        {{ materiel.stock ? 'En stock' : 'Rupture' }}
+                    </div>
+                </div>
+
+                <!-- Informations materiel -->
+                <div class="materiel-info">
+                    <h3 class="materiel-name">{{ materiel.nom }}</h3>
+                    <!-- Prix -->
+                    <div class="materiel-price">
+                        <span class="current-price">Prix: {{ materiel.prix | number }} Ar</span>
+                    </div>
+
+                    <!-- Bouton ajouter -->
+                    <button class="add-to-cart-btn" (click)="addToCart(materiel)" [disabled]="!materiel.stock">
+                        {{ materiel.stock ? 'Ajouter au panier' : 'Indisponible' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

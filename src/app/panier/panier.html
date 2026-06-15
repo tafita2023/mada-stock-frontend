@@ -1,66 +1,159 @@
 <div class="cart-container">
     <h1>Mon Panier</h1>
+
     
     <div class="cart-content">
-        <!-- Liste des produits -->
+
+        <!-- LISTE PRODUITS + MATERIELS -->
         <div class="cart-items-section">
-            <!-- Version desktop - affichage tableau -->
-            <div class="cart-header desktop-only">
-                <div>Image</div>
-                <div>Produit</div>
-                <div>Prix</div>
-                <div>Quantité</div>
-                <div>Total</div>
-                <div>Action</div>
-            </div>
-            
-            <div *ngIf="cartItems.length === 0" class="empty-cart">
+
+            <div *ngIf="allItems.length === 0" class="empty-cart desktop-only">
+                <div class="empty-cart-icon">🛒</div>
                 <p>Votre panier est vide</p>
             </div>
-            
-            <!-- Version desktop - affichage ligne (visible sur desktop, caché sur mobile) -->
-            <div *ngFor="let item of cartItems" class="cart-item desktop-only">
-                <div class="item-image-container">
-                    <img [src]="getImageUrl(item.image)" [alt]="item.name" class="item-image">
+            <ng-container *ngIf="displayProductsOnly">
+                
+                <div class="cart-header-simple desktop-only">
+                    <div>Image</div>
+                    <div>Produit</div>
+                    <div>Prix</div>
+                    <div>Quantité</div>
+                    <div>Total</div>
+                    <div>Action</div>
                 </div>
-                <div class="item-name">{{ item.name }}</div>
-                <div class="item-price">{{ item.price | number }} Ar</div>
-                <div class="item-quantity">
-                    <button (click)="updateQuantity(item, item.quantity - 1)" class="qty-btn">-</button>
-                    <input type="number" [(ngModel)]="item.quantity" (change)="updateQuantity(item, item.quantity)" min="1" max="99" class="qty-input">
-                    <button (click)="updateQuantity(item, item.quantity + 1)" class="qty-btn">+</button>
-                </div>
-                <div class="item-total">{{ item.price * item.quantity | number }} Ar</div>
-                <div class="item-remove">
-                    <button (click)="removeItem(item.id)" class="remove-btn"><svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
-                      </svg>
-                      </button>
-                </div>
-            </div>
 
-            <!-- Version mobile - affichage carte (visible sur mobile, caché sur desktop) -->
-            <div *ngFor="let item of cartItems" class="cart-item-mobile mobile-only">
-                <div class="mobile-card">
-                    <div class="mobile-card-header">
-                        <div class="mobile-image">
-                            <img [src]="getImageUrl(item.image)" [alt]="item.name" class="item-image-mobile">
-                        </div>
-                        <button (click)="removeItem(item.id)" class="remove-btn-mobile">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <div *ngIf="cartItems.length === 0" class="empty-cart">
+                    <p>Votre panier est vide</p>
+                </div>
+
+                <!-- ARTICLES PRODUITS UNIQUEMENT -->
+                <div *ngFor="let item of cartItems; trackBy: trackByItem" class="cart-item-simple desktop-only">
+                    <div class="item-image-container">
+                        <img [src]="getImageUrl(item.image)" class="item-image">
+                    </div>
+                    <div class="item-name">
+                        {{ item.name }}
+                    </div>
+                    <div class="item-price">
+                        {{ item.price | number }} Ar
+                    </div>
+                    <div class="item-quantity">
+                        <button (click)="updateQuantity(item, item.quantity - 1)" class="qty-btn">-</button>
+                        <input type="number"
+                               [(ngModel)]="item.quantity"
+                               (change)="updateQuantity(item, item.quantity)"
+                               min="1"
+                               max="99"
+                               class="qty-input">
+                        <button (click)="updateQuantity(item, item.quantity + 1)" class="qty-btn">+</button>
+                    </div>
+                    <div class="item-total">
+                        {{ item.price * item.quantity | number }} Ar
+                    </div>
+                    <div class="item-remove">
+                        <button (click)="removeItem(item)" class="remove-btn">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
-                              </svg>                              
+                            </svg>                              
                         </button>
                     </div>
-                    
+                </div>
+            </ng-container>
+
+            <ng-container *ngIf="displayWithMateriel">
+                                
+                <div class="cart-header desktop-only" *ngIf="cartItems.length > 0">
+                    <div>Image</div>
+                    <div>Nom</div>
+                    <div>Prix</div>
+                    <div>Quantité</div>
+                    <div>Total</div>
+                    <div>Action</div>
+                </div>
+
+                <!-- ARTICLES PRODUITS -->
+                <div *ngFor="let item of cartItems; trackBy: trackByItem" class="cart-item desktop-only">
+                    <div class="item-image-container">
+                        <img [src]="getImageUrl(item.image)" class="item-image">
+                    </div>
+                    <div class="item-name">{{ item.name }}</div>
+                    <div class="item-price">{{ item.price | number }} Ar</div>
+                    <div class="item-quantity">
+                        <button (click)="updateQuantity(item, item.quantity - 1)" class="qty-btn">-</button>
+                        <input type="number" [(ngModel)]="item.quantity" (change)="updateQuantity(item, item.quantity)" min="1" max="99" class="qty-input">
+                        <button (click)="updateQuantity(item, item.quantity + 1)" class="qty-btn">+</button>
+                    </div>
+                    <div class="item-total">{{ item.price * item.quantity | number }} Ar</div>
+                    <div class="item-remove">
+                        <button (click)="removeItem(item)" class="remove-btn">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+                            </svg>                              
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SEPARATEUR -->
+                <div class="section-separator" *ngIf="cartItems.length > 0 && materielItems.length > 0"></div>
+                
+                <div class="cart-header desktop-only" *ngIf="materielItems.length > 0">
+                    <div>Image</div>
+                    <div>Nom</div>
+                    <div>Type</div>
+                    <div>Marque</div>
+                    <div>Prix</div>
+                    <div>Quantité</div>
+                    <div>Total</div>
+                    <div>Action</div>
+                </div>
+
+                <!-- ARTICLES MATÉRIELS -->
+                <div *ngFor="let item of materielItems; trackBy: trackByItem" class="cart-item desktop-only">
+                    <div class="item-image-container">
+                        <img [src]="getImageUrl(item.image)" class="item-image">
+                    </div>
+                    <div class="item-name">{{ item.name }}</div>
+                    <div class="cell type-cell">{{ item.type || '-' }}</div>
+                    <div class="cell marque-cell">{{ item.marque || '-' }}</div>
+                    <div class="item-price">{{ item.price | number }} Ar</div>
+                    <div class="item-quantity">
+                        <button (click)="updateQuantity(item, item.quantity - 1)" class="qty-btn">-</button>
+                        <input type="number" [(ngModel)]="item.quantity" (change)="updateQuantity(item, item.quantity)" min="1" max="99" class="qty-input">
+                        <button (click)="updateQuantity(item, item.quantity + 1)" class="qty-btn">+</button>
+                    </div>
+                    <div class="item-total">{{ item.price * item.quantity | number }} Ar</div>
+                    <div class="item-remove">
+                        <button (click)="removeItem(item)" class="remove-btn">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+                            </svg>                              
+                        </button>
+                    </div>
+                </div>
+            </ng-container>
+
+            <!-- ===================== -->
+            <!-- VERSION MOBILE (tous les articles mélangés mais avec carte séparée) -->
+            <!-- ===================== -->
+            <div *ngFor="let item of allItems; trackBy: trackByItem" class="cart-item-mobile mobile-only">                <div class="mobile-card">
+                    <div class="mobile-card-header">
+                        <img [src]="getImageUrl(item.image)" class="item-image-mobile">
+                        <button (click)="removeItem(item)" class="remove-btn-mobile">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+                            </svg>                              
+                        </button>
+                    </div>
                     <div class="mobile-card-body">
                         <h3 class="mobile-product-name">{{ item.name }}</h3>
-                        
+                        <div *ngIf="item.category === 'materiel'" class="materiel-details-mobile">
+                            <p><strong>Type :</strong> {{ item.type || '-' }}</p>
+                            <p><strong>Marque :</strong> {{ item.marque || '-' }}</p>
+                        </div>
                         <div class="mobile-info-row">
-                            <span class="info-label">Prix unitaire :</span>
+                            <span class="info-label">Prix :</span>
                             <span class="info-value">{{ item.price | number }} Ar</span>
                         </div>
-                        
                         <div class="mobile-info-row">
                             <span class="info-label">Quantité :</span>
                             <div class="mobile-quantity">
@@ -69,21 +162,85 @@
                                 <button (click)="updateQuantity(item, item.quantity + 1)" class="qty-btn-mobile">+</button>
                             </div>
                         </div>
-                        
                         <div class="mobile-info-row total-mobile">
                             <span class="info-label">Total :</span>
-                            <span class="info-value total-value-mobile">{{ item.price * item.quantity | number }} Ar</span>
+                            <span class="info-value">{{ item.price * item.quantity | number }} Ar</span>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
-        
+
+        <!-- MESSAGE MOBILE PANIER VIDE -->
+        <div *ngIf="allItems.length === 0" class="empty-cart-mobile mobile-only">
+            <div class="empty-cart-icon">🛒</div>
+            <p>Votre panier est vide</p>
+            <p class="empty-cart-subtitle">Ajoutez des produits pour commencer</p>
+        </div>
+
         <!-- Résumé et paiement -->
         <div class="order-summary-section">
             <div class="summary-card">
                 <h2>Résumé de la commande</h2>
                 
+                <!-- NOUVEAU : Option de livraison -->
+                <div class="delivery-options">
+                    <h3>Mode de réception</h3>
+                    <div class="delivery-option-group">
+                        <label class="delivery-radio">
+                            <input type="radio" 
+                                name="deliveryOption" 
+                                value="delivery"
+                                [(ngModel)]="selectedDeliveryOption" 
+                                (change)="onDeliveryOptionChange('delivery')">
+                            <div class="delivery-info">
+                                <span class="delivery-icon">🚚</span>
+                                <div>
+                                    <strong>Livraison à domicile</strong>
+                                    <span class="delivery-fee">{{ getSubtotal() > 50000 ? 'Gratuit' : '3 000 Ar' }}</span>
+                                </div>
+                            </div>
+                        </label>
+                        <label class="delivery-radio">
+                            <input type="radio" 
+                                name="deliveryOption" 
+                                value="pickup"
+                                [(ngModel)]="selectedDeliveryOption" 
+                                (change)="onDeliveryOptionChange('pickup')">
+                            <div class="delivery-info">
+                                <span class="delivery-icon">📍</span>
+                                <div>
+                                    <strong>Récupérer sur place</strong>
+                                    <span class="delivery-fee-free">Gratuit</span>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- NOUVEAU : Formulaire d'adresse (si livraison) -->
+                <div class="delivery-address-form" *ngIf="selectedDeliveryOption === 'delivery'">
+                    <h3>Informations de livraison</h3>
+                    <input type="text" 
+                        [(ngModel)]="deliveryAddress.fullName" 
+                        placeholder="Nom complet *"
+                        class="delivery-input">
+                    <input type="tel" 
+                        [(ngModel)]="deliveryAddress.phone" 
+                        placeholder="Téléphone *"
+                        class="delivery-input">
+                    <input type="text" 
+                        [(ngModel)]="deliveryAddress.address" 
+                        placeholder="Adresse complète *"
+                        class="delivery-input">
+                </div>
+
+                <!-- NOUVEAU : Message pour récupération sur place -->
+                <div class="pickup-info" *ngIf="selectedDeliveryOption === 'pickup'">
+                    <small>Lieux de récupération à : Mausolé, Antananarivo</small>
+                </div>
+
                 <div class="summary-details">
                     <div class="summary-row">
                         <span>Sous-total</span>
@@ -106,44 +263,39 @@
                     <div class="payment-option">
                         <label class="payment-label">
                             <input type="radio" name="paymentMethod" value="mobile_money" 
-                                   [(ngModel)]="selectedPaymentMethod" 
-                                   (change)="onPaymentMethodChange('mobile_money')">
-                                   <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 15h12M6 6h12m-6 12h.01M7 21h10a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1Z"/>
-                                  </svg>
-                                  
+                                [(ngModel)]="selectedPaymentMethod" 
+                                (change)="onPaymentMethodChange('mobile_money')">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 15h12M6 6h12m-6 12h.01M7 21h10a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1Z"/>
+                            </svg>
                             <span class="payment-title">Mobile Money</span>
                         </label>
                         
                         <div *ngIf="selectedPaymentMethod === 'mobile_money'" class="payment-details">
-                            <!-- Sélection opérateur avec boutons cliquables (pas radio) -->
                             <div class="operator-select">
                                 <div *ngFor="let operator of mobileMoneyOperators" 
-                                     class="operator-option"
-                                     [class.active]="selectedMobileMoneyOperator === operator.id"
-                                     (click)="selectMobileMoneyOperator(operator.id)">
+                                    class="operator-option"
+                                    [class.active]="selectedMobileMoneyOperator === operator.id"
+                                    (click)="selectMobileMoneyOperator(operator.id)">
                                     <div class="operator-btn">
                                         <img [src]="operator.imageUrl" [alt]="operator.name" class="operator-image">
-
                                     </div>
                                 </div>
                             </div>                            
-                            <!-- Champ numéro de téléphone -->
                             <div class="form-group" *ngIf="selectedMobileMoneyOperator">
                                 <label>Numéro de téléphone {{ getSelectedOperatorName() }}</label>
                                 <div class="phone-input-wrapper">
                                     <span class="phone-prefix">+261</span>
                                     <input type="number" 
-                                           [(ngModel)]="mobileMoneyNumber" 
-                                           placeholder="32 12 345 67" 
-                                           class="form-control phone-input"
-                                           (input)="validatePhoneNumber()">
+                                        [(ngModel)]="mobileMoneyNumber" 
+                                        placeholder="32 12 345 67" 
+                                        class="form-control phone-input"
+                                        (input)="validatePhoneNumber()">
                                 </div>
                                 <div *ngIf="phoneNumberError" class="error-message">
                                     {{ phoneNumberError }}
                                 </div>
                             </div>
-                            
                             <div class="info-text">
                                 <small>📲 Vous recevrez un code de confirmation par SMS</small>
                             </div>
@@ -154,38 +306,37 @@
                     <div class="payment-option">
                         <label class="payment-label">
                             <input type="radio" name="paymentMethod" value="card" 
-                                   [(ngModel)]="selectedPaymentMethod" 
-                                   (change)="onPaymentMethodChange('card')">
-                                   <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M6 14h2m3 0h5M3 7v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1Z"/>
-                                  </svg>
-                                  
-                            <span class="payment-title"> Carte Bancaire</span>
+                                [(ngModel)]="selectedPaymentMethod" 
+                                (change)="onPaymentMethodChange('card')">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M6 14h2m3 0h5M3 7v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1Z"/>
+                            </svg>
+                            <span class="payment-title">Carte Bancaire</span>
                         </label>
                         
                         <div *ngIf="selectedPaymentMethod === 'card'" class="payment-details">
                             <div class="form-group">
                                 <label>Numéro de carte</label>
                                 <input type="text" [(ngModel)]="cardDetails.number" 
-                                       placeholder="1234 5678 9012 3456" 
-                                       maxlength="19" class="form-control">
+                                    placeholder="1234 5678 9012 3456" 
+                                    maxlength="19" class="form-control">
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Date d'expiration</label>
                                     <input type="text" [(ngModel)]="cardDetails.expiry" 
-                                           placeholder="MM/YY" maxlength="5" class="form-control">
+                                        placeholder="MM/YY" maxlength="5" class="form-control">
                                 </div>
                                 <div class="form-group">
                                     <label>CVV</label>
                                     <input type="text" [(ngModel)]="cardDetails.cvv" 
-                                           placeholder="123" maxlength="3" class="form-control">
+                                        placeholder="123" maxlength="3" class="form-control">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label>Nom sur la carte</label>
                                 <input type="text" [(ngModel)]="cardDetails.name" 
-                                       placeholder="Jean DUPONT" class="form-control">
+                                    placeholder="Jean DUPONT" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -194,12 +345,11 @@
                     <div class="payment-option">
                         <label class="payment-label">
                             <input type="radio" name="paymentMethod" value="cash_on_delivery" 
-                                   [(ngModel)]="selectedPaymentMethod" 
-                                   (change)="onPaymentMethodChange('cash_on_delivery')">
-                                   <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h6l2 4m-8-4v8H9m4-8V6c0-.26522-.1054-.51957-.2929-.70711C12.5196 5.10536 12.2652 5 12 5H4c-.26522 0-.51957.10536-.70711.29289C3.10536 5.48043 3 5.73478 3 6v9h2m14 0h2v-4m0 0h-5M8 8.66669V10l1.5 1.5m10 5c0 1.3807-1.1193 2.5-2.5 2.5s-2.5-1.1193-2.5-2.5S15.6193 14 17 14s2.5 1.1193 2.5 2.5Zm-10 0C9.5 17.8807 8.38071 19 7 19s-2.5-1.1193-2.5-2.5S5.61929 14 7 14s2.5 1.1193 2.5 2.5Z"/>
-                                  </svg>
-                                  
+                                [(ngModel)]="selectedPaymentMethod" 
+                                (change)="onPaymentMethodChange('cash_on_delivery')">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h6l2 4m-8-4v8H9m4-8V6c0-.26522-.1054-.51957-.2929-.70711C12.5196 5.10536 12.2652 5 12 5H4c-.26522 0-.51957.10536-.70711.29289C3.10536 5.48043 3 5.73478 3 6v9h2m14 0h2v-4m0 0h-5M8 8.66669V10l1.5 1.5m10 5c0 1.3807-1.1193 2.5-2.5 2.5s-2.5-1.1193-2.5-2.5S15.6193 14 17 14s2.5 1.1193 2.5 2.5Zm-10 0C9.5 17.8807 8.38071 19 7 19s-2.5-1.1193-2.5-2.5S5.61929 14 7 14s2.5 1.1193 2.5 2.5Z"/>
+                            </svg>
                             <span class="payment-title">Paiement à la livraison</span>
                         </label>
                         
@@ -216,5 +366,5 @@
                 </button>
             </div>
         </div>
-        </div>
+    </div>
 </div>

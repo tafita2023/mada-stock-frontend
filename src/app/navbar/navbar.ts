@@ -13,8 +13,8 @@ import { CartService } from '../homeService/cart';
 export class Navbar implements OnInit {
 
   isMobileMenuOpen = false;
-  isDropdownOpen = false;
-  isMobileDropdownOpen = false;
+  isProductSubmenuOpen = false;
+  isMaterielSubmenuOpen = false;
 
   cartCount = 0;
 
@@ -29,12 +29,34 @@ export class Navbar implements OnInit {
     });
   }
 
-  toggleMobileMenu(): void {
+  toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
+    if (!this.isMobileMenuOpen) {
+      this.isProductSubmenuOpen = false;
+      this.isMaterielSubmenuOpen = false;
+    }
   }
 
-  toggleMobileDropdown(): void {
-    this.isMobileDropdownOpen = !this.isMobileDropdownOpen;
+  closeMobileMenu() {
+    this.isMobileMenuOpen = false;
+    this.isProductSubmenuOpen = false;
+    this.isMaterielSubmenuOpen = false;
   }
   
+  toggleProductSubmenu() {
+    this.isProductSubmenuOpen = !this.isProductSubmenuOpen;
+    // Bonus : fermer l'autre menu quand on ouvre celui-ci
+    if (this.isProductSubmenuOpen) {
+      this.isMaterielSubmenuOpen = false;
+    }
+    console.log('Product submenu:', this.isProductSubmenuOpen); // Debug
+  }
+  
+  toggleMaterielSubmenu() {
+    this.isMaterielSubmenuOpen = !this.isMaterielSubmenuOpen;
+    if (this.isMaterielSubmenuOpen) {
+      this.isProductSubmenuOpen = false;
+    }
+    console.log('Materiel submenu:', this.isMaterielSubmenuOpen); // Debug
+  }
 }

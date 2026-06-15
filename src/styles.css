@@ -7,10 +7,12 @@
     --primary-bg: #0a0a0a;
     --secondary-bg: #1a1a1a;
     --accent-color: #4f46e5;
+    --font-main: "Montserrat", sans-serif;
   }
   
   body {
     background-color: var(--primary-bg);
+    font-family: var(--font-main);
   }
   
   /* Pour changer dynamiquement via JavaScript */

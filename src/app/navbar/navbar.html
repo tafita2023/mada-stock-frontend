@@ -19,14 +19,14 @@
             <span class="nav-link-bg"></span>
           </a>
 
-           <!-- MENU DROPDOWN -->
+           <!-- MENU PRODUIT -->
           <div class="nav-dropdown"
-            (mouseenter)="isDropdownOpen = true"
-            (mouseleave)="isDropdownOpen = false" 
+            (mouseenter)="isProductSubmenuOpen = true"
+            (mouseleave)="isProductSubmenuOpen = false" 
           >
             <a href="#" class="nav-link dropdown-toggle">
-              <span>Produits</span>
-              <svg class="w-6 h-6 dropdown-icon" [class.open]="isDropdownOpen" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <span>E-liquides</span>
+              <svg class="w-6 h-6 dropdown-icon" [class.open]="isProductSubmenuOpen" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
               </svg>
 
@@ -34,8 +34,29 @@
             </a>
 
             <div class="dropdown-menu">
-              <a href="/produits" class="dropdown-item">Produits</a>
-              <a href="/materiels" class="dropdown-item">Matériels</a>
+              <a href="/produits" class="dropdown-item">Tout</a>
+              <a href="/materiels" class="dropdown-item">Produits</a>
+              <a href="/promotions" class="dropdown-item">Promotions</a>
+            </div>
+          </div>
+
+          <!-- MENU MATERIEL -->
+          <div class="nav-dropdown"
+            (mouseenter)="isMaterielSubmenuOpen = true"
+            (mouseleave)="isMaterielSubmenuOpen = false" 
+          >
+            <a href="#" class="nav-link dropdown-toggle">
+              <span>E-cigarettes</span>
+              <svg class="w-6 h-6 dropdown-icon" [class.open]="isMaterielSubmenuOpen" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
+              </svg>
+
+              <span class="nav-link-bg"></span>
+            </a>
+
+            <div class="dropdown-menu">
+              <a href="/produits" class="dropdown-item">Tout</a>
+              <a href="/materiels" class="dropdown-item">Produits</a>
               <a href="/promotions" class="dropdown-item">Promotions</a>
             </div>
           </div>
@@ -71,37 +92,54 @@
   
       <!-- Mobile Menu -->
       <div *ngIf="isMobileMenuOpen" class="mobile-menu">
-        <div class="mobile-menu-content">
-          <a href="/" class="mobile-nav-link">
-            <span>Accueil</span>
-          </a>
-          <div class="mobile-dropdown">
+          <div class="mobile-menu-content">
+              
+              <a href="/" class="mobile-nav-link" (click)="closeMobileMenu()">
+                  <span>Accueil</span>
+              </a>
+              
+              <!-- MENU E-LIQUIDES -->
+              <div class="mobile-dropdown">
+                  <div class="mobile-nav-link dropdown-toggle" (click)="toggleProductSubmenu()">
+                      <span>E-liquides</span>
+                      <svg class="dropdown-icon" [class.open]="isProductSubmenuOpen" viewBox="0 0 24 24">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
+                      </svg>
+                  </div>
+                  
+                  <div class="mobile-submenu" [class.open]="isProductSubmenuOpen">
+                      <a href="/produits" class="mobile-subitem" (click)="closeMobileMenu()">Tout</a>
+                      <a href="/produits" class="mobile-subitem" (click)="closeMobileMenu()">E-liquides</a>
+                      <a href="/promotions" class="mobile-subitem" (click)="closeMobileMenu()">Promotions</a>
+                  </div>
+              </div>
 
-            <div class="mobile-nav-link dropdown-toggle"
-                 (click)="toggleMobileDropdown()">
-              <span>Produits</span>
-              <svg class="w-6 h-6 dropdown-icon" [class.open]="isDropdownOpen" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
-              </svg>      
-            </div>
-      
-            <div class="mobile-submenu" *ngIf="isMobileDropdownOpen">
-      
-              <a href="#" class="mobile-subitem">Produits</a>
-              <a href="#" class="mobile-subitem">Matériels</a>
-              <a href="#" class="mobile-subitem">Promotions</a>
-      
-            </div>
-      
+              <!-- MENU E-CIGARETTES -->
+              <div class="mobile-dropdown">
+                  <div class="mobile-nav-link dropdown-toggle" (click)="toggleMaterielSubmenu()">
+                      <span>E-cigarettes</span>
+                      <svg class="dropdown-icon" [class.open]="isMaterielSubmenuOpen" viewBox="0 0 24 24">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
+                      </svg>
+                  </div>
+                  
+                  <div class="mobile-submenu" [class.open]="isMaterielSubmenuOpen">
+                      <a href="/materiels" class="mobile-subitem" (click)="closeMobileMenu()">Tout</a>
+                      <a href="/materiels" class="mobile-subitem" (click)="closeMobileMenu()">E-cigarettes</a>
+                      <a href="/promotions" class="mobile-subitem" (click)="closeMobileMenu()">Promotions</a>
+                  </div>
+              </div>
+
+              <a href="#" class="mobile-nav-link" (click)="closeMobileMenu()">
+                  <span>Madélice</span>
+              </a>
+              
+              <a href="/contact" class="mobile-nav-link" (click)="closeMobileMenu()">
+                  <span>Contact</span>
+              </a>
+              
           </div>
-          <a href="#" class="mobile-nav-link">
-            <span>Madélice</span>
-          </a>
-          <a href="/contact" class="mobile-nav-link">
-            <span>Contact</span>
-          </a>
-        </div>
-      </div>
+      </div>      
     </div>
   </nav>
   

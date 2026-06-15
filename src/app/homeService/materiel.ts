@@ -5,7 +5,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class ProductService {
+export class MaterielService {
 
   private apiUrl = 'http://127.0.0.1:8000/api';
 
@@ -14,12 +14,12 @@ export class ProductService {
 
   constructor(private http: HttpClient) {}
 
-  getProducts(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/produits`);
+  getMateriels(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/materiels`);
   }
 
-  getProduct(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/produits/${id}`);
+  getMateriel(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/materiels/${id}`);
   }
 
   triggerRefresh(): void {

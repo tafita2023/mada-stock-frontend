@@ -56,12 +56,8 @@ export class Header implements OnInit {
   logout(): void {
     this.authService.logout().subscribe({
       next: () => {
-        this.authService.clearStorage();
-        this.router.navigate(['/']);
       },
       error: () => {
-        this.authService.clearStorage();
-        this.router.navigate(['/']);
       }
     });
   }}

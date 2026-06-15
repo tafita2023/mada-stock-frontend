@@ -1,17 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CartService } from '../homeService/cart';
-
-export interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
+import { Subscription } from 'rxjs';
+import { CartService, CartItem } from '../homeService/cart'; // Assurez-vous que CartItem est exporté du service
 
 export type PaymentMethod = 'mobile_money' | 'card' | 'cash_on_delivery';
+export type DeliveryOption = 'delivery' | 'pickup';
 
 @Component({
   selector: 'app-cart',
@@ -20,9 +14,26 @@ export type PaymentMethod = 'mobile_money' | 'card' | 'cash_on_delivery';
   templateUrl: './panier.html',
   styleUrls: ['./panier.css']
 })
-export class PanierComponent implements OnInit {
+export class PanierComponent implements OnInit, OnDestroy {
 
   cartItems: CartItem[] = [];
+  materielItems: CartItem[] = [];
+  
+  displayProductsOnly: boolean = false;
+  displayWithMateriel: boolean = false;
+
+  private cartSubscription!: Subscription;
+
+  selectedDeliveryOption: DeliveryOption = 'delivery';
+
+// Adresse de livraison (si livraison choisie)
+  deliveryAddress = {
+    fullName: '',
+    phone: '',
+    address: '',
+    city: 'Antananarivo',
+    notes: ''
+  };
 
   selectedPaymentMethod: PaymentMethod = 'mobile_money';
   selectedMobileMoneyOperator: string = '';
@@ -35,8 +46,8 @@ export class PanierComponent implements OnInit {
   };
 
   mobileMoneyOperators = [
-    { id: 'yas', name: 'MVola', imageUrl: '/Mvola.png' },
-    { id: 'orange', name: 'Orange Money', imageUrl: '/orange2.png' }
+    { id: 'Mvola', name: 'Yas', imageUrl: '/Mvola.png' },
+    { id: 'orange Money', name: 'Orange', imageUrl: '/orange2.png' }
   ];
 
   mobileMoneyNumber: string = '';
@@ -45,31 +56,61 @@ export class PanierComponent implements OnInit {
   constructor(private cartService: CartService) {}
 
   ngOnInit(): void {
-    this.loadCartItems();
+    // UNE SEULE source de vérité : la subscription
+    this.cartSubscription = this.cartService.cart$.subscribe(items => {
+      this.cartItems = items.filter(i => i.category === 'produit');
+      this.materielItems = items.filter(i => i.category === 'materiel');
 
-    // 🔥 mise à jour automatique du panier
-    this.cartService.cart$.subscribe(items => {
-      this.cartItems = items;
+      this.updateDisplayMode();
     });
   }
 
+  ngOnDestroy(): void {
+    if (this.cartSubscription) {
+      this.cartSubscription.unsubscribe();
+    }
+  }
+
+  // Supprimez loadCartItems() ou modifiez-la comme ceci :
   loadCartItems(): void {
-    this.cartItems = this.cartService.getCart();
+    // Rafraîchir manuellement si nécessaire
+    this.cartService.refreshCart();
+  }
+
+  get allItems(): CartItem[] {
+    return [...this.cartItems, ...this.materielItems];
+  }
+  
+  hasMateriel(): boolean {
+    return this.materielItems.length > 0;
+  }
+
+  updateDisplayMode(): void {
+    this.displayProductsOnly = this.cartItems.length > 0 && this.materielItems.length === 0;
+    this.displayWithMateriel = this.materielItems.length > 0;
+  }
+
+  getAllItems(): CartItem[] {
+    return [...this.cartItems, ...this.materielItems];
   }
 
   getImageUrl(image: string | null | undefined): string {
     if (!image) return 'assets/no-image.png';
+    if (image.startsWith('http')) return image;
     return `http://127.0.0.1:8000/storage/${image}`;
   }
 
   getSubtotal(): number {
-    return this.cartItems.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
+    const all = this.allItems;
+    return all.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   }
 
   getShippingCost(): number {
+    // Si le client choisit de récupérer sur place → livraison gratuite
+    if (this.selectedDeliveryOption === 'pickup') {
+      return 0;
+    }
+    // Livraison à domicile : gratuite si commande > 50000 Ar
     return this.getSubtotal() > 50000 ? 0 : 3000;
   }
 
@@ -77,62 +118,75 @@ export class PanierComponent implements OnInit {
     return this.getSubtotal() + this.getShippingCost();
   }
 
+  isDeliveryInfoValid(): boolean {
+    if (this.selectedDeliveryOption === 'delivery') {
+      return this.deliveryAddress.fullName.trim() !== '' &&
+             this.deliveryAddress.phone.trim() !== '' &&
+             this.deliveryAddress.address.trim() !== '' &&
+             this.deliveryAddress.city.trim() !== '';
+    }
+    return true; // Pas d'infos nécessaires pour le retrait sur place
+  }
+
   updateQuantity(item: CartItem, newQuantity: number): void {
-    if (newQuantity >= 1 && newQuantity <= 99) {
-      item.quantity = newQuantity;
-      this.cartService.updateCart(this.cartItems);
+    if (newQuantity < 1 || newQuantity > 99) return;
+  
+    const cart = this.cartService.getCart();
+    const index = cart.findIndex(i => i.key === item.key); // Utilisez key au lieu de id+category
+    
+    if (index !== -1) {
+      cart[index].quantity = newQuantity;
+      this.cartService.updateCart(cart);
+      // Pas besoin de mettre à jour manuellement, la subscription le fera
     }
   }
 
-  // Sélectionner un opérateur Mobile Money
-selectMobileMoneyOperator(operatorId: string): void {
-  this.selectedMobileMoneyOperator = operatorId;
-  this.phoneNumberError = '';
-  // Réinitialiser le numéro quand on change d'opérateur
-  this.mobileMoneyNumber = '';
-}
-
-// Récupérer le nom de l'opérateur sélectionné
-getSelectedOperatorName(): string {
-  const operator = this.mobileMoneyOperators.find(op => op.id === this.selectedMobileMoneyOperator);
-  return operator ? operator.id : '';
-}
-
-// Valider le numéro de téléphone
-validatePhoneNumber(): void {
-  // Nettoyer le numéro (enlever les espaces)
-  let cleanNumber = this.mobileMoneyNumber.replace(/\s/g, '');
-  
-  // Validation selon l'opérateur
-  if (this.selectedMobileMoneyOperator === 'mtn') {
-      // MTN: 32, 33, 34, 37, 38, 39
-      const mtnPattern = /^(32|33|34|37|38|39)\d{7}$/;
-      if (!mtnPattern.test(cleanNumber)) {
-          this.phoneNumberError = 'Numéro MTN invalide (ex: 32 12 345 67)';
-      } else {
-          this.phoneNumberError = '';
-      }
-  } else if (this.selectedMobileMoneyOperator === 'orange') {
-      // Orange: 38, 39 (pour Madagascar)
-      const orangePattern = /^(38|39)\d{7}$/;
-      if (!orangePattern.test(cleanNumber)) {
-          this.phoneNumberError = 'Numéro Orange invalide (ex: 38 12 345 67)';
-      } else {
-          this.phoneNumberError = '';
-      }
+  selectMobileMoneyOperator(operatorId: string): void {
+    this.selectedMobileMoneyOperator = operatorId;
+    this.phoneNumberError = '';
+    this.mobileMoneyNumber = '';
   }
-}
 
-  removeItem(itemId: number): void {
-    this.cartItems = this.cartItems.filter(item => item.id !== itemId);
-    this.cartService.saveCart(this.cartItems);
+  getSelectedOperatorName(): string {
+    const operator = this.mobileMoneyOperators.find(
+      op => op.id === this.selectedMobileMoneyOperator
+    );
+    return operator ? operator.name : '';
+  }
+
+  validatePhoneNumber(): void {
+    const cleanNumber = this.mobileMoneyNumber.replace(/\s/g, '');
+  
+    if (this.selectedMobileMoneyOperator === 'Mvola') {
+      const pattern = /^(32|33|34|37|38|39)\d{7}$/;
+      this.phoneNumberError = pattern.test(cleanNumber)
+        ? ''
+        : 'Numéro MVola invalide (ex: 32 12 345 67)';
+    }
+    else if (this.selectedMobileMoneyOperator === 'orange Money') {
+      const pattern = /^(32|33|34|37|38|39)\d{7}$/;
+      this.phoneNumberError = pattern.test(cleanNumber)
+        ? ''
+        : 'Numéro Orange invalide (ex: 32 12 345 67)';
+    }
+  }
+
+  removeItem(item: CartItem): void {
+    this.cartService.removeFromCart(item.key);
+  }
+      
+  trackByItem(index: number, item: CartItem): string {
+    return item.key; // Utilisez key qui est unique
   }
 
   clearCart(): void {
-    this.cartItems = [];
     this.cartService.clearCart();
   }
 
+  onDeliveryOptionChange(option: DeliveryOption): void {
+    this.selectedDeliveryOption = option;
+  }
+  
   onPaymentMethodChange(method: PaymentMethod): void {
     this.selectedPaymentMethod = method;
     if (method !== 'mobile_money') {
@@ -141,8 +195,14 @@ validatePhoneNumber(): void {
   }
 
   processPayment(): void {
-    if (this.cartItems.length === 0) {
+    if (this.cartItems.length === 0 && this.materielItems.length === 0) {
       alert('Votre panier est vide');
+      return;
+    }
+
+    // Vérifier les informations de livraison si nécessaire
+    if (!this.isDeliveryInfoValid()) {
+      alert('Veuillez remplir toutes les informations de livraison');
       return;
     }
 
@@ -150,6 +210,14 @@ validatePhoneNumber(): void {
       case 'mobile_money':
         if (!this.selectedMobileMoneyOperator) {
           alert('Veuillez sélectionner un opérateur Mobile Money');
+          return;
+        }
+        if (!this.mobileMoneyNumber || this.mobileMoneyNumber.length < 9) {
+          alert('Veuillez entrer un numéro de téléphone valide');
+          return;
+        }
+        if (this.phoneNumberError) {
+          alert('Numéro de téléphone invalide');
           return;
         }
         this.processMobileMoneyPayment();
@@ -169,27 +237,62 @@ validatePhoneNumber(): void {
     }
   }
 
-  private processMobileMoneyPayment(): void {
-    alert(`Paiement Mobile Money: ${this.getTotal()} Ar`);
+private processMobileMoneyPayment(): void {
+    const deliveryText = this.selectedDeliveryOption === 'delivery' 
+      ? `Livraison à : ${this.deliveryAddress.address}, ${this.deliveryAddress.city}`
+      : 'Récupération sur place (gratuit)';
+    
+    alert(`✅ Paiement Mobile Money: ${this.getTotal()} Ar\n${deliveryText}\nFrais de livraison: ${this.getShippingCost()} Ar`);
     this.confirmOrder();
   }
 
-  private processCardPayment(): void {
-    alert(`Paiement carte validé: ${this.getTotal()} Ar`);
+private processCardPayment(): void {
+    const deliveryText = this.selectedDeliveryOption === 'delivery' 
+      ? `Livraison à : ${this.deliveryAddress.address}, ${this.deliveryAddress.city}`
+      : 'Récupération sur place (gratuit)';
+    
+    alert(`✅ Paiement par carte: ${this.getTotal()} Ar\n${deliveryText}\nFrais de livraison: ${this.getShippingCost()} Ar`);
     this.confirmOrder();
   }
 
-  private processCashOnDelivery(): void {
-    alert(`Commande confirmée (livraison)`);
+ private processCashOnDelivery(): void {
+    const deliveryText = this.selectedDeliveryOption === 'delivery' 
+      ? `Livraison à : ${this.deliveryAddress.address}, ${this.deliveryAddress.city}`
+      : 'Récupération sur place (gratuit)';
+    
+    alert(`✅ Commande confirmée (paiement à la livraison)\n${deliveryText}\nFrais de livraison: ${this.getShippingCost()} Ar`);
     this.confirmOrder();
   }
 
-  private confirmOrder(): void {
-    console.log('Commande confirmée', this.cartItems);
+ private confirmOrder(): void {
+    const orderData = {
+      items: this.allItems,
+      subtotal: this.getSubtotal(),
+      shippingCost: this.getShippingCost(),
+      total: this.getTotal(),
+      deliveryOption: this.selectedDeliveryOption,
+      deliveryDetails: this.selectedDeliveryOption === 'delivery' ? this.deliveryAddress : null,
+      paymentMethod: this.selectedPaymentMethod,
+      paymentDetails: this.selectedPaymentMethod === 'mobile_money' ? {
+        operator: this.selectedMobileMoneyOperator,
+        phone: this.mobileMoneyNumber
+      } : null,
+      date: new Date().toISOString()
+    };
+    
+    console.log('Order confirmed:', orderData);
+    
+    // Sauvegarder dans localStorage
+    localStorage.setItem('last_order', JSON.stringify(orderData));
+    
+    alert('🎉 Votre commande a été enregistrée avec succès !');
     this.clearCart();
   }
 
-  validateCardDetails(): boolean {
-    return true;
+validateCardDetails(): boolean {
+    return this.cardDetails.number.length >= 13 && 
+           this.cardDetails.cvv.length >= 3 &&
+           this.cardDetails.expiry.length >= 5 &&
+           this.cardDetails.name.length > 0;
   }
 }

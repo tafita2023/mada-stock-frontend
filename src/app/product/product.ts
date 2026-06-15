@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../homeService/produit';
 import { CartService } from '../homeService/cart';
+import { Subscription } from 'rxjs';
 
 export interface Product {
   id: number;
@@ -21,6 +22,8 @@ export interface Product {
 })
 export class ProductsComponent implements OnInit {
 
+  private refreshSub?: Subscription;
+
   products: Product[] = [];
   isLoading = true;
   loadingError = false;
@@ -32,47 +35,45 @@ export class ProductsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadProducts();
+    this.refreshSub = this.productService.refresh$.subscribe(() => {
+      this.loadProducts();
+    });
   }
 
-  // ================= LOAD (MÊME LOGIQUE QUE ADMIN) =================
+  ngOnDestroy(): void {
+    this.refreshSub?.unsubscribe();
+  }
+
+  // ================= LOAD =================
   loadProducts(): void {
 
     this.isLoading = true;
     this.loadingError = false;
-
+  
     this.productService.getProducts().subscribe({
       next: (res: any) => {
-
-        try {
-          const data = res.data ?? res ?? [];
-
-          if (Array.isArray(data)) {
-            this.products = [...data].sort(
-              (a: any, b: any) => (a.id || 0) - (b.id || 0)
-            );
-          } else {
-            console.warn('Les données ne sont pas un tableau:', data);
-            this.products = [];
-          }
-
-        } catch (error) {
-          console.error('Erreur traitement produits:', error);
-          this.loadingError = true;
+  
+        const data = Array.isArray(res) ? res : res?.data;
+  
+        if (!Array.isArray(data)) {
           this.products = [];
+          this.loadingError = true;
+        } else {
+          this.products = data.sort((a, b) => a.id - b.id);
         }
-
+  
         this.isLoading = false;
       },
-
+  
       error: (err) => {
-        console.error('Erreur API produits:', err);
+        console.error(err);
         this.loadingError = true;
         this.isLoading = false;
         this.products = [];
       }
     });
   }
-
+  
   // ================= IMAGE (COMME ADMIN CONSEILLÉ) =================
   getImageUrl(image: string | null | undefined): string {
     if (!image) return 'assets/no-image.png';
