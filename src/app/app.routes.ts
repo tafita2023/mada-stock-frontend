@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { Login } from './components/login/login';
 import { Home } from './home/home';
+import { ProductsComponent } from './product/product';
+import { MaterielsComponent } from './materiel/materiel';
 import { Contact } from './contact/contact';
 import { NotFoundComponent } from './not-found/not-found'
 import { LayoutAdmin } from './components/layout/layout';
@@ -36,6 +38,8 @@ export const routes: Routes = [
         component: LayoutClient,
         children: [
             { path:'', component:Home },
+            { path:'produits', component:ProductsComponent },
+            { path:'materiels', component:MaterielsComponent },
             { path:'contact', component:Contact },
             { path:'panier', component:PanierComponent },        
         ]

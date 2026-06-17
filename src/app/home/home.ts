@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { Hero } from '../hero/hero';
-import { ProductsComponent } from '../product/product';
-import { MaterielsComponent } from '../materiel/materiel';
+import { HeroComponent } from '../hero/hero';
+import { AboutComponent } from '../about/about';
+import { MarqueComponent } from '../marque/marque';
 
 @Component({
   selector: 'app-home',
-  imports: [Hero, ProductsComponent, MaterielsComponent],
+  imports: [HeroComponent, AboutComponent, MarqueComponent],
   standalone: true,
   templateUrl: './home.html',
   styleUrl: './home.css',

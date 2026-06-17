@@ -45,11 +45,9 @@ export class Navbar implements OnInit {
   
   toggleProductSubmenu() {
     this.isProductSubmenuOpen = !this.isProductSubmenuOpen;
-    // Bonus : fermer l'autre menu quand on ouvre celui-ci
     if (this.isProductSubmenuOpen) {
       this.isMaterielSubmenuOpen = false;
     }
-    console.log('Product submenu:', this.isProductSubmenuOpen); // Debug
   }
   
   toggleMaterielSubmenu() {
@@ -57,6 +55,5 @@ export class Navbar implements OnInit {
     if (this.isMaterielSubmenuOpen) {
       this.isProductSubmenuOpen = false;
     }
-    console.log('Materiel submenu:', this.isMaterielSubmenuOpen); // Debug
   }
 }

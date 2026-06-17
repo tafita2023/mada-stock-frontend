@@ -31,43 +31,52 @@ export class MaterielComponent implements OnInit, OnDestroy {
     private materielService: MaterielService
   ) {}
 
-    // ================= NOTIFICATIONS =================
-    showNotification = false;
-    notificationMessage = '';
-    notificationType: 'success' | 'error' = 'success';
-    private toastTimeout: any = null;
+  // ================= NOTIFICATIONS =================
+  showNotification = false;
+  notificationMessage = '';
+  notificationType: 'success' | 'error' = 'success';
+  private toastTimeout: any = null;
 
-    // ================= DATA =================
-    materiels: Materiel[] = [];
-    filteredMateriels: Materiel[] = [];
-    paginatedMateriels: Materiel[] = [];
-  
-    // ================= LOADING STATE =================
-    isLoading = true;  // Commencer à true
-    loadingError = false;  // Pour tracker les erreurs de chargement
+  // ================= DATA =================
+  materiels: Materiel[] = [];
+  filteredMateriels: Materiel[] = [];
+  paginatedMateriels: Materiel[] = [];
 
-    // ================= FILE IMAGE =================
-    selectedFile: File | null = null;
-    imagePreview: string | null = null;
+  // ================= LOADING STATE =================
+  isLoading = true;
+  loadingError = false;
 
-      // ================= MODAL =================
-    showModal = false;
-    isEditing = false;
-    currentMateriel: Materiel = this.getEmptyMateriel();
+  // ================= FILE IMAGE =================
+  selectedFile: File | null = null;
+  imagePreview: string | null = null;
 
-    // ================= DELETE =================
-    showDeleteModal = false;
-    materielToDelete: Materiel | null = null;
-  
-    // ================= SEARCH =================
-    searchTerm = '';
+  // ================= MODAL =================
+  showModal = false;
+  isEditing = false;
+  currentMateriel: Materiel = this.getEmptyMateriel();
 
-    // ================= PAGINATION =================
-    currentPage = 1;
-    itemsPerPage = 10;
-    totalPages = 1;
+  // ================= DELETE =================
+  showDeleteModal = false;
+  materielToDelete: Materiel | null = null;
 
-    private subscriptions: Subscription = new Subscription();
+  // ================= SEARCH =================
+  searchTerm = '';
+
+  // ================= PAGINATION =================
+  currentPage = 1;
+  itemsPerPage = 10;
+  totalPages = 1;
+
+  // ================= DROPDOWN OPTIONS =================
+  types = [
+    { value: 'Kit', label: 'Kit' },
+    { value: 'Pod', label: 'Pod' },
+    { value: 'Tube', label: 'Tube' },
+    { value: 'Mod', label: 'Mod' },
+    { value: 'Puff', label: 'Puff' },
+  ];
+
+  private subscriptions: Subscription = new Subscription();
 
   ngOnInit() {
     console.log('ngOnInit - Chargement des materiels');
@@ -75,7 +84,6 @@ export class MaterielComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // Nettoyer les subscriptions pour éviter les fuites mémoire
     if (this.subscriptions) {
       this.subscriptions.unsubscribe();
     }
@@ -85,19 +93,19 @@ export class MaterielComponent implements OnInit, OnDestroy {
   }
 
   loadMateriels() {
-    console.log('loadMateriels - Début du chargement' );
+    console.log('loadMateriels - Début du chargement');
     this.isLoading = true;
     this.loadingError = false;
     this.cdr.detectChanges();
 
     const sub = this.materielService.getMateriels()
     .pipe(
-      timeout(30000), // Timeout de 30 secondes
+      timeout(30000),
       catchError(error => {
         console.error('Erreur détaillée:', error);
         this.loadingError = true;
         this.showToast('Erreur de connexion au serveur', 'error');
-        return of({ data: [] }); // Retourner un tableau vide en cas d'erreur
+        return of({ data: [] });
       }),
       finalize(() => {
         console.log('loadMateriels - Finalisation');
@@ -228,6 +236,7 @@ export class MaterielComponent implements OnInit, OnDestroy {
       this.showToast('Stock invalide', 'error');
       return;
     }
+    
     formData.append('nom', this.currentMateriel.nom);
     formData.append('type', this.currentMateriel.type);
     formData.append('marque', this.currentMateriel.marque);
@@ -265,7 +274,6 @@ export class MaterielComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.error(err);
-          console.log(err.error.errors);
           this.showToast('Erreur modification materiel', 'error');
         }
       });
@@ -301,31 +309,31 @@ export class MaterielComponent implements OnInit, OnDestroy {
     this.subscriptions.add(sub);
   }
 
-// ================= FILTER =================
-applyFilters() {
-  let result = [...this.materiels];
+  // ================= FILTER =================
+  applyFilters() {
+    let result = [...this.materiels];
 
-  if (this.searchTerm) {
-    const term = this.searchTerm.toLowerCase();
-    result = result.filter(p =>
-      p.nom.toLowerCase().includes(term)
-    );
+    if (this.searchTerm) {
+      const term = this.searchTerm.toLowerCase();
+      result = result.filter(p =>
+        p.nom.toLowerCase().includes(term)
+      );
+    }
+
+    this.filteredMateriels = result;
+    this.currentPage = 1;
+    this.updatePagination();
+    this.cdr.detectChanges();
   }
 
-  this.filteredMateriels = result;
-  this.currentPage = 1;
-  this.updatePagination();
-  this.cdr.detectChanges();
-}
+  onSearchChange() {
+    this.applyFilters();
+  }
 
-onSearchChange() {
-  this.applyFilters();
-}
-
-clearFilters() {
-  this.searchTerm = '';
-  this.applyFilters();
-}
+  clearFilters() {
+    this.searchTerm = '';
+    this.applyFilters();
+  }
 
   // ================= PAGINATION =================
   updatePagination() {
@@ -336,7 +344,6 @@ clearFilters() {
       Math.ceil(list.length / this.itemsPerPage)
     );
     
-    // Vérifier que la page courante existe toujours
     if (this.currentPage > this.totalPages) {
       this.currentPage = this.totalPages;
     }

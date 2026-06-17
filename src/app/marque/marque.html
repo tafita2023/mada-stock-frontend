@@ -1,0 +1,44 @@
+<div class="logos-carousel">
+    <div class="carousel-header">
+      <h2 class="carousel-title">Nos Partenaires</h2>
+      <div class="carousel-controls">
+        <button class="control-btn" (click)="prevSlide()" [disabled]="currentIndex === 0">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+        </button>
+        <button class="control-btn" (click)="nextSlide()" [disabled]="currentIndex === totalSlides - 1">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  
+    <div class="carousel-wrapper">
+      <div class="carousel-track" [style.transform]="'translateX(-' + currentIndex * 100 + '%)'">
+        @for (slide of logos; track slide.id; let i = $index) {
+          <div class="logo-card" [style.flex]="'0 0 ' + (100 / itemsToShow) + '%'">
+            <div class="card-content" [style.border-color]="slide.color">
+              <div class="logo-container">
+                <img [src]="slide.url" [alt]="slide.name" loading="lazy">
+              </div>
+              <div class="logo-hover-effect" [style.background]="slide.color"></div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  
+    <!-- Indicateurs -->
+    <div class="carousel-indicators">
+      @for (dot of [].constructor(totalSlides); track $index; let i = $index) {
+        <button 
+          class="dot" 
+          [class.active]="i === currentIndex"
+          (click)="goToSlide(i)"
+          [attr.aria-label]="'Aller à la page ' + (i + 1)">
+        </button>
+      }
+    </div>
+  </div>

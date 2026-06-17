@@ -11,6 +11,7 @@ export interface Produit {
   nom: string;
   prix: number;
   stock: number;
+  saveur: string,
   description: string;
   image?: string;
   dateCreation?: Date;
@@ -42,6 +43,19 @@ export class ProduitComponent implements OnInit, OnDestroy {
   filteredProduits: Produit[] = [];
   paginatedProduits: Produit[] = [];
 
+  // ================= DROPDOWN OPTIONS =================
+  saveurs = [
+    { value: 'Classic', label: 'Classic' },
+    { value: 'Mentholé', label: 'Mentholé' },
+    { value: 'Fruité', label: 'Fruité' },
+    { value: 'Boisson', label: 'Boisson' },
+    { value: 'Gourmand', label: 'Gourmand' },
+  ];
+
+  // ================= FILTERS =================
+  selectedSaveur: string = ''; // AJOUTÉ : pour le filtre par saveur
+  searchTerm = '';
+
   // ================= LOADING STATE =================
   isLoading = true;
   loadingError = false;
@@ -58,9 +72,6 @@ export class ProduitComponent implements OnInit, OnDestroy {
   // ================= DELETE =================
   showDeleteModal = false;
   produitToDelete: Produit | null = null;
-
-  // ================= SEARCH =================
-  searchTerm = '';
 
   // ================= PAGINATION =================
   currentPage = 1;
@@ -82,9 +93,7 @@ export class ProduitComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    // CRUCIAL: Charger les données après que la vue soit initialisée côté client
     if (isPlatformBrowser(this.platformId)) {
-      // Petit délai pour s'assurer que tout est prêt
       setTimeout(() => {
         this.loadProduits();
       }, 100);
@@ -102,13 +111,11 @@ export class ProduitComponent implements OnInit, OnDestroy {
 
   // ================= LOAD =================
   loadProduits() {
-    // Vérification supplémentaire côté serveur
     if (isPlatformServer(this.platformId)) {
       this.isLoading = false;
       return;
     }
 
-    // Vérifier le token avant le chargement
     const token = localStorage.getItem('token');
     if (!token) {
       this.isLoading = false;
@@ -130,7 +137,6 @@ export class ProduitComponent implements OnInit, OnDestroy {
           
           if (error.status === 401) {
             this.showToast('Session expirée, veuillez vous reconnecter', 'error');
-            // Rediriger vers login après 2 secondes
             setTimeout(() => {
               window.location.href = '/login';
             }, 2000);
@@ -157,10 +163,9 @@ export class ProduitComponent implements OnInit, OnDestroy {
               this.produits = [];
             }
             
-            this.filteredProduits = [...this.produits];
-            this.currentPage = 1;
-            this.updatePagination();
-                        
+            // Appliquer les filtres après chargement
+            this.applyFilters();
+            
             if (this.produits.length === 0 && !this.loadingError) {
               this.showToast('Aucun produit trouvé', 'success');
             }
@@ -188,6 +193,7 @@ export class ProduitComponent implements OnInit, OnDestroy {
       image: '',
       nom: '',
       prix: 0,
+      saveur: '',
       stock: 0,
       description: ''
     };
@@ -252,6 +258,11 @@ export class ProduitComponent implements OnInit, OnDestroy {
       this.showToast('Nom obligatoire', 'error');
       return;
     }
+
+    if (!this.currentProduit.saveur) {
+      this.showToast('Saveur obligatoire', 'error');
+      return;
+    }
   
     if (isNaN(prix) || prix <= 0) {
       this.showToast('Prix invalide', 'error');
@@ -265,6 +276,7 @@ export class ProduitComponent implements OnInit, OnDestroy {
     
     formData.append('nom', this.currentProduit.nom);
     formData.append('prix', prix.toString());
+    formData.append('saveur', this.currentProduit.saveur);
     formData.append('stock', stock.toString());
     formData.append('description', this.currentProduit.description);
 
@@ -333,14 +345,22 @@ export class ProduitComponent implements OnInit, OnDestroy {
     this.subscriptions.add(sub);
   }
 
-  // ================= FILTER =================
+  // ================= FILTERS =================
   applyFilters() {
     let result = [...this.produits];
 
+    // Filtre par recherche (nom)
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase();
       result = result.filter(p =>
         p.nom.toLowerCase().includes(term)
+      );
+    }
+
+    // Filtre par saveur - AJOUTÉ
+    if (this.selectedSaveur) {
+      result = result.filter(p => 
+        p.saveur && p.saveur.toLowerCase() === this.selectedSaveur.toLowerCase()
       );
     }
 
@@ -350,13 +370,38 @@ export class ProduitComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
+  // Filtrer par saveur - AJOUTÉ
+  filterBySaveur(saveur: string) {
+    this.selectedSaveur = saveur;
+    this.applyFilters();
+  }
+
   onSearchChange() {
     this.applyFilters();
   }
 
   clearFilters() {
     this.searchTerm = '';
+    this.selectedSaveur = ''; // AJOUTÉ
     this.applyFilters();
+  }
+
+  // Récupérer les saveurs uniques pour le filtre - AJOUTÉ
+  getUniqueSaveurs(): string[] {
+    const saveurs = this.produits
+      .map(p => p.saveur)
+      .filter(s => s && s.trim() !== '');
+    return [...new Set(saveurs)];
+  }
+
+  // Compter les produits par saveur - AJOUTÉ
+  getSaveurCount(saveur: string): number {
+    return this.produits.filter(p => p.saveur === saveur).length;
+  }
+
+  // Vérifier si le filtre de saveur est actif - AJOUTÉ
+  isSaveurFilterActive(): boolean {
+    return !!this.selectedSaveur;
   }
 
   // ================= PAGINATION =================

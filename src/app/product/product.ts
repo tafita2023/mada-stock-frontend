@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 import { ProductService } from '../homeService/produit';
 import { CartService } from '../homeService/cart';
 import { Subscription } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 export interface Product {
   id: number;
   nom: string;
   description: string;
   prix: number;
+  saveur: string;
   stock: number;
   image?: string;
 }
@@ -16,7 +18,7 @@ export interface Product {
 @Component({
   selector: 'app-product',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './product.html',
   styleUrls: ['./product.css']
 })

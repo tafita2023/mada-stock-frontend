@@ -6,8 +6,8 @@
 
 .materiels-section {
     min-height: 100vh;
-    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
-    padding: 4rem 2rem;
+    margin-top: 1rem;
+    padding: 2rem 2rem;
 }
 
 .materiels-container {
@@ -29,7 +29,13 @@
 }
 
 @media (min-width: 768px) {
+    .materiels-container {
+        margin-top: 4rem;
+    }
+
     .materiels-title {
+        margin-top: 1rem;
+
         font-size: 3rem;
     }
 }
@@ -170,6 +176,20 @@
     color: #3e56c2;
 }
 
+.materiel-type {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 16px;
+    color: #f1f1f1;
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 6px 8px;
+    background-color: #2C3947;
+    border-radius: 8px;
+}
+
+
 .add-to-cart-btn {
     width: 100%;
     padding: 0.6rem;
@@ -205,6 +225,10 @@
 
 /* Responsive */
 @media (max-width: 1200px) {
+    .materiels-container {
+        margin-top: 4rem;
+    }
+
     .materiels-grid {
         grid-template-columns: repeat(3, 1fr);
         gap: 1.25rem;
@@ -212,6 +236,10 @@
 }
 
 @media (max-width: 900px) {
+    .materiels-container {
+        margin-top: 4rem;
+    }
+
     .materiels-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
@@ -219,6 +247,10 @@
 }
 
 @media (max-width: 640px) {
+    .materiels-container {
+        margin-top: 4rem;
+    }
+
     .materiels-section {
         padding: 2rem 1rem;
     }

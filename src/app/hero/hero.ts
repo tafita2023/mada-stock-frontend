@@ -1,12 +1,13 @@
-
-import { Component } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-hero',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './hero.html',
-  styleUrl: './hero.css',
+  styleUrls: ['./hero.css']
 })
-export class Hero {
+export class HeroComponent {
+
 }

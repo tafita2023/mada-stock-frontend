@@ -36,12 +36,28 @@
           />
         </div>
         
+        <!-- FILTRE PAR SAVEUR - AJOUTÉ -->
         <div class="filter-group">
-          <button class="btn-clear" (click)="clearFilters()" *ngIf="searchTerm">
-            Effacer les filtres
+          <select 
+            class="filter-select"
+            [(ngModel)]="selectedSaveur" 
+            (change)="applyFilters()"
+          >
+            <option value="">Toutes les saveurs</option>
+            <option *ngFor="let saveur of getUniqueSaveurs()" [value]="saveur">
+              {{ saveur }} ({{ getSaveurCount(saveur) }})
+            </option>
+          </select>
+          
+        </div>
+        
+        <div class="filter-group">
+          <button class="btn-clear" (click)="clearFilters()" *ngIf="searchTerm || selectedSaveur">
+            Effacer tous les filtres
           </button>
         </div>
       </div>
+
     </div>
   
     <!-- Products Table -->
@@ -53,6 +69,7 @@
               <th>ID</th>
               <th>Image</th>
               <th>Nom du produit</th>
+              <th>Saveur</th>
               <th>Prix (Ar)</th>
               <th>Quantité</th>
               <th>Actions</th>
@@ -63,16 +80,18 @@
               <td class="id-cell">{{ i + 1 }}</td>
               <td class="image-cell">
                 <img 
-                [src]="'http://localhost:8000/storage/' + produit.image" 
-                alt="{{ produit.nom }}"
-                class="product-img"
-              />
+                  [src]="'http://localhost:8000/storage/' + produit.image" 
+                  alt="{{ produit.nom }}"
+                  class="product-img"
+                />
               </td>
-
               <td class="nom-cell">
                 <strong>{{ produit.nom }}</strong>
                 <small>{{ produit.description }}</small>
-               </td>
+              </td>
+              <td class="saveur-cell">
+                <span class="saveur-badge">{{ produit.saveur }}</span>
+              </td>
               <td class="prix-cell">{{ produit.prix | number }} Ar</td>
               <td>
                 <span [class.low-stock]="produit.stock < 10">
@@ -95,9 +114,15 @@
               </td>
             </tr>
             <tr *ngIf="!paginatedProduits || paginatedProduits.length === 0">
-              <td colspan="5" class="empty-state">
-                <p>Aucun produit trouvé</p>
-                <button class="btn-primary" (click)="openAddModal()">Ajouter un produit</button>
+              <td colspan="7" class="empty-state">
+                <p *ngIf="!selectedSaveur && !searchTerm">Aucun produit trouvé</p>
+                <p *ngIf="selectedSaveur || searchTerm">Aucun produit ne correspond à vos filtres</p>
+                <button class="btn-primary" (click)="clearFilters()" *ngIf="selectedSaveur || searchTerm">
+                  Effacer les filtres
+                </button>
+                <button class="btn-primary" (click)="openAddModal()" *ngIf="!selectedSaveur && !searchTerm">
+                  Ajouter un produit
+                </button>
               </td>
             </tr>
           </tbody>
@@ -199,7 +224,25 @@
           </div>
         </div>
 
-        <!-- PRIX -->
+        <!-- SAVEUR - AJOUTÉ DANS LE MODAL -->
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label>Saveur *</label>
+            <select
+              [(ngModel)]="currentProduit.saveur"
+              name="saveur"
+              required
+              class="form-control"
+            >
+              <option value="" disabled selected>Sélectionner une saveur</option>
+              <option *ngFor="let saveur of saveurs" [value]="saveur.value">
+                {{ saveur.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- PRIX ET STOCK -->
         <div class="form-row">
           <div class="form-group">
             <label>Prix unitaire (Ar) *</label>

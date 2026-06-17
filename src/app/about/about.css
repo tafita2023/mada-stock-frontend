@@ -1,0 +1,225 @@
+.about-container {
+    padding: 40px 20px;
+    min-height: 100vh;
+  }
+  
+  .about-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    border-radius: 16px;
+    display: flex;
+    overflow: hidden;
+    margin-bottom: 40px;
+  }
+  
+  .about-image {
+    flex: 1 1 15%;
+    min-height: 350px;
+  }
+  
+  .about-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .about-content {
+    flex: 1 1 45%;
+    padding: 40px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .about-description {
+    color: #f1f1f1;
+    line-height: 1.8;
+    font-size: 1rem;
+    margin: 0;
+  }
+  
+  /* ===== SECTION QUALITÉS ===== */
+  .qualities-section {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  .qualities-wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    background: #333;
+    border-radius: 16px;
+    padding: 5px;
+  }
+  
+  .quality-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 25px 20px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    align-items: center;
+  }
+  
+  .quality-item:hover {
+    transform: translateY(-5px);
+    background: #333;
+  }
+  
+  .quality-icon {
+    width: 70px;  
+    height: 70px; 
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #494a4c;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+  
+  .quality-item h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #f1f1f1;
+    margin: 0 0 10px 0;
+  }
+  
+  .quality-item p {
+    font-size: 0.9rem;
+    color: #f1f1f1;
+    margin: 0;
+    line-height: 1.5;
+  }
+  
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 1024px) {
+    .about-wrapper {
+      flex-direction: column;
+    }
+  
+    .about-image {
+      min-height: 250px;
+      order: -1;
+    }
+  
+    .about-content {
+      padding: 30px;
+    }
+  
+    .qualities-wrapper {
+      grid-template-columns: repeat(3, 1fr);
+      padding: 25px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .about-container {
+      padding: 20px 15px;
+    }
+  
+    .about-content {
+      padding: 25px;
+    }
+  
+    .about-description {
+      font-size: 0.95rem;
+    }
+  
+    .qualities-wrapper {
+      grid-template-columns: repeat(2, 1fr);
+      padding: 20px;
+      gap: 15px;
+    }
+  
+    .quality-item {
+      padding: 20px 15px;
+    }
+  
+    .quality-icon {
+      font-size: 32px;
+    }
+  
+    .quality-item h3 {
+      font-size: 1rem;
+    }
+  
+    .quality-item p {
+      font-size: 0.85rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .about-container {
+      padding: 15px 10px;
+    }
+  
+    .about-image {
+      min-height: 180px;
+    }
+  
+    .about-content {
+      padding: 20px 15px;
+    }
+  
+    .about-description {
+      font-size: 0.9rem;
+    }
+  
+    .qualities-wrapper {
+      grid-template-columns: 1fr;
+      padding: 15px;
+      gap: 12px;
+    }
+  
+    .quality-item {
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      text-align: left;
+      gap: 15px;
+      text-align: center;
+    }
+  
+    .quality-icon {
+      font-size: 28px;
+      margin-bottom: 0;
+      flex-shrink: 0;
+    }
+  
+    .quality-item h3 {
+      font-size: 0.95rem;
+      margin-bottom: 3px;
+    }
+  
+    .quality-item p {
+      font-size: 0.8rem;
+    }
+  }
+  
+  /* Animation d'apparition */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .quality-item {
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+  
+  .quality-item:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+  
+  .quality-item:nth-child(3) {
+    animation-delay: 0.2s;
+  }
