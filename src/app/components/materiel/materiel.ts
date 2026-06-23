@@ -59,7 +59,8 @@ export class MaterielComponent implements OnInit, OnDestroy {
   showDeleteModal = false;
   materielToDelete: Materiel | null = null;
 
-  // ================= SEARCH =================
+  // ================= FILTRE =================
+  selectedType: string = '';
   searchTerm = '';
 
   // ================= PAGINATION =================
@@ -205,10 +206,17 @@ export class MaterielComponent implements OnInit, OnDestroy {
     this.imagePreview = null;
   }
 
+  capitalizeFirstLetter(value: string): string {
+    if (!value) return '';
+    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+  }
+
   // ================= SAVE =================
   saveMateriel() {
     const formData = new FormData();
 
+    const nom = this.capitalizeFirstLetter(this.currentMateriel.nom);
+    const marque = this.capitalizeFirstLetter(this.currentMateriel.marque);
     const prix = Number(this.currentMateriel.prix);
     const stock = Number(this.currentMateriel.stock);
     
@@ -237,9 +245,9 @@ export class MaterielComponent implements OnInit, OnDestroy {
       return;
     }
     
-    formData.append('nom', this.currentMateriel.nom);
+    formData.append('nom', nom);
     formData.append('type', this.currentMateriel.type);
-    formData.append('marque', this.currentMateriel.marque);
+    formData.append('marque', marque);
     formData.append('prix', prix.toString());
     formData.append('stock', stock.toString());
 
@@ -320,10 +328,23 @@ export class MaterielComponent implements OnInit, OnDestroy {
       );
     }
 
+    // Filtre par type
+    if (this.selectedType) {
+      result = result.filter(m =>
+        m.type &&
+        m.type.toLowerCase() === this.selectedType.toLowerCase()
+      );
+    }
+
     this.filteredMateriels = result;
     this.currentPage = 1;
     this.updatePagination();
     this.cdr.detectChanges();
+  }
+
+  filterByType(type: string) {
+    this.selectedType = type;
+    this.applyFilters();
   }
 
   onSearchChange() {
@@ -332,7 +353,26 @@ export class MaterielComponent implements OnInit, OnDestroy {
 
   clearFilters() {
     this.searchTerm = '';
+    this.selectedType = ''
     this.applyFilters();
+  }
+
+  getUniqueTypes(): string[] {
+    const types = this.materiels
+      .map(m => m.type)
+      .filter(t => t && t.trim() !== '');
+  
+    return [...new Set(types)];
+  }
+  
+  getTypeCount(type: string): number {
+    return this.materiels.filter(
+      m => m.type === type
+    ).length;
+  }
+  
+  isTypeFilterActive(): boolean {
+    return !!this.selectedType;
   }
 
   // ================= PAGINATION =================

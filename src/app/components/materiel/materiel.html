@@ -36,8 +36,24 @@
             />
           </div>
           
+
+        <!-- FILTRE PAR TYPE -->
+        <div class="filter-group">
+          <select 
+            class="filter-select"
+            [(ngModel)]="selectedType" 
+            (change)="applyFilters()"
+          >
+            <option value="">Tout les types</option>
+            <option *ngFor="let type of getUniqueTypes()" [value]="type">
+              {{ type }} ({{ getTypeCount(type) }})
+            </option>
+          </select>
+          
+        </div>
+
           <div class="filter-group">
-            <button class="btn-clear" (click)="clearFilters()" *ngIf="searchTerm">
+            <button class="btn-clear" (click)="clearFilters()" *ngIf="searchTerm || selectedType">
               Effacer les filtres
             </button>
           </div>
@@ -52,7 +68,7 @@
               <tr>
                 <th>ID</th>
                 <th>Image</th>
-                <th>Nom du materiel</th>
+                <th>Nom</th>
                 <th>Type</th>
                 <th>Marque</th>
                 <th>Prix (Ar)</th>

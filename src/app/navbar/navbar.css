@@ -156,6 +156,7 @@
     color: #f1f1f1;
     text-decoration: none;
     transition: 0.2s;
+    cursor: pointer;
   }
   
   .dropdown-item:hover {
@@ -194,6 +195,7 @@
   border-left: 2px solid rgba(255, 255, 255, 0.1);
   display: block !important;
   flex-direction: column;
+  cursor: pointer;
 }
 
 /* Sous-menu - OUVERT */

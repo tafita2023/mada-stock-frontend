@@ -54,7 +54,7 @@
   }
   
   .search-box {
-    flex: 1;
+    flex: 2;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -279,6 +279,9 @@
     justify-content: flex-start;
   }
   
+  .product-img {
+    border-radius: 8px;
+  }
   .btn-edit, .btn-delete {
     padding: 6px 12px;
     border: none;
@@ -322,7 +325,7 @@
   
   .empty-state p {
     margin-bottom: 16px;
-    color: #888;
+    color: #f1f1f1;
   }
   
   /* PAGINATION STYLES */

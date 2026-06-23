@@ -9,7 +9,7 @@
 
         <!-- Grille de materiels -->
         <div class="materiels-grid">
-            <div class="materiel-card" *ngFor="let materiel of materiels">
+            <div class="materiel-card" *ngFor="let materiel of filteredMateriels">
                 
                 <!-- Image du materiel -->
                 <div class="materiel-image">
@@ -24,6 +24,7 @@
                 <div class="materiel-info">
                     <h3 class="materiel-name">{{ materiel.nom }}</h3>
                     <h1 class="materiel-type">Type : {{ materiel.type }}</h1>
+                    <h1 class="materiel-marque">Marque : {{ materiel.marque }}</h1>
                     <!-- Prix -->
                     <div class="materiel-price">
                         <span class="current-price">Prix: {{ materiel.prix | number }} Ar</span>

@@ -167,12 +167,12 @@
     gap: 6px;
     font-size: 16px;
     color: #f1f1f1;
-    margin-top: 1rem;
-    margin-bottom: 1.5rem;
+    margin-top: 0.3rem;
+    margin-bottom: 0.5rem;
     padding: 6px 8px;
-    background-color: #2C3947;
+    background-color: #F62440;
     border-radius: 8px;
-}
+    }
 
 .product-price {
     display: flex;

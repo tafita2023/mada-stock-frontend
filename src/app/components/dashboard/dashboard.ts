@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import Chart from 'chart.js/auto';
 import { ProduitService } from '../services/produit';
+import { MaterielService } from '../services/materiel';
 import { AuthService } from '../services/auth-service';
 import { CommonModule } from '@angular/common';
 
@@ -13,11 +14,13 @@ import { CommonModule } from '@angular/common';
 })
 export class Dashboard implements OnInit, AfterViewInit {
 
-  totalRevenue = 0;
+  totalRevenue = 1000000;
   totalUsers = 2345;
   totalSales = 12543;
   totalProducts = 0;
+  totalMateriels = 0;
   totalOrders = 142;
+  totalRecept = 10;
   lowStockProducts = 0;
 
   recentSales: any[] = [];
@@ -30,6 +33,7 @@ export class Dashboard implements OnInit, AfterViewInit {
 
   constructor(
     private produitService: ProduitService,
+    private materielService: MaterielService,
     private authService: AuthService,
     private cd: ChangeDetectorRef
   ) {}
@@ -53,11 +57,6 @@ export class Dashboard implements OnInit, AfterViewInit {
 
         this.totalProducts = produits.length;
 
-        this.totalRevenue = produits.reduce(
-          (sum, p) => sum + (p.prix * p.stock),
-          0
-        );
-
         this.lowStockProducts = produits.filter(p => p.stock < 10).length;
 
         this.topProducts = [...produits]
@@ -66,7 +65,27 @@ export class Dashboard implements OnInit, AfterViewInit {
 
         this.dataLoaded = true;
 
-        this.cd.detectChanges(); // important
+        this.cd.detectChanges();
+      },
+      error: (err) => {
+        console.error('Dashboard error:', err);
+      }
+    });
+
+    this.materielService.getMateriels().subscribe({
+      next: (res: any) => {
+
+        const materiels = res.data || res;
+
+        if (!Array.isArray(materiels)) return;
+
+        this.totalMateriels = materiels.length;
+
+        this.lowStockProducts = materiels.filter(p => p.stock < 10).length;
+
+        this.dataLoaded = true;
+
+        this.cd.detectChanges();
       },
       error: (err) => {
         console.error('Dashboard error:', err);

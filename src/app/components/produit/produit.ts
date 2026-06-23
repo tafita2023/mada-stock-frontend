@@ -24,7 +24,7 @@ export interface Produit {
   templateUrl: './produit.html',
   styleUrls: ['./produit.css']
 })
-export class ProduitComponent implements OnInit, OnDestroy {
+export class ProduitComponent implements OnInit,AfterViewInit, OnDestroy {
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -52,8 +52,8 @@ export class ProduitComponent implements OnInit, OnDestroy {
     { value: 'Gourmand', label: 'Gourmand' },
   ];
 
-  // ================= FILTERS =================
-  selectedSaveur: string = ''; // AJOUTÉ : pour le filtre par saveur
+  // ================= FILTRES =================
+  selectedSaveur: string = '';
   searchTerm = '';
 
   // ================= LOADING STATE =================
@@ -245,12 +245,17 @@ export class ProduitComponent implements OnInit, OnDestroy {
     this.imagePreview = null;
   }
 
+  capitalizeFirstLetter(value: string): string {
+    if (!value) return '';
+    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+  }
+
   // ================= SAVE =================
   saveProduit() {
     if (!isPlatformBrowser(this.platformId)) return;
     
     const formData = new FormData();
-
+    const nom = this.capitalizeFirstLetter(this.currentProduit.nom);
     const prix = Number(this.currentProduit.prix);
     const stock = Number(this.currentProduit.stock);
     
@@ -274,7 +279,7 @@ export class ProduitComponent implements OnInit, OnDestroy {
       return;
     }
     
-    formData.append('nom', this.currentProduit.nom);
+    formData.append('nom', nom);
     formData.append('prix', prix.toString());
     formData.append('saveur', this.currentProduit.saveur);
     formData.append('stock', stock.toString());
@@ -357,7 +362,7 @@ export class ProduitComponent implements OnInit, OnDestroy {
       );
     }
 
-    // Filtre par saveur - AJOUTÉ
+    // Filtre par saveur
     if (this.selectedSaveur) {
       result = result.filter(p => 
         p.saveur && p.saveur.toLowerCase() === this.selectedSaveur.toLowerCase()
@@ -382,7 +387,7 @@ export class ProduitComponent implements OnInit, OnDestroy {
 
   clearFilters() {
     this.searchTerm = '';
-    this.selectedSaveur = ''; // AJOUTÉ
+    this.selectedSaveur = '';
     this.applyFilters();
   }
 
@@ -391,6 +396,7 @@ export class ProduitComponent implements OnInit, OnDestroy {
     const saveurs = this.produits
       .map(p => p.saveur)
       .filter(s => s && s.trim() !== '');
+
     return [...new Set(saveurs)];
   }
 

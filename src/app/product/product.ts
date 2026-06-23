@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../homeService/produit';
 import { CartService } from '../homeService/cart';
 import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 export interface Product {
   id: number;
@@ -22,68 +23,110 @@ export interface Product {
   templateUrl: './product.html',
   styleUrls: ['./product.css']
 })
-export class ProductsComponent implements OnInit {
-
-  private refreshSub?: Subscription;
+export class ProductsComponent implements OnInit, OnDestroy {
 
   products: Product[] = [];
+  filteredProducts: Product[] = [];
+  selectedSaveur = '';
   isLoading = true;
-  loadingError = false;
+
+  private subs = new Subscription();
 
   constructor(
     private productService: ProductService,
-    private cartService: CartService
+    private cartService: CartService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
+
+    // 1. écouter URL
+    this.subs.add(
+      this.route.queryParamMap.subscribe(params => {
+        this.selectedSaveur = params.get('saveur') ?? '';
+        this.applyFilter();
+      })
+    );
+
+    // 2. charger produits
     this.loadProducts();
-    this.refreshSub = this.productService.refresh$.subscribe(() => {
-      this.loadProducts();
-    });
   }
 
   ngOnDestroy(): void {
-    this.refreshSub?.unsubscribe();
+    this.subs.unsubscribe();
   }
 
   // ================= LOAD =================
   loadProducts(): void {
-
     this.isLoading = true;
-    this.loadingError = false;
-  
+
     this.productService.getProducts().subscribe({
       next: (res: any) => {
-  
+
         const data = Array.isArray(res) ? res : res?.data;
-  
-        if (!Array.isArray(data)) {
-          this.products = [];
-          this.loadingError = true;
-        } else {
-          this.products = data.sort((a, b) => a.id - b.id);
-        }
-  
+
+        this.products = Array.isArray(data)
+          ? data.sort((a, b) => a.id - b.id)
+          : [];
+
+        this.applyFilter();
         this.isLoading = false;
       },
-  
-      error: (err) => {
-        console.error(err);
-        this.loadingError = true;
-        this.isLoading = false;
+
+      error: () => {
         this.products = [];
+        this.filteredProducts = [];
+        this.isLoading = false;
       }
     });
   }
+
+  // ================= FILTER =================
+  applyFilter(): void {  
+    if (!this.selectedSaveur) {
+      this.filteredProducts = [...this.products];
+      return;
+    }
   
-  // ================= IMAGE (COMME ADMIN CONSEILLÉ) =================
-  getImageUrl(image: string | null | undefined): string {
-    if (!image) return 'assets/no-image.png';
-    return `http://127.0.0.1:8000/storage/${image}`;
+    const saveurRecherche = this.selectedSaveur.trim().toLowerCase();
+  
+    this.filteredProducts = this.products.filter(product => {
+      console.log(
+        'Comparaison :',
+        product.saveur,
+        '===',
+        saveurRecherche
+      );
+  
+      return (
+        product.saveur?.trim().toLowerCase() === saveurRecherche
+      );
+    });
+  
+    console.log('Produits filtrés :', this.filteredProducts);
+  }
+
+  // ================= NAV =================
+  setSaveur(saveur: string) {
+    this.router.navigate(['/produits'], {
+      queryParams: { saveur }
+    });
+  }
+
+  clearFilter() {
+    this.router.navigate(['/produits']);
   }
 
   // ================= CART =================
-  addToCart(product: Product): void {
+  addToCart(product: Product) {
     this.cartService.addToCart(product);
+  }
+
+  // ================= IMAGE =================
+  getImageUrl(image?: string) {
+    return image
+      ? `http://127.0.0.1:8000/storage/${image}`
+      : 'assets/no-image.png';
   }
 }

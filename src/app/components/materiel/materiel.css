@@ -54,11 +54,11 @@
   }
   
   .search-box {
-    flex: 1;
+    flex: 2;
     display: flex;
     align-items: center;
     gap: 12px;
-    background: #294669;
+    background: rgba(255, 255, 255, 0.05);
     border-radius: 8px;
     padding: 8px 16px;
     border: 1px solid #e0e4e8;
@@ -81,6 +81,46 @@
     display: flex;
     gap: 12px;
     align-items: center;
+  }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex: 1;
+    min-width: 180px;
+  }
+  
+  .filter-select {
+    flex: 1;
+    padding: 10px 14px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #f1f1f1;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    outline: none;
+    cursor: pointer;
+    appearance: auto;
+    padding-right: 40px;
+    background-size: 12px;
+  }
+  
+  .filter-select:focus {
+    border-color: #667eea;
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  .filter-select option {
+    background: #1a1a2e;
+    color: #f1f1f1;
+    padding: 10px 14px;
+  }
+  
+  .filter-select option:checked {
+    background: #667eea;
+    color: white;
   }
   
   .btn-clear {
@@ -332,9 +372,13 @@
   
   .empty-state p {
     margin-bottom: 16px;
-    color: #888;
+    color: #f1f1f1;
   }
   
+  .product-img {
+    border-radius: 8px;
+  }
+
   /* PAGINATION STYLES */
   .pagination-container {
     display: flex;

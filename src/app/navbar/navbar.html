@@ -19,24 +19,44 @@
             <span class="nav-link-bg"></span>
           </a>
 
-           <!-- MENU PRODUIT -->
+          <!-- MENU PRODUIT -->
           <div class="nav-dropdown"
             (mouseenter)="isProductSubmenuOpen = true"
-            (mouseleave)="isProductSubmenuOpen = false" 
+            (mouseleave)="isProductSubmenuOpen = false"
           >
-            <a href="/produits" class="nav-link dropdown-toggle">
+
+            <!-- Bouton principal -->
+            <a [routerLink]="['/produits']" class="nav-link dropdown-toggle">
               <span>E-liquides</span>
-              <svg class="w-6 h-6 dropdown-icon" [class.open]="isProductSubmenuOpen" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
+
+              <svg class="w-6 h-6 dropdown-icon"
+                [class.open]="isProductSubmenuOpen"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m5 15 7-7 7 7"/>
               </svg>
 
               <span class="nav-link-bg"></span>
             </a>
 
+            <!-- Dropdown -->
             <div class="dropdown-menu">
-              <a href="/produits" class="dropdown-item">Tout</a>
-              <a href="/produits" class="dropdown-item">Produits</a>
-              <a href="/promotions" class="dropdown-item">Promotions</a>
+
+              <a class="dropdown-item" (click)="goToProduits()">
+                Tout
+              </a>
+            
+              <a
+                *ngFor="let saveur of saveurs"
+                class="dropdown-item"
+                (click)="filtrerParSaveur(saveur)">
+                {{ saveur }}
+              </a>
+            
             </div>
           </div>
 
@@ -45,19 +65,38 @@
             (mouseenter)="isMaterielSubmenuOpen = true"
             (mouseleave)="isMaterielSubmenuOpen = false" 
           >
-            <a href="/materiels" class="nav-link dropdown-toggle">
-              <span>E-cigarettes</span>
-              <svg class="w-6 h-6 dropdown-icon" [class.open]="isMaterielSubmenuOpen" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
+            <!-- Bouton principal -->
+            <a [routerLink]="['/materiels']" class="nav-link dropdown-toggle">
+              <span>E-cigarette</span>
+
+              <svg class="w-6 h-6 dropdown-icon"
+                [class.open]="isMaterielSubmenuOpen"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m5 15 7-7 7 7"/>
               </svg>
 
               <span class="nav-link-bg"></span>
             </a>
 
+            <!-- Dropdown -->
             <div class="dropdown-menu">
-              <a href="/materiels" class="dropdown-item">Tout</a>
-              <a href="/materiels" class="dropdown-item">Produits</a>
-              <a href="/promotions" class="dropdown-item">Accessoires</a>
+
+              <a class="dropdown-item" (click)="goToMateriels()">
+                Tout
+              </a>
+            
+              <a
+                *ngFor="let type of types"
+                class="dropdown-item"
+                (click)="filtrerParType(type)">
+                {{ type }}
+              </a>
+            
             </div>
           </div>
 
@@ -104,11 +143,22 @@
                   </div>
                   
                   <div class="mobile-submenu" [class.open]="isProductSubmenuOpen">
-                      <a href="/produits" class="mobile-subitem" (click)="closeMobileMenu()">Tout</a>
-                      <a href="/produits" class="mobile-subitem" (click)="closeMobileMenu()">E-liquides</a>
-                      <a href="/promotions" class="mobile-subitem" (click)="closeMobileMenu()">Promotions</a>
+
+                    <a
+                      class="mobile-subitem"
+                      (click)="goToProduits()">
+                      Tout
+                    </a>
+                  
+                    <a
+                      *ngFor="let saveur of saveurs"
+                      class="mobile-subitem"
+                      (click)="filtrerParSaveur(saveur)">
+                      {{ saveur }}
+                    </a>
+                  
                   </div>
-              </div>
+                </div>
 
               <!-- MENU E-CIGARETTES -->
               <div class="mobile-dropdown">
@@ -120,9 +170,20 @@
                   </div>
                   
                   <div class="mobile-submenu" [class.open]="isMaterielSubmenuOpen">
-                      <a href="/materiels" class="mobile-subitem" (click)="closeMobileMenu()">Tout</a>
-                      <a href="/materiels" class="mobile-subitem" (click)="closeMobileMenu()">E-cigarettes</a>
-                      <a href="/promotions" class="mobile-subitem" (click)="closeMobileMenu()">Promotions</a>
+
+                    <a
+                      class="mobile-subitem"
+                      (click)="goToMateriels()">
+                      Tout
+                    </a>
+                  
+                    <a
+                      *ngFor="let type of types"
+                      class="mobile-subitem"
+                      (click)="filtrerParType(type)">
+                      {{ type }}
+                    </a>
+                  
                   </div>
               </div>
 
