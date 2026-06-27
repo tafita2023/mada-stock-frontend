@@ -12,7 +12,6 @@
                 <p>Votre panier est vide</p>
             </div>
             <ng-container *ngIf="displayProductsOnly">
-                
                 <div class="cart-header-simple desktop-only">
                     <div>Image</div>
                     <div>Produit</div>
@@ -286,11 +285,14 @@
                                 <label>Numéro de téléphone {{ getSelectedOperatorName() }}</label>
                                 <div class="phone-input-wrapper">
                                     <span class="phone-prefix">+261</span>
-                                    <input type="number" 
+                                    <input type="text" 
                                         [(ngModel)]="mobileMoneyNumber" 
                                         placeholder="32 12 345 67" 
                                         class="form-control phone-input"
-                                        (input)="validatePhoneNumber()">
+                                        inputmode="numeric"
+                                        maxlength="9"
+                                        (input)="onPhoneInput($event)"
+                                        >
                                 </div>
                                 <div *ngIf="phoneNumberError" class="error-message">
                                     {{ phoneNumberError }}

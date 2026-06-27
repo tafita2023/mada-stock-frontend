@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject, tap } from 'rxjs';
-import { ProductService } from '../../homeService/produit';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,8 @@ import { ProductService } from '../../homeService/produit';
 
 export class AuthService {
 
-  private apiUrl = 'http://127.0.0.1:8000/api';
+  private apiUrl = environment.apiUrl;
+  
   private authState = new BehaviorSubject<boolean>(false);
   authState$ = this.authState.asObservable();
   

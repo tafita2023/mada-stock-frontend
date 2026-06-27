@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MaterielService {
-  private apiUrl = 'http://127.0.0.1:8000/api/materiels';
+  private apiUrl = `${environment.apiUrl}/materiels`;
 
   constructor(private http: HttpClient) {}
 

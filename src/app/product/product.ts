@@ -5,7 +5,7 @@ import { CartService } from '../homeService/cart';
 import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-
+import { environment } from '../../environments/environment';
 export interface Product {
   id: number;
   nom: string;
@@ -126,7 +126,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
   // ================= IMAGE =================
   getImageUrl(image?: string) {
     return image
-      ? `http://127.0.0.1:8000/storage/${image}`
-      : 'assets/no-image.png';
+      ? `${environment.storageUrl}/${image}`
+      : 'assets/nothing.png';
   }
 }

@@ -8,14 +8,16 @@ import { isPlatformBrowser } from '@angular/common';
 })
 export class MarqueComponent implements OnInit, OnDestroy {
   logos = [
-    { id: 1, name: '#', url: '/indy.png', color: '#F62440' },
-    { id: 2, name: '#', url: '/indy.png', color: '#00A4EF' },
-    { id: 3, name: '#', url: '/indy.png', color: '#112E81' },
-    { id: 4, name: '#', url: '/indy.png', color: '#FF9900' },
-    { id: 5, name: '#', url: '/indy.png', color: '#1877F2' },
-    { id: 6, name: '#', url: '/indy.png', color: '#1DA1F2' },
-    { id: 7, name: '#', url: '/indy.png', color: '#0A66C2' },
-    { id: 8, name: '#', url: '/indy.png', color: '#E4405F' }
+    { id: 1, name: '#', url: '/Axl.png', color: '#F62440', },
+    { id: 2, name: '#', url: '/DeadRabbit.png', color: '#00A4EF', },
+    { id: 3, name: '#', url: '/FighterFuel.png', color: '#112E81', },
+    { id: 4, name: '#', url: '/GeekVape.png', color: '#FF9900', },
+    { id: 5, name: '#', url: '/TattooVape.png', color: '#1877F2', },
+    { id: 6, name: '#', url: '/Tjuice.png', color: '#1DA1F2', },
+    { id: 7, name: '#', url: '/VapeSauce.png', color: '#0A66C2', },
+    { id: 8, name: '#', url: '/Voopoo.png', color: '#E4405F', },
+    { id: 9, name: '#', url: '/VostVape.png', color: '#E4405F', }
+
   ];
 
   currentIndex = 0;

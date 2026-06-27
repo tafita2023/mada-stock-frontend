@@ -32,18 +32,18 @@ export class AuthInterceptor implements HttpInterceptor {
             Authorization: `Bearer ${token}`
           }
         });
-        console.log('🔑 Interceptor - Token ajouté à la requête');
+        console.log('Interceptor - Token ajouté à la requête');
       } else {
-        console.log('🔑 Interceptor - Pas de token');
+        console.log('Interceptor - Pas de token');
       }
     } else {
-      console.log('🔑 Interceptor - Côté serveur, pas de token');
+      console.log('Interceptor - Côté serveur, pas de token');
     }
   
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401 && this.isBrowser) {
-          console.log('🔑 Interceptor - Erreur 401, déconnexion');
+          console.log('Interceptor - Erreur 401, déconnexion');
           localStorage.clear();
           this.router.navigate(['/login']);
         }

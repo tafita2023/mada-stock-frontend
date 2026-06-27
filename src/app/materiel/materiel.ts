@@ -5,6 +5,7 @@ import { CartService } from '../homeService/cart';
 import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 export interface Materiel {
   id: number;
@@ -121,7 +122,8 @@ export class MaterielsComponent implements OnInit {
   // ================= IMAGE =================
   getImageUrl(image: string | null | undefined): string {
     if (!image) return 'assets/no-image.png';
-    return `http://127.0.0.1:8000/storage/${image}`;
+    return `${environment.storageUrl}/${image}`;
+
   }
 
   // ================= CART =================

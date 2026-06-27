@@ -37,6 +37,26 @@
     margin: 0;
   }
   
+  .about-center-image {
+    display: flex;
+    justify-content: center;
+    margin: 40px 0;
+  }
+  
+  .about-center-image img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    border-radius: 16px;
+    object-fit: cover;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transition: transform 0.4s ease;
+  }
+  
+  .about-center-image img:hover {
+    transform: scale(1.02);
+  }
+
   /* ===== SECTION QUALITÉS ===== */
   .qualities-section {
     max-width: 1400px;
@@ -94,6 +114,7 @@
     margin: 0;
     line-height: 1.5;
   }
+
   
   /* ===== RESPONSIVE ===== */
   @media (max-width: 1024px) {
@@ -129,6 +150,15 @@
       font-size: 0.95rem;
     }
   
+    .about-center-image {
+      margin: 25px 0;
+    }
+  
+    .about-center-image img {
+      max-width: 100%;
+      border-radius: 12px;
+    }
+
     .qualities-wrapper {
       grid-template-columns: repeat(2, 1fr);
       padding: 20px;

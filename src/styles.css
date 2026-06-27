@@ -20,3 +20,28 @@
     --primary-bg: #1a0a2e;
     --secondary-bg: #2a1a3e;
   }
+
+  /* largeur de la scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* fond de la scrollbar */
+::-webkit-scrollbar-track {
+  background: #1e1e1e;
+  border-radius: 10px;
+}
+
+/* barre qui bouge */
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #4382DF, #112E81);
+  border-radius: 10px;
+  border: 2px solid #1e1e1e;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

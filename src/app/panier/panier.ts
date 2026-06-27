@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { CartService, CartItem } from '../homeService/cart'; // Assurez-vous que CartItem est exporté du service
+import { CartService, CartItem } from '../homeService/cart';
 
 export type PaymentMethod = 'mobile_money' | 'card' | 'cash_on_delivery';
 export type DeliveryOption = 'delivery' | 'pickup';
@@ -46,8 +46,8 @@ export class PanierComponent implements OnInit, OnDestroy {
   };
 
   mobileMoneyOperators = [
-    { id: 'Mvola', name: 'Yas', imageUrl: '/Mvola.png' },
-    { id: 'orange Money', name: 'Orange', imageUrl: '/orange2.png' }
+    { id: 'mvola', name: 'Yas', imageUrl: '/Mvola.png' },
+    { id: 'orange_Money', name: 'Orange', imageUrl: '/orange2.png' }
   ];
 
   mobileMoneyNumber: string = '';
@@ -132,12 +132,11 @@ export class PanierComponent implements OnInit, OnDestroy {
     if (newQuantity < 1 || newQuantity > 99) return;
   
     const cart = this.cartService.getCart();
-    const index = cart.findIndex(i => i.key === item.key); // Utilisez key au lieu de id+category
+    const index = cart.findIndex(i => i.key === item.key);
     
     if (index !== -1) {
       cart[index].quantity = newQuantity;
       this.cartService.updateCart(cart);
-      // Pas besoin de mettre à jour manuellement, la subscription le fera
     }
   }
 
@@ -154,21 +153,39 @@ export class PanierComponent implements OnInit, OnDestroy {
     return operator ? operator.name : '';
   }
 
-  validatePhoneNumber(): void {
-    const cleanNumber = this.mobileMoneyNumber.replace(/\s/g, '');
+  onPhoneInput(event: any): void {
+    const rawValue = event.target.value;
   
-    if (this.selectedMobileMoneyOperator === 'Mvola') {
-      const pattern = /^(32|33|34|37|38|39)\d{7}$/;
+    const cleanNumber = rawValue.replace(/[^0-9]/g, '').substring(0, 9);
+    
+    this.validatePhoneNumber(cleanNumber);
+  }
+
+  validatePhoneNumber(cleanNumber: string): void {
+    if (!cleanNumber) {
+      this.phoneNumberError = '';
+      return;
+    }
+
+    const pattern = /^(32|33|34|37|38|39)\d{7}$/;
+
+    const operator = this.selectedMobileMoneyOperator?.toUpperCase();
+
+    if (operator === 'MVOLA') {
       this.phoneNumberError = pattern.test(cleanNumber)
         ? ''
-        : 'Numéro MVola invalide (ex: 32 12 345 67)';
+        : 'Numéro MVola invalide (ex: 341234567)';
     }
-    else if (this.selectedMobileMoneyOperator === 'orange Money') {
-      const pattern = /^(32|33|34|37|38|39)\d{7}$/;
+
+    else if (operator === 'ORANGE_MONEY') {
       this.phoneNumberError = pattern.test(cleanNumber)
         ? ''
-        : 'Numéro Orange invalide (ex: 32 12 345 67)';
+        : 'Numéro Orange invalide (ex: 321234567)';
     }
+  }
+
+  getCleanNumber(): string {
+    return (this.mobileMoneyNumber || '').replace(/[^0-9]/g, '');
   }
 
   removeItem(item: CartItem): void {

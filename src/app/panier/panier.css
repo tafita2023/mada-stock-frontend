@@ -39,7 +39,7 @@ h1 {
 
 /* ==================== */
 /* TEMPLATE SANS MATERIEL (6 colonnes) */
-/* ==================== */
+/* ==================== */  
 .cart-header-simple {
     display: grid;
     grid-template-columns: 80px 2fr 1fr 1fr 1fr 60px;
@@ -167,7 +167,7 @@ h1 {
 }
 
 .remove-btn:hover {
-    background-color: #DE3E3E;
+    background-color: #003a96;
 }
 
 /* Styles résumé et paiement */
@@ -616,7 +616,7 @@ label {
     }
     
     .remove-btn-mobile:hover {
-        background-color: #DE3E3E;
+        background-color: #003a96;
     }
     
     .mobile-product-name {
