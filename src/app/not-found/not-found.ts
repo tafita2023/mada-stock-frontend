@@ -3,8 +3,8 @@ import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-not-found',
-  templateUrl: './not-Found.html',
-  styleUrls: ['./not-Found.css']
+  templateUrl: './not-found.html',
+  styleUrls: ['./not-found.css']
 })
 export class NotFoundComponent {
   
