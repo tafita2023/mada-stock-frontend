@@ -73,9 +73,6 @@
     align-items: center;
     bottom: 0;
     left: 0;
-    width: 400px;
-    height: 3px;
-    background: #2C3947;
   }
   
   .info-item {
@@ -161,9 +158,6 @@
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 50px;
-    height: 3px;
-    background: #222;
   }
   
   .form-group {
