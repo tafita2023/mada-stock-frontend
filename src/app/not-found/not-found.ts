@@ -11,8 +11,6 @@ export class NotFoundComponent {
   constructor(private location: Location) {}
   
   goBack(): void {
-    this.location.back(); // Retour à la page précédente
-    // Ou utilisez ceci pour retourner à l'accueil :
-    // this.router.navigate(['/']);
+    this.location.back();
   }
 }
