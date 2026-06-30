@@ -496,8 +496,8 @@ export class ProduitComponent implements OnInit,AfterViewInit, OnDestroy {
 
   getImageUrl(image?: string) {
     return image
-      ? `https://mada-stock.mg/${image}`
+      ? `${environment.storageUrl}/${image}`
       : 'assets/nothing.png';
   }
-    
+
 }
