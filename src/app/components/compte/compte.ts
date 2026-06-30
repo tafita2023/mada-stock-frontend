@@ -226,9 +226,13 @@ export class CompteComponent implements OnInit, OnDestroy {
   }
 
   getImageUrl(image?: string): string {
-    return image
+    const url = image
       ? `${environment.storageUrl}/${image}`
       : 'assets/nothing.png';
+
+      console.log(url);
+
+      return url;
   }
 
 }
