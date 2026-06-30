@@ -494,20 +494,10 @@ export class ProduitComponent implements OnInit,AfterViewInit, OnDestroy {
     }
   }
 
-  getImageUrl(image?: string): string {
-    if (!image) return 'assets/nothing.png';
-  
-    // nettoyage ancien format
-    if (image.includes('storage')) {
-      image = image.replace('/storage/', '').replace('storage ', '');
-    }
-  
-    // éviter double "uploads"
-    if (image.startsWith('uploads/')) {
-      return `${environment.storageUrl}/${image}`;
-    }
-  
-    return `${environment.storageUrl}/uploads/produits/${image}`;
+  getImageUrl(image?: string) {
+    return image
+      ? `https://mada-stock.mg/${image}`
+      : 'assets/nothing.png';
   }
-  
+    
 }
