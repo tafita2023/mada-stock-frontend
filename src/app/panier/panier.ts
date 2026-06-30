@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { CartService, CartItem } from '../homeService/cart';
+import { environment } from '../../environments/environment';
 
 export type PaymentMethod = 'mobile_money' | 'card' | 'cash_on_delivery';
 export type DeliveryOption = 'delivery' | 'pickup';
@@ -94,10 +95,10 @@ export class PanierComponent implements OnInit, OnDestroy {
     return [...this.cartItems, ...this.materielItems];
   }
 
-  getImageUrl(image: string | null | undefined): string {
-    if (!image) return 'assets/no-image.png';
-    if (image.startsWith('http')) return image;
-    return `http://127.0.0.1:8000/storage/${image}`;
+  getImageUrl(image?: string) {
+    return image
+      ? `${environment.storageUrl}/${image}`
+      : 'assets/nothing.png';
   }
 
   getSubtotal(): number {
