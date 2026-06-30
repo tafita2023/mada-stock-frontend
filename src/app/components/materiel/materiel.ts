@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MaterielService } from '../services/materiel';
 import { finalize, catchError } from 'rxjs/operators';
 import { of, Subscription, timeout } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface Materiel {
   id?: number;
@@ -459,6 +460,22 @@ export class MaterielComponent implements OnInit, OnDestroy {
   retryLoading() {
     console.log('Retentative de chargement');
     this.loadMateriels();
+  }
+
+  getImageUrl(image?: string): string {
+    if (!image) return 'assets/nothing.png';
+  
+    // nettoyage ancien format
+    if (image.includes('storage')) {
+      image = image.replace('/storage/', '').replace('storage ', '');
+    }
+  
+    // éviter double "uploads"
+    if (image.startsWith('uploads/')) {
+      return `${environment.storageUrl}/${image}`;
+    }
+  
+    return `${environment.storageUrl}/uploads/materiels/${image}`;
   }
 
 }

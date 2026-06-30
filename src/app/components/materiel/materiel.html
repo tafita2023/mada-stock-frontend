@@ -81,7 +81,7 @@
                 <td class="id-cell">{{ i + 1 }}</td>
                 <td class="image-cell">
                   <img 
-                  [src]="'http://localhost:8000/storage/' + materiel.image" 
+                  [src]="getImageUrl(materiel.image)" 
                   alt="{{ materiel.nom }}"
                   class="product-img"
                 />

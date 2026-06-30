@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterOutlet, RouterLinkWithHref } from '@angular/router';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth-service'; 
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-header',
@@ -60,4 +61,12 @@ export class Header implements OnInit {
       error: () => {
       }
     });
-  }}
+  }
+
+  getImageUrl(image?: string): string {
+    return image
+      ? `${environment.storageUrl}/${image}`
+      : 'assets/nothing.png';
+  }
+
+}

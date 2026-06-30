@@ -5,6 +5,7 @@ import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { ProduitService } from '../services/produit';
 import { finalize, catchError } from 'rxjs/operators';
 import { of, Subscription, timeout } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface Produit {
   id?: number;
@@ -492,4 +493,21 @@ export class ProduitComponent implements OnInit,AfterViewInit, OnDestroy {
       this.loadProduits();
     }
   }
+
+  getImageUrl(image?: string): string {
+    if (!image) return 'assets/nothing.png';
+  
+    // nettoyage ancien format
+    if (image.includes('storage')) {
+      image = image.replace('/storage/', '').replace('storage ', '');
+    }
+  
+    // éviter double "uploads"
+    if (image.startsWith('uploads/')) {
+      return `${environment.storageUrl}/${image}`;
+    }
+  
+    return `${environment.storageUrl}/uploads/produits/${image}`;
+  }
+  
 }

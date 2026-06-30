@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth-service';
 import { ProfileService } from '../services/profile';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-mon-compte',
@@ -223,4 +224,11 @@ export class CompteComponent implements OnInit, OnDestroy {
       this.cdr.detectChanges();
     }, 4000);
   }
+
+  getImageUrl(image?: string): string {
+    return image
+      ? `${environment.storageUrl}/${image}`
+      : 'assets/nothing.png';
+  }
+
 }

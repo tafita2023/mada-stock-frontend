@@ -4,7 +4,7 @@
       <div class="left-section">
         <div class="avatar-container">
           <img 
-            [src]="'http://localhost:8000/storage/' + user.avatar" 
+            [src]="getImageUrl(user.avatar)" 
             alt="{{ user.name }}"
             class="avatar">
         </div>
