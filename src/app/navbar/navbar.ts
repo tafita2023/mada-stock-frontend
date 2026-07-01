@@ -85,35 +85,35 @@ export class Navbar implements OnInit {
   }
 
   filtrerParSaveur(saveur: string): void {
-    this.closeAllMenus();
 
     this.router.navigate(['/produits'], {
       queryParams: { saveur }
     });
   
+    this.closeAllMenus();
     this.closeMobileMenu();
   }
 
   filtrerParType(type: string): void {
-    this.closeAllMenus();
 
     this.router.navigate(['/materiels'], {
       queryParams: { type }
     });
   
+    this.closeAllMenus();
     this.closeMobileMenu();
   }
 
   goToProduits(): void {
-    this.closeAllMenus();
 
     this.router.navigate(['/produits']);
+    this.closeAllMenus();
   }
 
   goToMateriels(): void {
-    this.closeAllMenus();
 
     this.router.navigate(['/materiels']);
+    this.closeAllMenus();
   }
 
 }
