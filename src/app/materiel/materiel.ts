@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterielService } from '../homeService/materiel';
 import { CartService } from '../homeService/cart';
@@ -38,20 +38,20 @@ export class MaterielsComponent implements OnInit, OnDestroy {
     private materielService: MaterielService,
     private cartService: CartService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
 
-    // 🔥 écouter l'URL
     this.subs.add(
       this.route.queryParamMap.subscribe(params => {
         this.selectedType = params.get('type') ?? '';
         this.applyFilter();
+        this.cdr.detectChanges();
       })
     );
 
-    // 🔥 charger les données
     this.loadMateriels();
   }
 
@@ -74,7 +74,6 @@ export class MaterielsComponent implements OnInit, OnDestroy {
 
         this.isLoading = false;
 
-        // 🔥 important : filtrer après chargement
         this.applyFilter();
       },
 
@@ -103,6 +102,8 @@ export class MaterielsComponent implements OnInit, OnDestroy {
     this.filteredMateriels = this.materiels.filter(m =>
       m.type?.trim().toLowerCase() === typeRecherche
     );
+    
+    this.cdr.detectChanges();
   }
   
   // ================= NAV =================

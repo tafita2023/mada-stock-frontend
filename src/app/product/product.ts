@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../homeService/produit';
 import { CartService } from '../homeService/cart';
@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../environments/environment';
+
 export interface Product {
   id: number;
   nom: string;
@@ -36,20 +37,20 @@ export class ProductsComponent implements OnInit, OnDestroy {
     private productService: ProductService,
     private cartService: CartService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
 
-    // 1. écouter URL
     this.subs.add(
       this.route.queryParamMap.subscribe(params => {
         this.selectedSaveur = params.get('saveur') ?? '';
         this.applyFilter();
+        this.cdr.detectChanges();
       })
     );
 
-    // 2. charger produits
     this.loadProducts();
   }
 
@@ -100,6 +101,8 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.filteredProducts = this.products.filter(m =>
       m.saveur?.trim().toLowerCase() === saveurRecherche
     );
+
+    this.cdr.detectChanges();
   }
 
   // ================= NAV =================
