@@ -24,9 +24,7 @@ export interface Materiel {
   templateUrl: './materiel.html',
   styleUrls: ['./materiel.css']
 })
-export class MaterielsComponent implements OnInit {
-
-  private refreshSub?: Subscription;
+export class MaterielsComponent implements OnInit, OnDestroy {
 
   materiels: Materiel[] = [];
   filteredMateriels: Materiel[] = [];
@@ -44,7 +42,8 @@ export class MaterielsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // 1. écouter URL
+
+    // 🔥 écouter l'URL
     this.subs.add(
       this.route.queryParamMap.subscribe(params => {
         this.selectedType = params.get('type') ?? '';
@@ -52,12 +51,12 @@ export class MaterielsComponent implements OnInit {
       })
     );
 
-    // 2. charger materiels
+    // 🔥 charger les données
     this.loadMateriels();
   }
 
   ngOnDestroy(): void {
-    this.refreshSub?.unsubscribe();
+    this.subs.unsubscribe();
   }
 
   // ================= LOAD =================
@@ -73,8 +72,10 @@ export class MaterielsComponent implements OnInit {
           ? data.sort((a, b) => a.id - b.id)
           : [];
 
-        this.applyFilter();
         this.isLoading = false;
+
+        // 🔥 important : filtrer après chargement
+        this.applyFilter();
       },
 
       error: () => {
@@ -84,28 +85,24 @@ export class MaterielsComponent implements OnInit {
       }
     });
   }
-  
+
   // ================= FILTER =================
-  applyFilter(): void {    
+  applyFilter(): void {
+    if (!this.materiels.length) {
+      this.filteredMateriels = [];
+      return;
+    }
+  
     if (!this.selectedType) {
       this.filteredMateriels = [...this.materiels];
       return;
     }
-    
+  
     const typeRecherche = this.selectedType.trim().toLowerCase();
-    
-    this.filteredMateriels = this.materiels.filter(materiel => {
-      console.log(
-        'Comparaison :',
-        materiel.type,
-        '===',
-        typeRecherche
-      );
-    
-      return (
-        materiel.type?.trim().toLowerCase() === typeRecherche
-      );
-    });
+  
+    this.filteredMateriels = this.materiels.filter(m =>
+      m.type?.trim().toLowerCase() === typeRecherche
+    );
   }
   
   // ================= NAV =================
@@ -123,7 +120,6 @@ export class MaterielsComponent implements OnInit {
   getImageUrl(image: string | null | undefined): string {
     if (!image) return 'assets/no-image.png';
     return `${environment.storageUrl}/${image}`;
-
   }
 
   // ================= CART =================

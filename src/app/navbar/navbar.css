@@ -143,12 +143,6 @@
   
     z-index: 1000;
   }
-
-  .nav-dropdown:hover .dropdown-menu {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-  }
   
   .dropdown-item {
     display: block;

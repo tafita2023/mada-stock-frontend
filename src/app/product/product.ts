@@ -70,8 +70,9 @@ export class ProductsComponent implements OnInit, OnDestroy {
           ? data.sort((a, b) => a.id - b.id)
           : [];
 
-        this.applyFilter();
         this.isLoading = false;
+
+        this.applyFilter();
       },
 
       error: () => {
@@ -83,7 +84,12 @@ export class ProductsComponent implements OnInit, OnDestroy {
   }
 
   // ================= FILTER =================
-  applyFilter(): void {  
+  applyFilter(): void {
+    if (!this.products.length) {
+      this.filteredProducts = [];
+      return;
+    }
+  
     if (!this.selectedSaveur) {
       this.filteredProducts = [...this.products];
       return;
@@ -91,20 +97,9 @@ export class ProductsComponent implements OnInit, OnDestroy {
   
     const saveurRecherche = this.selectedSaveur.trim().toLowerCase();
   
-    this.filteredProducts = this.products.filter(product => {
-      console.log(
-        'Comparaison :',
-        product.saveur,
-        '===',
-        saveurRecherche
-      );
-  
-      return (
-        product.saveur?.trim().toLowerCase() === saveurRecherche
-      );
-    });
-  
-    console.log('Produits filtrés :', this.filteredProducts);
+    this.filteredProducts = this.products.filter(m =>
+      m.saveur?.trim().toLowerCase() === saveurRecherche
+    );
   }
 
   // ================= NAV =================

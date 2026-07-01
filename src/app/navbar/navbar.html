@@ -44,7 +44,7 @@
             </a>
 
             <!-- Dropdown -->
-            <div class="dropdown-menu">
+            <div class="dropdown-menu" [class.show]="isProductSubmenuOpen">
 
               <a class="dropdown-item" (click)="goToProduits()">
                 Tout
@@ -84,7 +84,7 @@
             </a>
 
             <!-- Dropdown -->
-            <div class="dropdown-menu">
+            <div class="dropdown-menu" [class.show]="isMaterielSubmenuOpen">
 
               <a class="dropdown-item" (click)="goToMateriels()">
                 Tout

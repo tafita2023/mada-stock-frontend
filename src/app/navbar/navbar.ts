@@ -63,6 +63,13 @@ export class Navbar implements OnInit {
     this.isMaterielSubmenuOpen = false;
   }
   
+  closeAllMenus(): void {
+    this.isMobileMenuOpen = false;
+  
+    this.isProductSubmenuOpen = false;
+    this.isMaterielSubmenuOpen = false;
+  }
+
   toggleProductSubmenu() {
     this.isProductSubmenuOpen = !this.isProductSubmenuOpen;
     if (this.isProductSubmenuOpen) {
@@ -78,6 +85,8 @@ export class Navbar implements OnInit {
   }
 
   filtrerParSaveur(saveur: string): void {
+    this.closeAllMenus();
+
     this.router.navigate(['/produits'], {
       queryParams: { saveur }
     });
@@ -86,6 +95,8 @@ export class Navbar implements OnInit {
   }
 
   filtrerParType(type: string): void {
+    this.closeAllMenus();
+
     this.router.navigate(['/materiels'], {
       queryParams: { type }
     });
@@ -94,10 +105,14 @@ export class Navbar implements OnInit {
   }
 
   goToProduits(): void {
+    this.closeAllMenus();
+
     this.router.navigate(['/produits']);
   }
 
   goToMateriels(): void {
+    this.closeAllMenus();
+
     this.router.navigate(['/materiels']);
   }
 
