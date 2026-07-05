@@ -1,0 +1,9 @@
+<div class="welcome-overlay" *ngIf="showWelcomePopup">
+    <div class="welcome-popup">
+      <p>J'ai plus de 18 ans</p>
+      <div class="buttons">
+        <button class="yes" (click)="accept()">Oui</button>
+        <button class="no" (click)="decline()">Non</button>
+      </div>
+    </div>
+  </div>

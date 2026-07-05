@@ -1,0 +1,53 @@
+.welcome-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+  }
+  
+  .welcome-popup {
+    width: 420px;
+    max-width: 90%;
+    background-color: #605B51;
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    color: white;
+  }
+  
+  .buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+  }
+  
+  .yes,
+  .no {
+    padding: 10px 30px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .yes {
+    background: #16a34a;
+    color: white;
+  }
+
+  .yes:hover {
+    background: #067c31;
+  }
+  
+  .no {
+    background: #dc2626;
+    color: white;
+  }
+
+  .no:hover {
+    background: #ab1010;
+
+  }
