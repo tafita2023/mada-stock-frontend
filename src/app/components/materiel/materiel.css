@@ -235,6 +235,26 @@
     width: 180px;
   }
 
+  .materiels-table th:nth-child(9),
+  .materiels-table td:nth-child(9) {
+    width: 180px;
+  }
+
+  .materiels-table th:nth-child(10),
+  .materiels-table td:nth-child(10) {
+    width: 180px;
+  }
+
+  .materiels-table th:nth-child(11),
+  .materiels-table td:nth-child(11) {
+    width: 180px;
+  }
+
+  .materiels-table th:nth-child(12),
+  .materiels-table td:nth-child(12) {
+    width: 180px;
+  }
+
   /* Style des en-têtes */
   .materiels-table th {
     background: #0a0a1a;
@@ -277,7 +297,8 @@
     overflow: hidden;
   }
   
-  .nom-cell strong {
+  .nom-cell strong,
+  .nom-cell small {
     display: block;
     overflow: hidden;
     text-overflow: ellipsis;

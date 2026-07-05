@@ -1,3 +1,11 @@
+<div class="error-popup" *ngIf="errorMessage">
+  <div class="error-popup-content">
+    <span>{{ errorMessage }}</span>
+
+    <button type="button" (click)="errorMessage = ''">✕</button>
+  </div>
+</div>
+
 <div class="login-container">
     <div class="login-card">
       <div class="login-header">
@@ -67,7 +75,6 @@
           <span *ngIf="!isLoading">Se connecter</span>
           <div class="spinner" *ngIf="isLoading"></div>
         </button>
-  
-      </form>
+        </form>
     </div>
   </div>

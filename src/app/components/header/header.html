@@ -15,7 +15,7 @@
             [src]="getImageUrl(user.avatar)" 
             alt="{{ user.name }}"
           class="user-avatar"
-          (error)="user.avatar_url = 'assets/default-avatar.png'"
+          (error)="user.avatar_url = 'assets/nothing.png'"
         >
         <h1>{{ user.name || user.email?.split('@')[0] || 'Utilisateur' }}</h1>
       </div>
@@ -37,7 +37,7 @@
           </a>
         </li>
         <li>
-            <a routerLink="/admin/produits" routerLinkActive="active" class="menu-item">
+            <a routerLink="/admin/produits" routerLinkActive="active" class="menu-item" (click)="closeSidebarOnMobile()">
               <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6v2.5C10 9 7 9.75 7 12v7c0 .9375 0 2 2.14286 2h5.71424C17 21 17 19.9375 17 19v-7c0-2.25-3-3-3-3.5V6m-4 0H9V3h6v3h-1m-4 0h4m0 10c0 1.1046-.8954 2-2 2s-2-.8954-2-2c0-1.5 1.7874-4 2-4 .2126 0 2 2.5 2 4Z"/>
               </svg>
@@ -45,7 +45,7 @@
             </a>
           </li>
           <li>
-            <a routerLink="/admin/materiels" routerLinkActive="active" class="menu-item">
+            <a routerLink="/admin/materiels" routerLinkActive="active" class="menu-item" (click)="closeSidebarOnMobile()">
               <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 17h6m-3 3v-6M4.857 4h4.286c.473 0 .857.384.857.857v4.286a.857.857 0 0 1-.857.857H4.857A.857.857 0 0 1 4 9.143V4.857C4 4.384 4.384 4 4.857 4Zm10 0h4.286c.473 0 .857.384.857.857v4.286a.857.857 0 0 1-.857.857h-4.286A.857.857 0 0 1 14 9.143V4.857c0-.473.384-.857.857-.857Zm-10 10h4.286c.473 0 .857.384.857.857v4.286a.857.857 0 0 1-.857.857H4.857A.857.857 0 0 1 4 19.143v-4.286c0-.473.384-.857.857-.857Z"/>
               </svg>
@@ -54,7 +54,7 @@
           </li>  
 
           <li>
-            <a routerLink="/admin/utilisateurs" routerLinkActive="active" class="menu-item">
+            <a routerLink="#" routerLinkActive="active" class="menu-item" (click)="closeSidebarOnMobile()">
               <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h6l2 4m-8-4v8m0-8V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v9h2m8 0H9m4 0h2m4 0h2v-4m0 0h-5m3.5 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm-10 0a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z"/>
               </svg>
@@ -63,7 +63,7 @@
           </li>
   
         <li>
-            <a routerLink="/admin/mon_compte" routerLinkActive="active" class="menu-item">
+            <a routerLink="/admin/mon_compte" routerLinkActive="active" class="menu-item" (click)="closeSidebarOnMobile()">
                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="2" d="M10 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h2m10 1a3 3 0 0 1-3 3m3-3a3 3 0 0 0-3-3m3 3h1m-4 3a3 3 0 0 1-3-3m3 3v1m-3-4a3 3 0 0 1 3-3m-3 3h-1m4-3v-1m-2.121 1.879-.707-.707m5.656 5.656-.707-.707m-4.242 0-.707.707m5.656-5.656-.707.707M12 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
                   </svg>
@@ -71,7 +71,7 @@
             </a>
           </li>
           <li>
-            <a (click)="logout()" class="menu-item">
+            <a (click)="logout()" class="menu-item" (click)="closeSidebarOnMobile()">
               <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2"/>
               </svg>

@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth-service';
+import { ChangeDetectorRef } from '@angular/core';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +23,8 @@ export class Login {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -46,37 +49,43 @@ export class Login {
       });
       return;
     }
-
+  
     this.isLoading = true;
     this.errorMessage = '';
-
-    this.authService.login(this.loginForm.value).subscribe({
-      next: (res: any) => {
-        
-        // Sauvegarder les données
-        this.authService.saveUser(res);
-        
-        // Vérifier immédiatement
-        const token = localStorage.getItem('token');
-        
-        this.isLoading = false;
-        
-        if (token) {
-          if (res.role === 'admin' || res.user?.role === 'admin') {
-            this.router.navigate(['/admin/dashboard']);
+  
+    this.authService.login(this.loginForm.value)
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (res: any) => {
+  
+          this.authService.saveUser(res);
+  
+          const token = localStorage.getItem('token');
+  
+          if (token) {
+            if (res.role === 'admin' || res.user?.role === 'admin') {
+              this.router.navigate(['/admin/dashboard']);
+            } else {
+              this.router.navigate(['/']);
+            }
           } else {
-            this.router.navigate(['/']);
+            this.errorMessage = 'Erreur lors de la sauvegarde de la connexion';
           }
-        } else {
-          this.errorMessage = 'Erreur lors de la sauvegarde de la connexion';
+        },
+  
+        error: (err) => {
+          console.error('Erreur de connexion:', err);
+  
+          this.errorMessage =
+            err?.error?.message || 'Email ou mot de passe incorrect';
+  
+          this.cdr.detectChanges();
         }
-      },
-
-      error: (err) => {
-        console.error('Erreur de connexion:', err);
-        this.isLoading = false;
-        this.errorMessage = err.error?.message || 'Erreur de connexion';
-      }
-    });
+      });
   }
 }

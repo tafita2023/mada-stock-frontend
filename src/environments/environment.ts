@@ -1,5 +1,7 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://mada-stock.mg/api',
-  storageUrl: 'https://mada-stock.mg/public'
+  apiUrl: 'https://mada-stock.com/api',
+  storageUrl: 'https://mada-stock.com/public'
 };
+
+

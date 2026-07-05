@@ -42,11 +42,16 @@ export class AuthInterceptor implements HttpInterceptor {
   
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401 && this.isBrowser) {
+    
+        const isLoginRequest = req.url.includes('/login');
+    
+        if (error.status === 401 && this.isBrowser && !isLoginRequest) {
           console.log('Interceptor - Erreur 401, déconnexion');
+    
           localStorage.clear();
           this.router.navigate(['/login']);
         }
+    
         return throwError(() => error);
       })
     );

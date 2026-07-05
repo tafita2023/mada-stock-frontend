@@ -9,11 +9,16 @@ import { environment } from '../../../environments/environment';
 export interface Materiel {
   id?: number;
   nom: string;
-  type: string;
   marque: string;
+  modele: string;
+  batterie: number;
+  capacite: number;
+  watts: number;
+  type: string;
   prix: number;
   stock: number;
   image?: string;
+  description: string;
   dateCreation?: Date;
 }
 
@@ -158,13 +163,18 @@ export class MaterielComponent implements OnInit, OnDestroy {
   // ================= EMPTY =================
   getEmptyMateriel(): Materiel {
     return {
-      image: '',
       nom: '',
-      type: '',
       marque: '',
+      modele: '',
+      batterie: 0,
+      capacite: 0,
+      watts: 0,
+      type: '',
       prix: 0,
-      stock: 0
-    };
+      stock: 0,
+      description: '',
+      image: '',
+        };
   }
   
   // ================= IMAGE =================
@@ -218,6 +228,10 @@ export class MaterielComponent implements OnInit, OnDestroy {
 
     const nom = this.capitalizeFirstLetter(this.currentMateriel.nom);
     const marque = this.capitalizeFirstLetter(this.currentMateriel.marque);
+    const modele = this.capitalizeFirstLetter(this.currentMateriel.modele);
+    const batterie = Number(this.currentMateriel.batterie);
+    const watts = Number(this.currentMateriel.watts);
+    const capacite = Number(this.currentMateriel.capacite);
     const prix = Number(this.currentMateriel.prix);
     const stock = Number(this.currentMateriel.stock);
     
@@ -236,6 +250,26 @@ export class MaterielComponent implements OnInit, OnDestroy {
       return;
     }
   
+    if (!this.currentMateriel.modele) {
+      this.showToast('Modèle obligatoire', 'error');
+      return;
+    }
+    
+    if (!this.currentMateriel.batterie) {
+      this.showToast('Batterie obligatoire', 'error');
+      return;
+    }
+
+    if (!this.currentMateriel.capacite) {
+      this.showToast('Capacité obligatoire', 'error');
+      return;
+    }
+
+    if (!this.currentMateriel.watts) {
+      this.showToast('Watts obligatoire', 'error');
+      return;
+    }
+
     if (isNaN(prix) || prix <= 0) {
       this.showToast('Prix invalide', 'error');
       return;
@@ -249,8 +283,13 @@ export class MaterielComponent implements OnInit, OnDestroy {
     formData.append('nom', nom);
     formData.append('type', this.currentMateriel.type);
     formData.append('marque', marque);
+    formData.append('modele', modele);
+    formData.append('batterie', batterie.toString());
+    formData.append('capacite', capacite.toString());
+    formData.append('watts', watts.toString());
     formData.append('prix', prix.toString());
     formData.append('stock', stock.toString());
+    formData.append('description', this.currentMateriel.description);
 
     if (this.selectedFile) {
       formData.append('image', this.selectedFile);

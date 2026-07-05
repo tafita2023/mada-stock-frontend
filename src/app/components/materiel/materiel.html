@@ -71,6 +71,10 @@
                 <th>Nom</th>
                 <th>Type</th>
                 <th>Marque</th>
+                <th>Modele</th>
+                <th>Batterie</th>
+                <th>Capacité</th>
+                <th>Watts</th>
                 <th>Prix (Ar)</th>
                 <th>Quantité</th>
                 <th>Actions</th>
@@ -88,10 +92,15 @@
                 </td>
   
                 <td class="nom-cell">
-                  <strong>{{ materiel.nom }}</strong>
-                 </td>
+                    <strong>{{ materiel.nom }}</strong>
+                    <small>{{ materiel.description }}</small>
+                   </td>
                  <td class="type-cell">{{ materiel.type }}</td>
                  <td class="brand-cell">{{ materiel.marque }}</td>
+                 <td class="modele-cell">{{ materiel.modele }}</td>
+                 <td class="batterie-cell">{{ materiel.batterie }}</td>
+                 <td class="capacite-cell">{{ materiel.capacite }} ml</td>
+                 <td class="watts-cell">{{ materiel.watts }}</td>
                 <td class="prix-cell">{{ materiel.prix | number }} Ar</td>
                 <td>
                   <span [class.low-stock]="materiel.stock < 10">
@@ -204,9 +213,9 @@
             </div>
           </div>
   
-          <!-- NOM -->
+          <!-- NOM ET MARQUE -->
           <div class="form-row">
-            <div class="form-group full-width">
+            <div class="form-group">
               <label>Nom du materiel *</label>
               <input
                 type="text"
@@ -216,11 +225,22 @@
                 placeholder="ex: Marlboro Red"
               />
             </div>
+
+            <div class="form-group">
+              <label>Marque</label>
+              <input
+                type="text"
+                [(ngModel)]="currentMateriel.marque"
+                name="marque"
+                required
+              />
+            </div>
+
           </div>
 
-           <!-- TYPE - MARQUE -->
+           <!-- TYPE ET MODELE -->
           <div class="form-row">
-            <div class="form-group">
+            <div class="form-group full-width">
               <label>Type</label>
               <select
                 [(ngModel)]="currentMateriel.type"
@@ -234,17 +254,54 @@
                 </option>
               </select>
             </div>
-              
+          </div>
+          
+          <!-- MODELE ET CAPACITE -->
+          <div class="form-row">
+              <div class="form-group">
+                <label>Modèle</label>
+                <input
+                  type="text"
+                  [(ngModel)]="currentMateriel.modele"
+                  name="modele"
+                  required
+                />
+              </div>
+  
+              <div class="form-group">
+                <label>Capacité</label>
+                <input
+                  type="number"
+                  [(ngModel)]="currentMateriel.capacite"
+                  name="capacite"
+                  required
+                />
+              </div>
+          </div>  
+
+          <!-- BATTERIE ET CAPACITE -->
+           <div class="form-row">
             <div class="form-group">
-              <label>Marque</label>
+              <label>Batterie</label>
               <input
                 type="text"
-                [(ngModel)]="currentMateriel.marque"
-                name="marque"
+                [(ngModel)]="currentMateriel.batterie"
+                name="batterie"
                 required
               />
             </div>
-          </div>
+
+            <div class="form-group">
+              <label>Watts</label>
+              <input
+                type="number"
+                [(ngModel)]="currentMateriel.watts"
+                name="watts"
+                required
+              />
+
+            </div>
+           </div>
 
           <!-- PRIX - QUANTITE -->
           <div class="form-row">
@@ -272,6 +329,17 @@
             </div>
           </div>
   
+        <!-- DESCRIPTION -->
+        <div class="form-group full-width">
+          <label>Description</label>
+          <textarea
+            [(ngModel)]="currentMateriel.description"
+            name="description"
+            rows="3"
+            placeholder="Description du materiel ..."
+          ></textarea>
+        </div>
+
         </form>
       </div>
   

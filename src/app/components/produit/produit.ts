@@ -9,10 +9,13 @@ import { environment } from '../../../environments/environment';
 
 export interface Produit {
   id?: number;
+  marque: string;
   nom: string;
+  contenance: number;
+  nicotine: number | null;
+  saveur: string,
   prix: number;
   stock: number;
-  saveur: string,
   description: string;
   image?: string;
   dateCreation?: Date;
@@ -192,7 +195,10 @@ export class ProduitComponent implements OnInit,AfterViewInit, OnDestroy {
   getEmptyProduit(): Produit {
     return {
       image: '',
+      marque: '',
       nom: '',
+      contenance: 0,
+      nicotine: 0,
       prix: 0,
       saveur: '',
       stock: 0,
@@ -256,10 +262,19 @@ export class ProduitComponent implements OnInit,AfterViewInit, OnDestroy {
     if (!isPlatformBrowser(this.platformId)) return;
     
     const formData = new FormData();
+    const marque = this.capitalizeFirstLetter(this.currentProduit.marque);
     const nom = this.capitalizeFirstLetter(this.currentProduit.nom);
+    const contenance = Number(this.currentProduit.contenance);
+    const nicotine = Number(this.currentProduit.nicotine);
     const prix = Number(this.currentProduit.prix);
     const stock = Number(this.currentProduit.stock);
+
     
+    if (!this.currentProduit.marque) {
+      this.showToast('Marque obligatoire', 'error');
+      return;
+    }
+
     if (!this.currentProduit.nom) {
       this.showToast('Nom obligatoire', 'error');
       return;
@@ -269,7 +284,17 @@ export class ProduitComponent implements OnInit,AfterViewInit, OnDestroy {
       this.showToast('Saveur obligatoire', 'error');
       return;
     }
-  
+
+    if (!this.currentProduit.contenance) {
+      this.showToast('Contenance obligatoire', 'error');
+      return;
+    }
+
+    if (this.currentProduit.nicotine === null || this.currentProduit.nicotine === undefined) {
+      this.showToast('Nicotine obligatoire', 'error');
+      return;
+    }
+    
     if (isNaN(prix) || prix <= 0) {
       this.showToast('Prix invalide', 'error');
       return;
@@ -280,9 +305,12 @@ export class ProduitComponent implements OnInit,AfterViewInit, OnDestroy {
       return;
     }
     
+    formData.append('marque', marque);
     formData.append('nom', nom);
-    formData.append('prix', prix.toString());
     formData.append('saveur', this.currentProduit.saveur);
+    formData.append('contenance', contenance.toString());
+    formData.append('nicotine', nicotine.toString());
+    formData.append('prix', prix.toString());
     formData.append('stock', stock.toString());
     formData.append('description', this.currentProduit.description);
 

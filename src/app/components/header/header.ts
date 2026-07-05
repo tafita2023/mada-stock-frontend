@@ -54,6 +54,12 @@ export class Header implements OnInit {
     }
   }
 
+  closeSidebarOnMobile(): void {
+    if (window.innerWidth <= 768) {
+      this.sidebarOpen = false;
+    }
+  }
+
   logout(): void {
     this.authService.logout().subscribe({
       next: () => {
