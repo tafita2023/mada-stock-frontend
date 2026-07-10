@@ -10,8 +10,13 @@ import { environment } from '../../environments/environment';
 export interface Materiel {
   id: number;
   nom: string;
+  description: string;
+  type: number;
   marque: string;
-  type: string;
+  modele: string;
+  batterie: number;
+  capacite: number;
+  watts: number;
   prix: number;
   stock: number;
   image?: string;
@@ -26,11 +31,22 @@ export interface Materiel {
 })
 export class MaterielsComponent implements OnInit, OnDestroy {
 
+  typeMap: { [key: number]: string } = {
+    1: 'kit',
+    2: 'pod',
+    3: 'box',
+    4: 'booster',
+    5: 'clearomiseurs/atomiseurs',
+    6: 'consomables'
+  };
+
   materiels: Materiel[] = [];
   filteredMateriels: Materiel[] = [];
-  selectedType = '';
+  selectedType = 0;
   isLoading = true;
   loadingError = false;
+  selectedMateriel: Materiel | null = null;
+  showDetailModal = false;
 
   private subs = new Subscription();
 
@@ -46,13 +62,22 @@ export class MaterielsComponent implements OnInit, OnDestroy {
 
     this.subs.add(
       this.route.queryParamMap.subscribe(params => {
-        this.selectedType = params.get('type') ?? '';
-        this.applyFilter();
-        this.cdr.detectChanges();
+  
+        const type = params.get('type');
+  
+        this.selectedType = type ? Number(type) : 0;
+  
+        console.log('url type:', this.selectedType);
+        
+        if (this.materiels.length > 0) {
+          this.applyFilter();
+        }
+  
       })
     );
-
+  
     this.loadMateriels();
+  
   }
 
   ngOnDestroy(): void {
@@ -72,9 +97,12 @@ export class MaterielsComponent implements OnInit, OnDestroy {
           ? data.sort((a, b) => a.id - b.id)
           : [];
 
+          console.log('MATERIELS:', this.materiels);
         this.isLoading = false;
 
         this.applyFilter();
+
+        this.cdr.detectChanges();
       },
 
       error: () => {
@@ -85,29 +113,33 @@ export class MaterielsComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ================= FILTER =================
+  // ================= FILTRE =================
   applyFilter(): void {
-    if (!this.materiels.length) {
-      this.filteredMateriels = [];
-      return;
-    }
+
+    if (!this.selectedType || this.selectedType === 0) {
   
-    if (!this.selectedType) {
       this.filteredMateriels = [...this.materiels];
+  
       return;
     }
   
-    const typeRecherche = this.selectedType.trim().toLowerCase();
   
     this.filteredMateriels = this.materiels.filter(m =>
-      m.type?.trim().toLowerCase() === typeRecherche
+      Number(m.type) === Number(this.selectedType)
     );
-    
-    this.cdr.detectChanges();
-  }
   
+  
+    console.log(
+      'TYPE FILTRE:',
+      this.selectedType,
+      'RESULTAT:',
+      this.filteredMateriels
+    );
+  
+  }
+
   // ================= NAV =================
-  setType(type: string) {
+  setType(type: number) {
     this.router.navigate(['/materiels'], {
       queryParams: { type }
     });
@@ -116,6 +148,20 @@ export class MaterielsComponent implements OnInit, OnDestroy {
   clearFilter() {
     this.router.navigate(['/materiels']);
   }
+
+  // ================= TYPE LABEL =================
+getTypeLabel(type: number): string {
+
+  const labels: { [key: number]: string } = {
+    1: 'Kit',
+    2: 'Pod',
+    3: 'Box',
+    4: 'Clearomiseurs / Atomiseurs',
+    5: 'Consomables'
+  };
+
+  return labels[type] ?? 'Inconnu';
+}
 
   // ================= IMAGE =================
   getImageUrl(image: string | null | undefined): string {
@@ -126,5 +172,20 @@ export class MaterielsComponent implements OnInit, OnDestroy {
   // ================= CART =================
   addToCart(materiel: Materiel): void {
     this.cartService.addMaterielToCart(materiel);
+  }
+
+  // ================= DETAILS =================
+  openDetail(materiel: Materiel): void {
+    this.selectedMateriel = materiel;
+    this.showDetailModal = true;
+
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeDetail(): void {
+    this.showDetailModal = false;
+    this.selectedMateriel = null;
+
+    document.body.style.overflow = '';
   }
 }

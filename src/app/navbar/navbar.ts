@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../homeService/cart';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -11,23 +12,25 @@ import { Router } from '@angular/router';
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
-export class Navbar implements OnInit {
+export class Navbar implements OnInit, OnDestroy {
 
-  saveurs: string[] = [
-    'Classic',
-    'Mentholé',
-    'Fruité',
-    'Boisson',
-    'Gourmand'
+  saveurs = [
+    { id: 1, name: 'Classic' },
+    { id: 2, name: 'Mentholé' },
+    { id: 3, name: 'Fruité' },
+    { id: 4, name: 'Boisson' },
+    { id: 5, name: 'Gourmand' },
+    { id: 6, name: 'Boosters/Additifs' }
   ];
 
-  types: string[] = [
-    'Kit',
-    'Pod',
-    'Tube',
-    'Mod',
-    'Puff'
+  types = [
+    { id: 1, name: 'Kit' },
+    { id: 2, name: 'Pod' },
+    { id: 3, name: 'Box' },
+    { id: 4, name: 'Clearomiseurs/Atomiseurs' },
+    { id: 5, name: 'Consomables' }
   ];
+
 
   isMobileMenuOpen = false;
   isProductSubmenuOpen = false;
@@ -35,74 +38,127 @@ export class Navbar implements OnInit {
 
   cartCount = 0;
 
+  private cartSub = new Subscription();
+
+
   constructor(
     private cartService: CartService,
     private router: Router
   ) {}
 
+
   ngOnInit(): void {
-    this.cartService.cart$.subscribe(items => {
-      this.cartCount = items.reduce(
-        (total, item) => total + item.quantity,
-        0
-      );
-    });
+
+    this.cartSub.add(
+      this.cartService.cart$.subscribe(items => {
+
+        this.cartCount = items.reduce(
+          (total, item) => total + item.quantity,
+          0
+        );
+
+      })
+    );
+
   }
 
-  toggleMobileMenu() {
+  ngOnDestroy(): void {
+    this.cartSub.unsubscribe();
+  }
+
+  toggleMobileMenu(): void {
+
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
+
+    if (this.isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
     if (!this.isMobileMenuOpen) {
       this.isProductSubmenuOpen = false;
       this.isMaterielSubmenuOpen = false;
     }
-  }
-  
-  closeAllMenus(): void {
-    this.isMobileMenuOpen = false;
-  
-    this.isProductSubmenuOpen = false;
-    this.isMaterielSubmenuOpen = false;
+
   }
 
-  toggleProductSubmenu() {
+  closeAllMenus(): void {
+
+    this.isMobileMenuOpen = false;
+    this.isProductSubmenuOpen = false;
+    this.isMaterielSubmenuOpen = false;
+
+    document.body.style.overflow = ''
+  }
+
+  toggleProductSubmenu(): void {
+
     this.isProductSubmenuOpen = !this.isProductSubmenuOpen;
+
     if (this.isProductSubmenuOpen) {
       this.isMaterielSubmenuOpen = false;
     }
+
   }
-  
-  toggleMaterielSubmenu() {
+
+  toggleMaterielSubmenu(): void {
+
     this.isMaterielSubmenuOpen = !this.isMaterielSubmenuOpen;
+
     if (this.isMaterielSubmenuOpen) {
       this.isProductSubmenuOpen = false;
     }
+
   }
 
-  filtrerParSaveur(saveur: string): void {
+  filtrerParSaveur(saveur: {id:number, name:string}): void {
+
+    console.log('saveur cliquée:', saveur);
+
+    this.closeAllMenus();
+
     this.router.navigate(['/produits'], {
-      queryParams: { saveur }
-    }).then(() => {
-      this.closeAllMenus();
+      queryParams: {
+        saveur: saveur.id
+      }
     });
+
   }
-  
-  filtrerParType(type: string): void {
+
+  filtrerParType(type: {id:number, name:string}): void {
+
+    console.log('type cliqué:', type.id);
+
+    this.closeAllMenus();
+
     this.router.navigate(['/materiels'], {
-      queryParams: { type }
-    }).then(() => {
-      this.closeAllMenus();
+      queryParams: {
+        type: type.id
+      }
     });
+
   }
-  
+
   goToProduits(): void {
-    this.router.navigate(['/produits']).then(() => {
+
+    this.router.navigate(['/produits'], {
+      queryParams: {}
+    })
+    .then(() => {
       this.closeAllMenus();
     });
+
   }
-  
+
   goToMateriels(): void {
-    this.router.navigate(['/materiels']).then(() => {
+
+    this.router.navigate(['/materiels'], {
+      queryParams: {}
+    })
+    .then(() => {
       this.closeAllMenus();
     });
+
   }
 }

@@ -194,7 +194,7 @@
 
 /* Sous-menu - OUVERT */
 .mobile-submenu.open {
-  max-height: 300px;
+  max-height: 500px;
   transition: max-height 0.3s ease-in;
 }
 
@@ -313,14 +313,31 @@
   
   /* ===== MOBILE MENU ===== */
   .mobile-menu {
-    display: none;
+    display: block;
+    position: fixed;
+    top: 70px; /* hauteur de ton navbar */
+    left: 0;
+    width: 100%;
+
+    height: calc(100vh - 70px);
+
     background: linear-gradient(135deg, var(--bg-darker), #0a0f1e);
+
     border-top: 1px solid var(--border-color);
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    z-index: 9999;
+
     animation: slideDown 0.3s ease;
-  }
-  
+
+    -webkit-overflow-scrolling: touch;
+}
+
   .mobile-menu-content {
     padding: 1rem;
+    padding-bottom: 3rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;

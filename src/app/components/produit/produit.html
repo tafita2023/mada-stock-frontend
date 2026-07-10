@@ -45,7 +45,7 @@
           >
             <option value="">Toutes les saveurs</option>
             <option *ngFor="let saveur of getUniqueSaveurs()" [value]="saveur">
-              {{ saveur }} ({{ getSaveurCount(saveur) }})
+              {{ getSaveurLabel(saveur) }} ({{ getSaveurCount(saveur) }})
             </option>
           </select>
           
@@ -96,7 +96,7 @@
                 <small>{{ produit.description }}</small>
               </td>
               <td class="saveur-cell">
-                <span class="saveur-badge">{{ produit.saveur }}</span>
+                <span class="saveur-badge">{{ getSaveurLabel(produit.saveur) }}</span>
               </td>
               <td class="contenance-cell">{{ produit.contenance }} ml</td>
               <td class="nicotine-cell">{{ produit.nicotine }} mg</td>

@@ -9,7 +9,7 @@
 
         <!-- Grille de produits -->
         <div class="products-grid">
-            <div class="product-card" *ngFor="let product of filteredProducts">
+            <div class="product-card" *ngFor="let product of filteredProducts" (click)="openDetail(product)">
                 
                 <!-- Image du produit -->
                 <div class="product-image">
@@ -22,21 +22,100 @@
 
                 <!-- Informations produit -->
                 <div class="product-info">
-                    <h3 class="product-name">{{ product.nom }}</h3>
+                    <h3 class="product-name">{{ product.nom }} / {{product.nicotine }}mg - {{product.contenance }}ml</h3>
                     <h1 class="product-description">{{ product.description }}</h1>
-                    <h1 class="product-saveur">Saveur : {{ product.saveur }}</h1>
 
                     <!-- Prix -->
-                    <div class="product-price">
-                        <span class="current-price">Prix: {{ product.prix | number }} Ar</span>
+                    <div class="product-footer">
+                        <div class="product-price">
+                            <span class="current-price">Prix: {{ product.prix | number }} Ar</span>
+                        </div>
+    
+                        <!-- Bouton ajouter -->
+                        <button 
+                        class="add-to-cart-btn" 
+                        (click)="addToCart(product); $event.stopPropagation()" 
+                        [disabled]="!product.stock">
+                                                            
+                        <svg *ngIf="product.stock" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/>
+                        </svg>
+                                                
+                        <svg *ngIf="!product.stock" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                        </svg>
+                      
+                      </button>    
                     </div>
-
-                    <!-- Bouton ajouter -->
-                    <button class="add-to-cart-btn" (click)="addToCart(product)" [disabled]="!product.stock">
-                        {{ product.stock ? 'Ajouter au panier' : 'Indisponible' }}
-                    </button>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+<!-- POPUP DETAIL -->
+<div class="modal-overlay" *ngIf="showDetailModal" (click)="closeDetail()">
+
+    <div 
+      class="detail-modal" 
+      (click)="$event.stopPropagation()"
+    >
+        <div class="header">
+            <h1>Information sur le produit</h1>
+        </div>
+    
+
+        <button 
+          class="close-btn"
+          (click)="closeDetail()">
+          ×
+        </button>
+
+        <img 
+          class="detail-image"
+          [src]="getImageUrl(selectedProduct?.image)"
+          [alt]="selectedProduct?.nom"
+        >
+
+        <h2>
+          {{ selectedProduct?.nom }}
+        </h2>
+
+        <p>
+          <strong>Marque :</strong>
+          {{ selectedProduct?.marque }}
+        </p>
+
+        <p>
+          <strong>Saveur :</strong>
+          {{ getSaveurLabel(selectedProduct?.saveur ?? 0) }}
+        </p>
+
+        <p *ngIf="selectedProduct?.contenance">
+          <strong>Contenance :</strong>
+          {{ selectedProduct?.contenance }} ml
+        </p>
+
+        <p *ngIf="selectedProduct?.nicotine !== null && selectedProduct?.nicotine !== undefined">
+          <strong>Nicotine :</strong>
+          {{ selectedProduct?.nicotine }} mg
+        </p>
+
+        <p *ngIf="selectedProduct?.description">
+          <strong>Description :</strong><br>
+          {{ selectedProduct?.description }}
+        </p>
+
+
+        <div class="detail-footer">
+
+            <div class="materiel-price">
+              <span class="current-price">
+                Prix: {{ selectedProduct?.prix | number }} Ar
+              </span>
+            </div>
+                    
+          </div>
+    </div>
+
+</div>

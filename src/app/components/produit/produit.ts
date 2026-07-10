@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ChangeDetectorRef, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
@@ -13,7 +13,7 @@ export interface Produit {
   nom: string;
   contenance: number;
   nicotine: number | null;
-  saveur: string,
+  saveur: number,
   prix: number;
   stock: number;
   description: string;
@@ -28,7 +28,7 @@ export interface Produit {
   templateUrl: './produit.html',
   styleUrls: ['./produit.css']
 })
-export class ProduitComponent implements OnInit,AfterViewInit, OnDestroy {
+export class ProduitComponent implements OnInit, OnDestroy {
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -49,11 +49,12 @@ export class ProduitComponent implements OnInit,AfterViewInit, OnDestroy {
 
   // ================= DROPDOWN OPTIONS =================
   saveurs = [
-    { value: 'Classic', label: 'Classic' },
-    { value: 'Mentholé', label: 'Mentholé' },
-    { value: 'Fruité', label: 'Fruité' },
-    { value: 'Boisson', label: 'Boisson' },
-    { value: 'Gourmand', label: 'Gourmand' },
+    { value: '1', label: 'Classic' },
+    { value: '2', label: 'Mentholé' },
+    { value: '3', label: 'Fruité' },
+    { value: '4', label: 'Boisson' },
+    { value: '5', label: 'Gourmand' },
+    { value: '6', label: 'Boosters/Additifs' }
   ];
 
   // ================= FILTRES =================
@@ -93,14 +94,6 @@ export class ProduitComponent implements OnInit,AfterViewInit, OnDestroy {
       this.filteredProduits = [];
       this.paginatedProduits = [];
       this.cdr.detectChanges();
-    }
-  }
-
-  ngAfterViewInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      setTimeout(() => {
-        this.loadProduits();
-      }, 100);
     }
   }
 
@@ -200,7 +193,7 @@ export class ProduitComponent implements OnInit,AfterViewInit, OnDestroy {
       contenance: 0,
       nicotine: 0,
       prix: 0,
-      saveur: '',
+      saveur: 0,
       stock: 0,
       description: ''
     };
@@ -307,7 +300,7 @@ export class ProduitComponent implements OnInit,AfterViewInit, OnDestroy {
     
     formData.append('marque', marque);
     formData.append('nom', nom);
-    formData.append('saveur', this.currentProduit.saveur);
+    formData.append('saveur', this.currentProduit.saveur.toString());
     formData.append('contenance', contenance.toString());
     formData.append('nicotine', nicotine.toString());
     formData.append('prix', prix.toString());
@@ -393,9 +386,7 @@ export class ProduitComponent implements OnInit,AfterViewInit, OnDestroy {
 
     // Filtre par saveur
     if (this.selectedSaveur) {
-      result = result.filter(p => 
-        p.saveur && p.saveur.toLowerCase() === this.selectedSaveur.toLowerCase()
-      );
+      result = result.filter(p => String(p.saveur) === this.selectedSaveur);
     }
 
     this.filteredProduits = result;
@@ -421,17 +412,24 @@ export class ProduitComponent implements OnInit,AfterViewInit, OnDestroy {
   }
 
   // Récupérer les saveurs uniques pour le filtre - AJOUTÉ
-  getUniqueSaveurs(): string[] {
-    const saveurs = this.produits
-      .map(p => p.saveur)
-      .filter(s => s && s.trim() !== '');
+  getUniqueSaveurs(): (string | number)[] {
+    return [...new Set(
+      this.produits
+        .map(p => p.saveur)
+        .filter(t => t !== null && t !== undefined)
+    )];
+  }
 
-    return [...new Set(saveurs)];
+  getSaveurLabel(value: string | number): string {
+    const saveur = this.saveurs.find(t => t.value == String(value));
+    return saveur ? saveur.label : String(value);
   }
 
   // Compter les produits par saveur - AJOUTÉ
-  getSaveurCount(saveur: string): number {
-    return this.produits.filter(p => p.saveur === saveur).length;
+  getSaveurCount(saveur: string | number): number {
+    return this.produits.filter(
+      p => String(p.saveur) === String(saveur)
+    ).length;
   }
 
   // Vérifier si le filtre de saveur est actif - AJOUTÉ

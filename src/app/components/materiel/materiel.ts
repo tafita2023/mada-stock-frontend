@@ -14,7 +14,7 @@ export interface Materiel {
   batterie: number;
   capacite: number;
   watts: number;
-  type: string;
+  type: number;
   prix: number;
   stock: number;
   image?: string;
@@ -76,11 +76,11 @@ export class MaterielComponent implements OnInit, OnDestroy {
 
   // ================= DROPDOWN OPTIONS =================
   types = [
-    { value: 'Kit', label: 'Kit' },
-    { value: 'Pod', label: 'Pod' },
-    { value: 'Tube', label: 'Tube' },
-    { value: 'Mod', label: 'Mod' },
-    { value: 'Puff', label: 'Puff' },
+    { value: '1', label: 'Kit' },
+    { value: '2', label: 'Pod' },
+    { value: '3', label: 'Box' },
+    { value: '4', label: 'Clearomiseurs/Atomiseurs' },
+    { value: '5', label: 'Consomables' },
   ];
 
   private subscriptions: Subscription = new Subscription();
@@ -169,7 +169,7 @@ export class MaterielComponent implements OnInit, OnDestroy {
       batterie: 0,
       capacite: 0,
       watts: 0,
-      type: '',
+      type: 0,
       prix: 0,
       stock: 0,
       description: '',
@@ -229,6 +229,7 @@ export class MaterielComponent implements OnInit, OnDestroy {
     const nom = this.capitalizeFirstLetter(this.currentMateriel.nom);
     const marque = this.capitalizeFirstLetter(this.currentMateriel.marque);
     const modele = this.capitalizeFirstLetter(this.currentMateriel.modele);
+    const description = this.capitalizeFirstLetter(this.currentMateriel.description);
     const batterie = Number(this.currentMateriel.batterie);
     const watts = Number(this.currentMateriel.watts);
     const capacite = Number(this.currentMateriel.capacite);
@@ -281,7 +282,7 @@ export class MaterielComponent implements OnInit, OnDestroy {
     }
     
     formData.append('nom', nom);
-    formData.append('type', this.currentMateriel.type);
+    formData.append('type', this.currentMateriel.type.toString());
     formData.append('marque', marque);
     formData.append('modele', modele);
     formData.append('batterie', batterie.toString());
@@ -289,7 +290,7 @@ export class MaterielComponent implements OnInit, OnDestroy {
     formData.append('watts', watts.toString());
     formData.append('prix', prix.toString());
     formData.append('stock', stock.toString());
-    formData.append('description', this.currentMateriel.description);
+    formData.append('description', description);
 
     if (this.selectedFile) {
       formData.append('image', this.selectedFile);
@@ -370,10 +371,7 @@ export class MaterielComponent implements OnInit, OnDestroy {
 
     // Filtre par type
     if (this.selectedType) {
-      result = result.filter(m =>
-        m.type &&
-        m.type.toLowerCase() === this.selectedType.toLowerCase()
-      );
+      result = result.filter(m => String(m.type) === this.selectedType);
     }
 
     this.filteredMateriels = result;
@@ -397,20 +395,25 @@ export class MaterielComponent implements OnInit, OnDestroy {
     this.applyFilters();
   }
 
-  getUniqueTypes(): string[] {
-    const types = this.materiels
-      .map(m => m.type)
-      .filter(t => t && t.trim() !== '');
-  
-    return [...new Set(types)];
+  getUniqueTypes(): (string | number)[] {
+    return [...new Set(
+      this.materiels
+        .map(m => m.type)
+        .filter(t => t !== null && t !== undefined)
+    )];
   }
-  
-  getTypeCount(type: string): number {
+
+  getTypeLabel(value: string | number): string {
+    const type = this.types.find(t => t.value == String(value));
+    return type ? type.label : String(value);
+  }
+
+  getTypeCount(type: string | number): number {
     return this.materiels.filter(
-      m => m.type === type
+      m => String(m.type) === String(type)
     ).length;
   }
-  
+
   isTypeFilterActive(): boolean {
     return !!this.selectedType;
   }

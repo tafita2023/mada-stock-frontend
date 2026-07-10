@@ -46,7 +46,7 @@
           >
             <option value="">Tout les types</option>
             <option *ngFor="let type of getUniqueTypes()" [value]="type">
-              {{ type }} ({{ getTypeCount(type) }})
+              {{ getTypeLabel(type) }} ({{ getTypeCount(type) }})
             </option>
           </select>
           
@@ -95,7 +95,7 @@
                     <strong>{{ materiel.nom }}</strong>
                     <small>{{ materiel.description }}</small>
                    </td>
-                 <td class="type-cell">{{ materiel.type }}</td>
+                 <td class="type-cell">{{ getTypeLabel(materiel.type) }}</td>
                  <td class="brand-cell">{{ materiel.marque }}</td>
                  <td class="modele-cell">{{ materiel.modele }}</td>
                  <td class="batterie-cell">{{ materiel.batterie }}</td>
@@ -238,7 +238,7 @@
 
           </div>
 
-           <!-- TYPE ET MODELE -->
+           <!-- TYPE -->
           <div class="form-row">
             <div class="form-group full-width">
               <label>Type</label>

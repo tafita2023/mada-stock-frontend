@@ -4,4 +4,4 @@ export const environment = {
   storageUrl: 'https://mada-stock.com/public'
 };
 
-// http://127.0.0.1:8000
+// https://mada-stock.com

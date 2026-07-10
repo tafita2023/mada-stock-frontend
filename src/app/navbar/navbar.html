@@ -7,7 +7,7 @@
         <div class="logo-section">
           <a href="/" class="logo-link">
             <div class="logo-wrapper">
-              <img class="logo-image" src="/logo.jpg" alt="Logo">
+              <img class="logo-image" src="/logo3.jpg" alt="Logo">
             </div>
           </a>
         </div>
@@ -46,15 +46,15 @@
             <!-- Dropdown -->
             <div class="dropdown-menu" [class.show]="isProductSubmenuOpen">
 
-              <a class="dropdown-item" (click)="goToProduits()">
+              <a class="dropdown-item" (click)="goToProduits(); $event.stopPropagation()">
                 Tout
               </a>
             
               <a
                 *ngFor="let saveur of saveurs"
                 class="dropdown-item"
-                (click)="filtrerParSaveur(saveur)">
-                {{ saveur }}
+                (click)="filtrerParSaveur(saveur); $event.stopPropagation()">
+                {{ saveur.name }}
               </a>
             
             </div>
@@ -86,15 +86,15 @@
             <!-- Dropdown -->
             <div class="dropdown-menu" [class.show]="isMaterielSubmenuOpen">
 
-              <a class="dropdown-item" (click)="goToMateriels()">
+              <a class="dropdown-item" (click)="goToMateriels(); $event.stopPropagation()">
                 Tout
               </a>
             
               <a
                 *ngFor="let type of types"
                 class="dropdown-item"
-                (click)="filtrerParType(type)">
-                {{ type }}
+                (click)="filtrerParType(type); $event.stopPropagation()">
+                {{ type.name }}
               </a>
             
             </div>
@@ -117,7 +117,7 @@
           </button>
           
           <!-- Mobile Menu Button -->
-          <button (click)="toggleMobileMenu()" class="mobile-menu-button">
+          <button type="button" (click)="toggleMobileMenu()" class="mobile-menu-button">
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
@@ -146,15 +146,15 @@
 
                     <a
                       class="mobile-subitem"
-                      (click)="goToProduits()">
+                      (click)="goToProduits(); $event.stopPropagation()">
                       Tout
                     </a>
                   
                     <a
                       *ngFor="let saveur of saveurs"
                       class="mobile-subitem"
-                      (click)="filtrerParSaveur(saveur)">
-                      {{ saveur }}
+                      (click)="filtrerParSaveur(saveur); $event.stopPropagation()">
+                      {{ saveur.name }}
                     </a>
                   
                   </div>
@@ -173,15 +173,15 @@
 
                     <a
                       class="mobile-subitem"
-                      (click)="goToMateriels()">
+                      (click)="goToMateriels(); $event.stopPropagation()">
                       Tout
                     </a>
                   
                     <a
                       *ngFor="let type of types"
                       class="mobile-subitem"
-                      (click)="filtrerParType(type)">
-                      {{ type }}
+                      (click)="filtrerParType(type); $event.stopPropagation()">
+                      {{ type.name }}
                     </a>
                   
                   </div>
