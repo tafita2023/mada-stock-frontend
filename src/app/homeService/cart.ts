@@ -9,9 +9,10 @@ export interface CartItem {
   price: number;
   quantity: number;
   image: string;
-  category: 'produit' | 'materiel';
+  category: 'produit' | 'materiel' | 'base' | 'arome' | 'pack' | 'diver';
   type?: string;
   marque?: string;
+  ratio?: string;
 }
 
 @Injectable({
@@ -90,7 +91,7 @@ export class CartService {
 
   addMaterielToCart(materiel: any): void {
     const cart = this.getCart();
-    const key = `materiel-${materiel.id}`; // Format cohérent
+    const key = `materiel-${materiel.id}`; 
 
     const existingItem = cart.find(item => item.key === key);
 
@@ -112,6 +113,190 @@ export class CartService {
       cart.push(newItem);
       this.saveCart(cart);
     }
+  }
+
+  addBaseToCart(base: any): void {
+
+    const cart = this.getCart();
+  
+    const key = `base-${base.id}`;
+  
+    const existingItem = cart.find(item => item.key === key);
+  
+  
+    if (existingItem) {
+  
+      existingItem.quantity += 1;
+  
+      this.saveCart(cart);
+  
+    } else {
+  
+      const newItem: CartItem = {
+  
+        key: key,
+  
+        id: base.id,
+  
+        category: 'base',
+  
+        name: base.nom || base.name,
+  
+        price: Number(base.prix || base.price),
+  
+        image: base.image || 'assets/default.png',
+  
+        quantity: 1,
+  
+        ratio: base.ratio || ''
+  
+      };
+  
+  
+      cart.push(newItem);
+  
+      this.saveCart(cart);
+  
+    }
+  
+  }
+
+  addAromeToCart(arome: any): void {
+
+    const cart = this.getCart();
+  
+    const key = `arome-${arome.id}`;
+  
+    const existingItem = cart.find(item => item.key === key);
+  
+  
+    if (existingItem) {
+  
+      existingItem.quantity += 1;
+  
+      this.saveCart(cart);
+  
+    } else {
+  
+      const newItem: CartItem = {
+  
+        key: key,
+  
+        id: arome.id,
+  
+        category: 'arome',
+  
+        name: arome.nom || arome.name,
+  
+        price: Number(arome.prix || arome.price),
+  
+        image: arome.image || 'assets/default.png',
+  
+        quantity: 1,
+  
+        marque: arome.marque || ''
+  
+      };
+  
+  
+      cart.push(newItem);
+  
+      this.saveCart(cart);
+  
+    }
+  
+  }
+
+  addPackToCart(pack: any): void {
+
+    const cart = this.getCart();
+  
+    const key = `pack-${pack.id}`;
+  
+    const existingItem = cart.find(item => item.key === key);
+  
+  
+    if (existingItem) {
+  
+      existingItem.quantity += 1;
+  
+      this.saveCart(cart);
+  
+    } else {
+  
+      const newItem: CartItem = {
+  
+        key: key,
+  
+        id: pack.id,
+  
+        category: 'pack',
+  
+        name: pack.nom || pack.name,
+  
+        price: Number(pack.prix || pack.price),
+  
+        image: pack.image || 'assets/default.png',
+  
+        quantity: 1,
+  
+        marque: pack.marque || ''
+  
+      };
+  
+  
+      cart.push(newItem);
+  
+      this.saveCart(cart);
+  
+    }
+  
+  }
+
+  addDiverToCart(diver: any): void {
+
+    const cart = this.getCart();
+  
+    const key = `diver-${diver.id}`;
+  
+    const existingItem = cart.find(item => item.key === key);
+  
+  
+    if (existingItem) {
+  
+      existingItem.quantity += 1;
+  
+      this.saveCart(cart);
+  
+    } else {
+  
+      const newItem: CartItem = {
+  
+        key: key,
+  
+        id: diver.id,
+  
+        category: 'diver',
+  
+        name: diver.nom || diver.name,
+  
+        price: Number(diver.prix || diver.price),
+  
+        image: diver.image || 'assets/default.png',
+  
+        quantity: 1,
+  
+        marque: diver.marque || ''
+  
+      };
+
+  
+      cart.push(newItem);
+  
+      this.saveCart(cart);
+  
+    }
+  
   }
 
   getProducts(): CartItem[] {

@@ -1,0 +1,331 @@
+<!-- INDICATEUR DE CHARGEMENT -->
+<div class="loading-overlay" *ngIf="isLoading">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Chargement des aromes...</p>
+    </div>
+  </div>
+
+    <!-- CONTENU PRINCIPAL -->
+    <div *ngIf="!isLoading">
+        <div class="aromes-container">
+          <!-- Header -->
+          <div class="page-header">
+            <h1>Gestion des aromes</h1>
+            <button class="btn-primary" (click)="openAddModal()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+              Nouveau arome
+            </button>
+          </div>
+        
+          <!-- Filters -->
+          <div class="filters-card">
+            <div class="filters-row">
+              <div class="search-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"/>
+                  <path d="M21 21l-4.3-4.3"/>
+                </svg>
+                <input 
+                  type="text" 
+                  placeholder="Rechercher par nom..."
+                  [(ngModel)]="searchTerm"
+                  (input)="onSearchChange()"
+                />
+              </div>
+              
+        
+              <div class="filter-group">
+                <button class="btn-clear" (click)="clearFilters()" *ngIf="searchTerm || selectedType">
+                  Effacer les filtres
+                </button>
+              </div>
+            </div>
+          </div>
+        
+          <!-- Products Table -->
+          <div class="table-card">
+            <div class="table-responsive">
+              <table class="aromes-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Nom</th>
+                    <th>Marque</th>
+                    <th>Categorie</th>
+                    <th>Prix (Ar)</th>
+                    <th>Quantité (ml)</th>
+                    <th>Stock</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let arome of paginatedAromes; let i = index">
+                    <td class="id-cell">{{ i + 1 }}</td>
+                    <td class="image-cell">
+                      <img 
+                      [src]="getImageUrl(arome.image)" 
+                      alt="{{ arome.nom }}"
+                      class="product-img"
+                    />
+                    </td>
+      
+                    <td class="nom-cell">
+                        <strong>{{ arome.nom }}</strong>
+                        <small>{{ arome.description }}</small>
+                       </td>
+                     <td class="brand-cell">{{ arome.marque }}</td>
+                     <td class="brand-cell">{{ getCategorieLabel(arome.categorie) }}</td>
+                     <td class="modele-cell">{{ arome.quantite }}</td>
+                    <td class="prix-cell">{{ arome.prix | number }} Ar</td>
+                    <td>
+                      <span [class.low-stock]="arome.stock < 10">
+                        {{ arome.stock }}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="actions-cell">
+                        <button class="btn-edit" (click)="openEditModal(arome)">
+                          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                          </svg>                      
+                        </button>
+                        <button class="btn-delete" (click)="openDeleteModal(arome)">
+                          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+                          </svg>                      
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr *ngIf="!paginatedAromes || paginatedAromes.length === 0">
+                    <td colspan="5" class="empty-state">
+                      <p>Aucun arome trouvé</p>
+                      <button class="btn-primary" (click)="openAddModal()">Ajouter un arome</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+        
+            <!-- Pagination -->
+            <div class="pagination-container" *ngIf="filteredAromes.length > 0">
+              <div class="pagination-info">
+                Affichage de {{ getStartIndex() }} à {{ getEndIndex() }} sur {{ getTotalAromes() }} aromes
+              </div>
+              <div class="pagination-controls">
+                <button 
+                  class="pagination-btn" 
+                  (click)="previousPage()" 
+                  [disabled]="currentPage === 1"
+                >
+                  &laquo; Précédent
+                </button>
+                
+                <div class="pagination-pages">
+                  <button 
+                    *ngFor="let page of getPages()"
+                    class="pagination-page"
+                    [class.active]="page === currentPage"
+                    (click)="goToPage(page)"
+                  >
+                    {{ page }}
+                  </button>
+                </div>
+                
+                <button 
+                  class="pagination-btn" 
+                  (click)="nextPage()" 
+                  [disabled]="currentPage === totalPages"
+                >
+                  Suivant &raquo;
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+  <!-- MODAL AJOUT -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ isEditing ? 'Modifier une arome' : 'Ajouter une arome' }}</h2>
+        <button class="modal-close" (click)="closeModal()">×</button>
+      </div>
+  
+      <div class="modal-body">
+        <form #aromeForm="ngForm">
+          <!-- IMAGE -->
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label>Image</label>
+              <div class="image-upload-wrapper">
+                <input
+                  type="file"
+                  accept="image/*"
+                  (change)="onFileSelected($event)"
+                  id="imageInput"
+                  hidden
+                />
+                <label for="imageInput" class="image-upload-box">
+                  <ng-container *ngIf="imagePreview; else uploadIcon">
+                    <img
+                      [src]="imagePreview"
+                      class="preview-image"
+                      alt="image preview"
+                    />
+                  </ng-container>
+                  <ng-template #uploadIcon>
+                    <div class="upload-text">
+                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"/>
+                      </svg>
+                      <strong>Choisir une image</strong>
+                    </div>
+                  </ng-template>
+                </label>
+              </div>
+            </div>
+          </div>
+  
+          <!-- NOM -->
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label>Nom *</label>
+              <input
+                type="text"
+                [(ngModel)]="currentArome.nom"
+                name="nom"
+                required
+                placeholder="ex: Marlboro Red"
+              />
+            </div>
+            
+            <div class="form-group full-width">
+                <label>marque *</label>
+                <input
+                  type="text"
+                  [(ngModel)]="currentArome.marque"
+                  name="marque"
+                  required
+                  placeholder="ex: Marlboro Red"
+                />
+              </div>
+          </div>
+
+          <!-- QUANTITE ET CATEGORIE -->
+          <div class="form-row">
+
+            <div class="form-group">
+                <label>Categorie *</label>
+                <select
+                [(ngModel)]="currentArome.categorie"
+                name="categorie"
+                required
+                class="form-control"
+              >
+                <option value="" disabled selected>Sélectionner une categorie</option>
+                <option *ngFor="let categorie of categories" [value]="categorie.value">
+                  {{ categorie.label }}
+                </option>
+              </select>
+              </div>
+  
+            <div class="form-group">
+              <label>Quantite *</label>
+              <input
+                type="number"
+                [(ngModel)]="currentArome.quantite"
+                name="quantite"
+                required
+                placeholder="ex: Marlboro Red"
+              />
+            </div>
+          </div>
+
+          <!-- PRIX - QUANTITE -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>Prix unitaire (Ar) *</label>
+              <input
+                type="number"
+                [(ngModel)]="currentArome.prix"
+                name="prix"
+                required
+                min="1"
+                step="1"
+              />
+            </div>
+  
+            <div class="form-group">
+              <label>Quantité en stock *</label>
+              <input
+                type="number"
+                [(ngModel)]="currentArome.stock"
+                name="stock"
+                required
+                min="0"
+              />
+            </div>
+          </div>
+  
+        <!-- DESCRIPTION -->
+        <div class="form-group full-width">
+          <label>Description</label>
+          <textarea
+            [(ngModel)]="currentArome.description"
+            name="description"
+            rows="3"
+            placeholder="Description de la arome ..."
+          ></textarea>
+        </div>
+
+        </form>
+      </div>
+  
+      <!-- FOOTER -->
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" (click)="closeModal()">
+          Annuler
+        </button>
+        <button
+          type="button"
+          class="btn-save"
+          (click)="aromeForm.valid && saveArome()"
+          [disabled]="!aromeForm.form.valid"
+        >
+          {{ isEditing ? 'Mettre à jour' : 'Enregistrer' }}
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- MODAL SUPPRIMER -->
+  <div class="modal-overlay" *ngIf="showDeleteModal" (click)="closeDeleteModal()">
+    <div class="modal-container delete-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Confirmer la suppression</h2>
+        <button class="modal-close" (click)="closeDeleteModal()">×</button>
+      </div>
+  
+      <div class="modal-body">
+        <p>Voulez-vous vraiment supprimer :</p>
+        <strong>{{ aromeToDelete?.nom }}</strong>
+        <p class="warning-text">Cette action est irréversible.</p>
+      </div>
+  
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeDeleteModal()">Annuler</button>
+        <button class="btn-delete-confirm" (click)="confirmDelete()">Supprimer</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- NOTIFICATION TOAST -->
+  <div class="toast-notification" *ngIf="showNotification" [class.success]="notificationType === 'success'" [class.error]="notificationType === 'error'">
+    {{ notificationMessage }}
+  </div>

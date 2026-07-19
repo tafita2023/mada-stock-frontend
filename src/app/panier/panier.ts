@@ -19,9 +19,17 @@ export class PanierComponent implements OnInit, OnDestroy {
 
   cartItems: CartItem[] = [];
   materielItems: CartItem[] = [];
-  
+  baseItems: CartItem[] = [];
+  aromeItems: CartItem[] = [];
+  packItems: CartItem[] = [];
+  diverItems: CartItem[] = [];
+
   displayProductsOnly: boolean = false;
   displayWithMateriel: boolean = false;
+  displayWithBase: boolean = false;
+  displayWithArome: boolean = false;
+  displayWithPack: boolean = false;
+  displayWithDiver: boolean = false;
 
   private cartSubscription!: Subscription;
 
@@ -61,6 +69,10 @@ export class PanierComponent implements OnInit, OnDestroy {
     this.cartSubscription = this.cartService.cart$.subscribe(items => {
       this.cartItems = items.filter(i => i.category === 'produit');
       this.materielItems = items.filter(i => i.category === 'materiel');
+      this.baseItems = items.filter(i => i.category === 'base');
+      this.aromeItems = items.filter(i => i.category === 'arome');
+      this.packItems = items.filter(i => i.category === 'pack');
+      this.diverItems = items.filter(i => i.category === 'diver');
 
       this.updateDisplayMode();
     });
@@ -79,7 +91,7 @@ export class PanierComponent implements OnInit, OnDestroy {
   }
 
   get allItems(): CartItem[] {
-    return [...this.cartItems, ...this.materielItems];
+    return [...this.cartItems, ...this.materielItems, ...this.baseItems, ...this.aromeItems, ...this.packItems, ...this.diverItems];
   }
   
   hasMateriel(): boolean {
@@ -87,12 +99,29 @@ export class PanierComponent implements OnInit, OnDestroy {
   }
 
   updateDisplayMode(): void {
-    this.displayProductsOnly = this.cartItems.length > 0 && this.materielItems.length === 0;
-    this.displayWithMateriel = this.materielItems.length > 0;
-  }
 
+    this.displayProductsOnly =
+      this.cartItems.length > 0 &&
+      this.materielItems.length === 0;
+  
+    this.displayWithMateriel =
+      this.materielItems.length > 0;
+  
+    this.displayWithBase =
+      this.baseItems.length > 0;
+  
+    this.displayWithArome =
+      this.aromeItems.length > 0;
+  
+    this.displayWithPack =
+      this.packItems.length > 0;
+  
+    this.displayWithDiver =
+      this.diverItems.length > 0;
+  }
+  
   getAllItems(): CartItem[] {
-    return [...this.cartItems, ...this.materielItems];
+    return [...this.cartItems, ...this.materielItems, ...this.baseItems, ...this.aromeItems, ...this.packItems, ...this.diverItems];
   }
 
   getImageUrl(image?: string) {

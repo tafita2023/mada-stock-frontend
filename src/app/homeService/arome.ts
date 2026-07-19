@@ -1,0 +1,29 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { environment } from '../../environments/environment';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AromeService {
+  private apiUrl = environment.apiUrl;
+
+  private refreshSubject = new BehaviorSubject<void>(undefined);
+  refresh$ = this.refreshSubject.asObservable();
+
+  constructor(private http: HttpClient) {}
+
+  getAromes(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/diy/aromes`);
+  }
+
+  getArome(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/aromes/${id}`);
+  }
+
+  triggerRefresh(): void {
+    this.refreshSubject.next();
+  }
+
+}

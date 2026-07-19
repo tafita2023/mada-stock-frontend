@@ -1,0 +1,114 @@
+<section class="packs-section">
+    <div class="packs-container">
+        <!-- En-tête -->
+        <div class="packs-header">
+            <h2 class="packs-title">
+                Packs
+            </h2>
+        </div>
+
+        <!-- Grille de packs -->
+        <div class="packs-grid">
+            <div class="pack-card" *ngFor="let pack of packs" (click)="openDetail(pack)">
+                
+                <!-- Image du pack -->
+                <div class="pack-image">
+                    <img [src]="getImageUrl(pack.image)" [alt]="pack.nom">
+                    
+                    <div class="stock-badge" [class.out-of-stock]="!pack.stock">
+                        {{ pack.stock ? 'En stock' : 'Rupture' }}
+                    </div>
+                </div>
+
+                <!-- Informations pack -->
+                <div class="pack-info">
+                    <h3 class="pack-name">{{ pack.nom }}</h3>
+                    <h1 class="description">{{ pack.description }}</h1>
+
+                    <!-- Prix -->
+                    <div class="pack-footer">
+                        <div class="pack-price">
+                            <span class="current-price">Prix: {{ pack.prix | number }} Ar</span>
+                        </div>
+    
+                        <!-- Bouton ajouter -->
+                        <button 
+                        class="add-to-cart-btn" 
+                        (click)="addToCart(pack); $event.stopPropagation()" 
+                        [disabled]="!pack.stock">
+                                                            
+                        <svg *ngIf="pack.stock" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/>
+                        </svg>
+                                                
+                        <svg *ngIf="!pack.stock" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                        </svg>
+                      
+                      </button>    
+                    </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- POPUP DETAIL -->
+<div class="modal-overlay" *ngIf="showDetailModal" (click)="closeDetail()">
+
+    <div 
+      class="detail-modal" 
+      (click)="$event.stopPropagation()"
+    >
+    <div class="header">
+        <h1>Information sur la pack</h1>
+    </div>
+
+        <button 
+          class="close-btn"
+          (click)="closeDetail()">
+          ×
+        </button>
+
+        <img 
+          class="detail-image"
+          [src]="getImageUrl(selectedPack?.image)"
+          [alt]="selectedPack?.nom"
+        >
+
+        <h2>
+          {{ selectedPack?.nom }}
+        </h2>
+
+        <p>
+          <strong>Marque :</strong>
+          {{ selectedPack?.marque }}
+        </p>
+
+        <p>
+          <strong>Quantite :</strong>
+          {{ selectedPack?.quantite }} ml
+        </p>
+
+        <p>
+            <strong>Nicotine :</strong>
+            {{ selectedPack?.nicotine }} ml
+          </p>
+  
+        <p *ngIf="selectedPack?.description">
+          <strong>Description :</strong><br>
+          {{ selectedPack?.description }}
+        </p>
+
+        <div class="detail-footer">
+
+            <div class="pack-price">
+              <span class="current-price">
+                Prix: {{ selectedPack?.prix | number }} Ar
+              </span>
+            </div>
+                    
+          </div>
+    </div>
+
+</div>

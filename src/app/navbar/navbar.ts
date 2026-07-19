@@ -31,10 +31,18 @@ export class Navbar implements OnInit, OnDestroy {
     { id: 5, name: 'Consomables' }
   ];
 
+  diys = [
+    { name: 'Bases', route:'diy/bases' },
+    { name: 'Arômes concentré', route:'diy/aromes' },
+    { name: 'Booster/Additifs', route:'diy/boosters_additifs' },
+    { name: 'Packs', route:'diy/packs' },
+    { name: 'Divers', route:'diy/divers' },
+  ];
 
   isMobileMenuOpen = false;
   isProductSubmenuOpen = false;
   isMaterielSubmenuOpen = false;
+  isDiySubmenuOpen = false;
 
   cartCount = 0;
 
@@ -118,6 +126,11 @@ export class Navbar implements OnInit, OnDestroy {
 
     this.closeAllMenus();
 
+    if (saveur.id === 6) {
+      this.router.navigate(['/diy/boosters_additifs']);
+      return;
+    }
+    
     this.router.navigate(['/produits'], {
       queryParams: {
         saveur: saveur.id

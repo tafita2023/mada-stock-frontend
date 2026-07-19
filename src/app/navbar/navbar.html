@@ -100,6 +100,41 @@
             </div>
           </div>
 
+          <!-- MENU DIY -->
+          <div class="nav-dropdown"
+          (mouseenter)="isDiySubmenuOpen = true"
+          (mouseleave)="isDiySubmenuOpen = false" 
+        >
+          <!-- Bouton principal -->
+          <a [routerLink]="['/diy']" class="nav-link dropdown-toggle">
+            <span>DIY</span>
+
+            <svg class="w-6 h-6 dropdown-icon"
+              [class.open]="isDiySubmenuOpen"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m5 15 7-7 7 7"/>
+            </svg>
+
+            <span class="nav-link-bg"></span>
+          </a>
+
+          <!-- Dropdown -->
+          <div class="dropdown-menu" [class.show]="isDiySubmenuOpen">          
+            <a
+              *ngFor="let diy of diys"
+              class="dropdown-item"
+              [routerLink]="diy.route">
+              {{ diy.name }}
+            </a>
+          
+          </div>
+        </div>
+
           <a href="/contact" class="nav-link">
             <span>Contact</span>
             <span class="nav-link-bg"></span>

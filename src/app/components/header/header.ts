@@ -16,6 +16,15 @@ export class Header implements OnInit {
   sidebarOpen = true;
   private isBrowser: boolean;
 
+  diys = [
+    { name: 'Bases', route:'diy/bases' },
+    { name: 'Arômes concentré', route:'diy/aromes' },
+    { name: 'Packs', route:'diy/packs' },
+    { name: 'Divers', route:'diy/divers' },
+  ];
+
+  isDiyOpen = false;
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
     private authService: AuthService,
@@ -35,6 +44,10 @@ export class Header implements OnInit {
 
   toggleSidebar() {
     this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  toggleDiyMenu(): void {
+    this.isDiyOpen = !this.isDiyOpen;
   }
 
   @HostListener('window:resize', ['$event'])
@@ -57,6 +70,7 @@ export class Header implements OnInit {
   closeSidebarOnMobile(): void {
     if (window.innerWidth <= 768) {
       this.sidebarOpen = false;
+      this.isDiyOpen= false;
     }
   }
 

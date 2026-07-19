@@ -14,6 +14,13 @@ export class Contact {
   submitted = false;
   success = false;
 
+  // ================= NOTIFICATIONS =================
+  showNotification = false;
+  notificationMessage = '';
+  notificationType: 'success' | 'error' = 'success';
+  private toastTimeout: any = null;
+
+
   constructor(private formBuilder: FormBuilder) {
     this.contactForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(2)]],

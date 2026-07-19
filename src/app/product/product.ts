@@ -34,7 +34,8 @@ export class ProductsComponent implements OnInit, OnDestroy {
     2: 'Mentholé',
     3: 'Fruité',
     4: 'Boisson',
-    5: 'Gourmand'
+    5: 'Gourmand',
+    6: 'Boosters/Additifs'
   };
 
   products: Product[] = [];
@@ -60,8 +61,11 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.subs.add(
       this.route.queryParamMap.subscribe(params => {
   
-        const saveur = params.get('saveur');
+        let saveur = params.get('saveur');
   
+        if (this.router.url.includes('/diy/boosters_additifs')) {
+          saveur = '6';
+        }
         this.selectedSaveur = saveur ? Number(saveur) : 0;
   
         console.log('url saveur:', this.selectedSaveur);

@@ -1,0 +1,104 @@
+<section class="divers-section">
+    <div class="divers-container">
+        <!-- En-tête -->
+        <div class="divers-header">
+            <h2 class="divers-title">
+                Divers
+            </h2>
+        </div>
+
+        <!-- Grille de divers -->
+        <div class="divers-grid">
+            <div class="diver-card" *ngFor="let diver of divers" (click)="openDetail(diver)">
+                
+                <!-- Image du diver -->
+                <div class="diver-image">
+                    <img [src]="getImageUrl(diver.image)" [alt]="diver.nom">
+                    
+                    <div class="stock-badge" [class.out-of-stock]="!diver.stock">
+                        {{ diver.stock ? 'En stock' : 'Rupture' }}
+                    </div>
+                </div>
+
+                <!-- Informations diver -->
+                <div class="diver-info">
+                    <h3 class="diver-name">{{ diver.nom }}</h3>
+                    <h1 class="description">{{ diver.description }}</h1>
+
+                    <!-- Prix -->
+                    <div class="diver-footer">
+                        <div class="diver-price">
+                            <span class="current-price">Prix: {{ diver.prix | number }} Ar</span>
+                        </div>
+    
+                        <!-- Bouton ajouter -->
+                        <button 
+                        class="add-to-cart-btn" 
+                        (click)="addToCart(diver); $event.stopPropagation()" 
+                        [disabled]="!diver.stock">
+                                                            
+                        <svg *ngIf="diver.stock" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/>
+                        </svg>
+                                                
+                        <svg *ngIf="!diver.stock" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                        </svg>
+                      
+                      </button>    
+                    </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- POPUP DETAIL -->
+<div class="modal-overlay" *ngIf="showDetailModal" (click)="closeDetail()">
+
+    <div 
+      class="detail-modal" 
+      (click)="$event.stopPropagation()"
+    >
+    <div class="header">
+        <h1>Information sur la diver</h1>
+    </div>
+
+        <button 
+          class="close-btn"
+          (click)="closeDetail()">
+          ×
+        </button>
+
+        <img 
+          class="detail-image"
+          [src]="getImageUrl(selectedDiver?.image)"
+          [alt]="selectedDiver?.nom"
+        >
+
+        <h2>
+          {{ selectedDiver?.nom }}
+        </h2>
+
+        <p>
+          <strong>Marque :</strong>
+          {{ selectedDiver?.marque }}
+        </p>
+
+        <p *ngIf="selectedDiver?.description">
+          <strong>Description :</strong><br>
+          {{ selectedDiver?.description }}
+        </p>
+
+        <div class="detail-footer">
+
+            <div class="diver-price">
+              <span class="current-price">
+                Prix: {{ selectedDiver?.prix | number }} Ar
+              </span>
+            </div>
+                    
+          </div>
+    </div>
+
+</div>
