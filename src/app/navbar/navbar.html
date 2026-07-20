@@ -222,6 +222,29 @@
                   </div>
               </div>
               
+              <!-- MENU DIY -->
+              <div class="mobile-dropdown">
+                  <div class="mobile-nav-link dropdown-toggle" (click)="toggleDiySubmenu()">
+                      <span>Diy</span>
+                      <svg class="dropdown-icon" [class.open]="isMaterielSubmenuOpen" viewBox="0 0 24 24">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
+                      </svg>
+                  </div>
+                  
+                  <div class="mobile-submenu" [class.open]="isDiySubmenuOpen">
+                  
+                    <a
+                      *ngFor="let diy of diys"
+                      class="mobile-subitem"
+                      [routerLink]="['/', ...diy.route.split('/')]"
+                      (click)="closeAllMenus(); $event.stopPropagation()"
+                      >
+                      {{ diy.name }}
+                    </a>
+                  
+                  </div>
+              </div>
+
               <a href="/contact" class="mobile-nav-link" (click)="closeAllMenus()">
                   <span>Contact</span>
               </a>

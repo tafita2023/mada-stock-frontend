@@ -87,6 +87,8 @@ export class Navbar implements OnInit, OnDestroy {
     if (!this.isMobileMenuOpen) {
       this.isProductSubmenuOpen = false;
       this.isMaterielSubmenuOpen = false;
+      this.isDiySubmenuOpen = false;
+
     }
 
   }
@@ -96,6 +98,7 @@ export class Navbar implements OnInit, OnDestroy {
     this.isMobileMenuOpen = false;
     this.isProductSubmenuOpen = false;
     this.isMaterielSubmenuOpen = false;
+    this.isDiySubmenuOpen = false;
 
     document.body.style.overflow = ''
   }
@@ -106,6 +109,7 @@ export class Navbar implements OnInit, OnDestroy {
 
     if (this.isProductSubmenuOpen) {
       this.isMaterielSubmenuOpen = false;
+      this.isDiySubmenuOpen = false;
     }
 
   }
@@ -116,6 +120,18 @@ export class Navbar implements OnInit, OnDestroy {
 
     if (this.isMaterielSubmenuOpen) {
       this.isProductSubmenuOpen = false;
+      this.isDiySubmenuOpen = false;
+    }
+
+  }
+
+  toggleDiySubmenu(): void {
+
+    this.isDiySubmenuOpen = !this.isDiySubmenuOpen;
+
+    if (this.isDiySubmenuOpen) {
+      this.isProductSubmenuOpen = false;
+      this.isMaterielSubmenuOpen = false;
     }
 
   }
