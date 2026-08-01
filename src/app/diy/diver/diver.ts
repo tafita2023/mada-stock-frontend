@@ -30,6 +30,7 @@ export class DiverComponent {
   loadingError = false;
   selectedDiver: Diver | null = null;
   showDetailModal = false;
+  selectedSearch = '';
 
   private subs = new Subscription();
 
@@ -43,6 +44,22 @@ export class DiverComponent {
 
   ngOnInit(): void {
   
+    this.subs.add(
+      this.route.queryParamMap.subscribe(params => {
+  
+        const recherche = params.get('recherche');
+  
+        this.selectedSearch = recherche
+          ? recherche.trim().toLowerCase()
+          : '';
+    
+        if (this.divers.length > 0) {
+          this.applyFilter();
+        }
+  
+      })
+    );
+
     this.loadDivers();
   
   }
@@ -67,7 +84,7 @@ export class DiverComponent {
 
           this.divers = data;
 
-          this.filteredDivers = [...this.divers];
+          this.applyFilter;
 
           this.isLoading = false;
 
@@ -91,18 +108,42 @@ export class DiverComponent {
     this.subs.add(sub);
   }
 
+  applyFilter(): void {
+
+    let result = [...this.divers];
+  
+  
+    if (this.selectedSearch.length > 0) {
+  
+      result = result.filter(diver => {
+  
+        const nom = String(diver.nom ?? '')
+          .toLowerCase();
+    
+        return (
+          nom.includes(this.selectedSearch)
+        );
+  
+      });
+  
+    }
+  
+    this.filteredDivers = result;
+    
+  }
+
   getImageUrl(image: string | null | undefined): string {
     if (!image) return 'assets/no-image.png';
     return `${environment.storageUrl}/${image}`;
   }
 
-  addToCart(base: Diver): void {
-    this.cartService.addDiverToCart(base);
+  addToCart(diver: Diver): void {
+    this.cartService.addDiverToCart(diver);
   }
 
   // ================= DETAILS =================
-  openDetail(base: Diver): void {
-    this.selectedDiver = base;
+  openDetail(diver: Diver): void {
+    this.selectedDiver = diver;
     this.showDetailModal = true;
 
     document.body.style.overflow = 'hidden';

@@ -47,6 +47,7 @@ export class MaterielsComponent implements OnInit, OnDestroy {
   loadingError = false;
   selectedMateriel: Materiel | null = null;
   showDetailModal = false;
+  selectedSearch = '';
 
   private subs = new Subscription();
 
@@ -63,12 +64,17 @@ export class MaterielsComponent implements OnInit, OnDestroy {
     this.subs.add(
       this.route.queryParamMap.subscribe(params => {
   
-        const type = params.get('type');
+        const typeParam = params.get('type');
+        const rechercheParam = params.get('recherche');
   
-        this.selectedType = type ? Number(type) : 0;
-  
-        console.log('url type:', this.selectedType);
-        
+        this.selectedType = typeParam
+          ? Number(typeParam)
+          : 0;
+   
+        this.selectedSearch = rechercheParam
+          ? rechercheParam.trim().toLowerCase()
+          : '';  
+    
         if (this.materiels.length > 0) {
           this.applyFilter();
         }
@@ -76,10 +82,11 @@ export class MaterielsComponent implements OnInit, OnDestroy {
       })
     );
   
+  
     this.loadMateriels();
   
   }
-
+  
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
@@ -116,25 +123,41 @@ export class MaterielsComponent implements OnInit, OnDestroy {
   // ================= FILTRE =================
   applyFilter(): void {
 
-    if (!this.selectedType || this.selectedType === 0) {
+    let result = [...this.materiels];
   
-      this.filteredMateriels = [...this.materiels];
+    // Recherche
+    if (this.selectedSearch.length > 0) {
   
-      return;
+      result = result.filter(product => {
+  
+        const nom = String(product.nom ?? '')
+          .trim()
+          .toLowerCase();
+  
+        const marque = String(product.marque ?? '')
+          .trim()
+          .toLowerCase();
+  
+        return (
+          nom.includes(this.selectedSearch) ||
+          marque.includes(this.selectedSearch)
+        );
+      });
+  
     }
   
+    // Type
+    if (this.selectedType > 0) {
   
-    this.filteredMateriels = this.materiels.filter(m =>
-      Number(m.type) === Number(this.selectedType)
-    );
+      result = result.filter(product =>
+        Number(product.type) === Number(this.selectedType)
+      );
   
+    }
   
-    console.log(
-      'TYPE FILTRE:',
-      this.selectedType,
-      'RESULTAT:',
-      this.filteredMateriels
-    );
+    this.filteredMateriels = result;
+  
+    console.log('Résultat final :', this.filteredMateriels);
   
   }
 

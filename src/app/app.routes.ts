@@ -15,7 +15,7 @@ import { AromeComponent } from './diy/arome/arome';
 import { PackComponent } from './diy/pack/pack';
 import { DiverComponent } from './diy/diver/diver';
 import { CompteComponent } from './components/compte/compte';
-
+import { NotificationComponents } from './components/notification/notification';
 import { PanierComponent } from './panier/panier';
 
 import { LayoutClient } from './layout/layout';
@@ -36,6 +36,7 @@ export const routes: Routes = [
             { path:'produits', component:ProduitComponent },
             { path:'materiels', component:MaterielComponent },
             { path:'mon_compte', component:CompteComponent },
+            { path:'notifications', component:NotificationComponents },
             { path:'diy/bases', component:BasesComponent },
             { path:'diy/aromes', component:AromesComponent },
             { path:'diy/packs', component:PacksComponent },

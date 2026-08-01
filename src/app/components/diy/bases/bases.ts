@@ -10,7 +10,7 @@ export interface Base {
   id?: number;
   nom: string;
   ratio: string;
-  quantite: number;
+  quantite: string;
   prix: number;
   stock: number;
   description: string;
@@ -87,7 +87,7 @@ export class BasesComponent {
       return {
         nom: '',
         ratio: '',
-        quantite: 0,
+        quantite: '',
         prix: 0,
         stock: 0,
         description: '',
@@ -162,7 +162,7 @@ export class BasesComponent {
 
     const nom = this.capitalizeFirstLetter(this.currentBase.nom);
     const ratio = this.currentBase.ratio;
-    const quantite = Number(this.currentBase.quantite);
+    const quantite = this.currentBase.quantite;
     const description = this.capitalizeFirstLetter(this.currentBase.description);
     const prix = Number(this.currentBase.prix);
     const stock = Number(this.currentBase.stock);
@@ -194,7 +194,7 @@ export class BasesComponent {
     
     formData.append('nom', nom);
     formData.append('ratio', ratio);
-    formData.append('quantite', quantite.toString());
+    formData.append('quantite', quantite);
     formData.append('prix', prix.toString());
     formData.append('stock', stock.toString());
     formData.append('description', description);

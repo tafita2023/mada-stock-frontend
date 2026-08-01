@@ -11,7 +11,7 @@ export interface Arome {
   marque: string;
   nom: string;
   categorie: number;
-  quantite: number;
+  quantite: string;
   prix: number;
   stock: number;
   description: string;
@@ -98,7 +98,7 @@ export class AromesComponent {
         nom: '',
         marque: '',
         categorie: 0,
-        quantite: 0,
+        quantite: '',
         prix: 0,
         stock: 0,
         description: '',
@@ -173,7 +173,7 @@ export class AromesComponent {
   
       const nom = this.capitalizeFirstLetter(this.currentArome.nom);
       const marque = this.capitalizeFirstLetter(this.currentArome.marque);
-      const quantite = Number(this.currentArome.quantite);
+      const quantite = this.currentArome.quantite;
       const description = this.capitalizeFirstLetter(this.currentArome.description);
       const categorie = Number(this.currentArome.categorie);
       const prix = Number(this.currentArome.prix);
@@ -212,7 +212,7 @@ export class AromesComponent {
       formData.append('nom', nom);
       formData.append('marque', marque);
       formData.append('categorie', categorie.toString());
-      formData.append('quantite', quantite.toString());
+      formData.append('quantite', quantite);
       formData.append('prix', prix.toString());
       formData.append('stock', stock.toString());
       formData.append('description', description);

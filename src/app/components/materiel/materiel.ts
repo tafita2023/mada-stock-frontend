@@ -11,8 +11,8 @@ export interface Materiel {
   nom: string;
   marque: string;
   modele: string;
-  batterie: number;
-  capacite: number;
+  batterie: string;
+  capacite: String;
   watts: number;
   type: number;
   prix: number;
@@ -166,8 +166,8 @@ export class MaterielComponent implements OnInit, OnDestroy {
       nom: '',
       marque: '',
       modele: '',
-      batterie: 0,
-      capacite: 0,
+      batterie: '',
+      capacite: '',
       watts: 0,
       type: 0,
       prix: 0,
@@ -230,7 +230,7 @@ export class MaterielComponent implements OnInit, OnDestroy {
     const marque = this.capitalizeFirstLetter(this.currentMateriel.marque);
     const modele = this.capitalizeFirstLetter(this.currentMateriel.modele);
     const description = this.capitalizeFirstLetter(this.currentMateriel.description);
-    const batterie = Number(this.currentMateriel.batterie);
+    const batterie = this.currentMateriel.batterie;
     const watts = Number(this.currentMateriel.watts);
     const capacite = Number(this.currentMateriel.capacite);
     const prix = Number(this.currentMateriel.prix);
@@ -285,7 +285,7 @@ export class MaterielComponent implements OnInit, OnDestroy {
     formData.append('type', this.currentMateriel.type.toString());
     formData.append('marque', marque);
     formData.append('modele', modele);
-    formData.append('batterie', batterie.toString());
+    formData.append('batterie', batterie);
     formData.append('capacite', capacite.toString());
     formData.append('watts', watts.toString());
     formData.append('prix', prix.toString());

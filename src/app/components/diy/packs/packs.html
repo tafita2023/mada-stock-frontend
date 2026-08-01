@@ -78,9 +78,9 @@
                         <small>{{ pack.description }}</small>
                        </td>
                      <td class="brand-cell">{{ pack.marque }}</td>
-                     <td class="modele-cell">{{ pack.nicotine }} %</td>
+                     <td class="modele-cell">{{ pack.nicotine }} mg</td>
                     <td class="prix-cell">{{ pack.prix | number }} Ar</td>
-                    <td class="modele-cell">{{ pack.quantite }}</td>
+                    <td class="modele-cell">{{ pack.quantite }} ml</td>
                     <td>
                       <span [class.low-stock]="pack.stock < 10">
                         {{ pack.stock }}
@@ -195,7 +195,7 @@
           <!-- NOM -->
           <div class="form-row">
             <div class="form-group">
-              <label>Nom du pack *</label>
+              <label>Nom *</label>
               <input
                 type="text"
                 [(ngModel)]="currentPack.nom"

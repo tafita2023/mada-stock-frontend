@@ -32,6 +32,7 @@ export class PackComponent {
   loadingError = false;
   selectedPack: Pack | null = null;
   showDetailModal = false;
+  selectedSearch = '';
 
   private subs = new Subscription();
 
@@ -45,6 +46,22 @@ export class PackComponent {
 
   ngOnInit(): void {
   
+    this.subs.add(
+      this.route.queryParamMap.subscribe(params => {
+  
+        const recherche = params.get('recherche');
+  
+        this.selectedSearch = recherche
+          ? recherche.trim().toLowerCase()
+          : '';
+    
+        if (this.packs.length > 0) {
+          this.applyFilter();
+        }
+  
+      })
+    );
+
     this.loadPacks();
   
   }
@@ -69,7 +86,7 @@ export class PackComponent {
 
           this.packs = data;
 
-          this.filteredPacks = [...this.packs];
+          this.applyFilter();
 
           this.isLoading = false;
 
@@ -93,18 +110,49 @@ export class PackComponent {
     this.subs.add(sub);
   }
 
+  applyFilter(): void {
+
+    let result = [...this.packs];
+  
+  
+    if (this.selectedSearch.length > 0) {
+  
+      result = result.filter(pack => {
+  
+        const nom = String(pack.nom ?? '')
+          .toLowerCase();
+    
+        return (
+          nom.includes(this.selectedSearch)
+        );
+  
+      });
+  
+    }
+  
+  
+    this.filteredPacks = result;
+  
+  
+    console.log(
+      'Arômes filtrés:',
+      this.filteredPacks
+    );
+  
+  }
+
   getImageUrl(image: string | null | undefined): string {
     if (!image) return 'assets/no-image.png';
     return `${environment.storageUrl}/${image}`;
   }
 
-  addToCart(base: Pack): void {
-    this.cartService.addPackToCart(base);
+  addToCart(pack: Pack): void {
+    this.cartService.addPackToCart(pack);
   }
 
   // ================= DETAILS =================
-  openDetail(base: Pack): void {
-    this.selectedPack = base;
+  openDetail(pack: Pack): void {
+    this.selectedPack = pack;
     this.showDetailModal = true;
 
     document.body.style.overflow = 'hidden';

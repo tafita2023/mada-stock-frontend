@@ -77,8 +77,8 @@
                         <small>{{ base.description }}</small>
                        </td>
                      <td class="brand-cell">{{ base.ratio }}</td>
-                     <td class="modele-cell">{{ base.quantite }}</td>
                     <td class="prix-cell">{{ base.prix | number }} Ar</td>
+                    <td class="modele-cell">{{ base.quantite }} ml</td>
                     <td>
                       <span [class.low-stock]="base.stock < 10">
                         {{ base.stock }}
@@ -193,7 +193,7 @@
           <!-- NOM -->
           <div class="form-row">
             <div class="form-group full-width">
-              <label>Nom du base *</label>
+              <label>Nom *</label>
               <input
                 type="text"
                 [(ngModel)]="currentBase.nom"

@@ -10,8 +10,8 @@ export interface Pack {
   id?: number;
   nom: string;
   marque: string;
-  quantite: number;
-  nicotine: number;
+  quantite: string;
+  nicotine: string;
   prix: number;
   stock: number;
   description: string;
@@ -88,8 +88,8 @@ export class PacksComponent {
     return {
       nom: '',
       marque: '',
-      quantite: 0,
-      nicotine: 0,
+      quantite: '',
+      nicotine: '',
       prix: 0,
       stock: 0,
       description: '',
@@ -164,8 +164,8 @@ export class PacksComponent {
 
     const nom = this.capitalizeFirstLetter(this.currentPack.nom);
     const marque = this.currentPack.marque;
-    const quantite = Number(this.currentPack.quantite);
-    const nicotine = Number(this.currentPack.nicotine);
+    const quantite = this.currentPack.quantite;
+    const nicotine = this.currentPack.nicotine;
     const description = this.capitalizeFirstLetter(this.currentPack.description);
     const prix = Number(this.currentPack.prix);
     const stock = Number(this.currentPack.stock);
@@ -202,8 +202,8 @@ export class PacksComponent {
     
     formData.append('nom', nom);
     formData.append('marque', marque);
-    formData.append('quantite', quantite.toString());
-    formData.append('nicotine', nicotine.toString());
+    formData.append('quantite', quantite);
+    formData.append('nicotine', nicotine);
     formData.append('prix', prix.toString());
     formData.append('stock', stock.toString());
     formData.append('description', description);

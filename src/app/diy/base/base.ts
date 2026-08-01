@@ -32,6 +32,7 @@ export class BaseComponents {
   loadingError = false;
   selectedBase: Base | null = null;
   showDetailModal = false;
+  selectedSearch = '';
 
   private subs = new Subscription();
 
@@ -45,6 +46,22 @@ export class BaseComponents {
 
   ngOnInit(): void {
   
+    this.subs.add(
+      this.route.queryParamMap.subscribe(params => {
+  
+        const recherche = params.get('recherche');
+  
+        this.selectedSearch = recherche
+          ? recherche.trim().toLowerCase()
+          : '';
+    
+        if (this.bases.length > 0) {
+          this.applyFilter();
+        }
+  
+      })
+    );
+
     this.loadBases();
   
   }
@@ -69,7 +86,7 @@ export class BaseComponents {
 
           this.bases = data;
 
-          this.filteredBases = [...this.bases];
+          this.applyFilter();
 
           this.isLoading = false;
 
@@ -92,6 +109,37 @@ export class BaseComponents {
       });
 
     this.subs.add(sub);
+  }
+
+  applyFilter(): void {
+
+    let result = [...this.bases];
+  
+  
+    if (this.selectedSearch.length > 0) {
+  
+      result = result.filter(base => {
+  
+        const nom = String(base.nom ?? '')
+          .toLowerCase();
+    
+        return (
+          nom.includes(this.selectedSearch)
+        );
+  
+      });
+  
+    }
+  
+  
+    this.filteredBases = result;
+  
+  
+    console.log(
+      'Arômes filtrés:',
+      this.filteredBases
+    );
+  
   }
 
   getImageUrl(image: string | null | undefined): string {

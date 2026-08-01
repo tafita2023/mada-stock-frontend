@@ -83,24 +83,20 @@
       <!-- Carte droite : Formulaire de contact -->
       <div class="form-card">
         <h2>Envoyez-nous un message</h2>
-        
-        <div *ngIf="success" class="alert alert-success">
-          Message envoyé avec succès ! Notre équipe vous répondra dans les plus brefs délais.
-        </div>
-  
+          
         <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
           <div class="form-group">
-            <label for="name">Nom complet *</label>
+            <label for="nom">Nom complet *</label>
             <input 
               type="text" 
-              id="name" 
-              formControlName="name"
+              id="nom" 
+              formControlName="nom"
               class="form-control"
-              [class.is-invalid]="submitted && f['name'].errors"
+              [class.is-invalid]="submitted && f['nom'].errors"
               placeholder="Votre nom">
-            <div *ngIf="submitted && f['name'].errors" class="invalid-feedback">
-              <div *ngIf="f['name'].errors['required']">Le nom est requis</div>
-              <div *ngIf="f['name'].errors['minlength']">Le nom doit contenir au moins 2 caractères</div>
+            <div *ngIf="submitted && f['nom'].errors" class="invalid-feedback">
+              <div *ngIf="f['nom'].errors['required']">Le nom est requis</div>
+              <div *ngIf="f['nom'].errors['minlength']">Le nom doit contenir au moins 2 caractères</div>
             </div>
           </div>
   
@@ -132,8 +128,7 @@
               <div *ngIf="f['message'].errors['required']">Le message est requis</div>
               <div *ngIf="f['message'].errors['minlength']">Le message doit contenir au moins 10 caractères</div>
             </div>
-          </div>
-  
+          </div>        
           <button type="submit" class="submit-btn">Envoyer le message</button>
         </form>
       </div>
@@ -152,3 +147,27 @@
     </div>
   </div>
 
+<!-- POPUP SUCCÈS -->
+<div 
+  *ngIf="showSuccessPopup" 
+  class="success-overlay">
+
+  <div class="success-popup">
+
+    <div class="success-icon">
+      ✓
+    </div>
+
+    <h2>Message envoyé !</h2>
+
+    <p>
+      Votre message a bien été envoyé avec succès.
+      Notre équipe vous répondra dans les plus brefs délais.
+    </p>
+
+    <button class="btn-message" (click)="closePopup()">
+      Ok
+    </button>
+  </div>
+
+</div>

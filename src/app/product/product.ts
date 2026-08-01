@@ -44,7 +44,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
   isLoading = true;
   selectedProduct: Product | null = null;
   showDetailModal = false;
-
+  selectedSearch = '';
 
   private subs = new Subscription();
 
@@ -62,13 +62,19 @@ export class ProductsComponent implements OnInit, OnDestroy {
       this.route.queryParamMap.subscribe(params => {
   
         let saveur = params.get('saveur');
-  
+        const recherche = params.get('recherche');
+
         if (this.router.url.includes('/diy/boosters_additifs')) {
           saveur = '6';
         }
-        this.selectedSaveur = saveur ? Number(saveur) : 0;
-  
-        console.log('url saveur:', this.selectedSaveur);
+
+        this.selectedSaveur = saveur 
+        ? Number(saveur) 
+        : 0;
+
+        this.selectedSearch = recherche
+        ? recherche.trim().toLowerCase()
+        : '';
         
         if (this.products.length > 0) {
           this.applyFilter();
@@ -116,25 +122,41 @@ export class ProductsComponent implements OnInit, OnDestroy {
   // ================= FILTER =================
   applyFilter(): void {
 
-    if (!this.selectedSaveur || this.selectedSaveur === 0) {
+    let result = [...this.products];
   
-      this.filteredProducts = [...this.products];
+    // Recherche
+    if (this.selectedSearch.length > 0) {
   
-      return;
+      result = result.filter(product => {
+  
+        const nom = String(product.nom ?? '')
+          .trim()
+          .toLowerCase();
+  
+        const marque = String(product.marque ?? '')
+          .trim()
+          .toLowerCase();
+  
+        return (
+          nom.includes(this.selectedSearch) ||
+          marque.includes(this.selectedSearch)
+        );
+      });
+  
     }
   
+    // Saveur
+    if (this.selectedSaveur > 0) {
   
-    this.filteredProducts = this.products.filter(m =>
-      Number(m.saveur) === Number(this.selectedSaveur)
-    );
+      result = result.filter(product =>
+        Number(product.saveur) === Number(this.selectedSaveur)
+      );
   
+    }
   
-    console.log(
-      'SAVEUR FILTRE:',
-      this.selectedSaveur,
-      'RESULTAT:',
-      this.filteredProducts
-    );
+    this.filteredProducts = result;
+  
+    console.log('Résultat final :', this.filteredProducts);
   
   }
 

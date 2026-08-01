@@ -9,7 +9,7 @@
 
         <!-- Grille de packs -->
         <div class="packs-grid">
-            <div class="pack-card" *ngFor="let pack of packs" (click)="openDetail(pack)">
+            <div class="pack-card" *ngFor="let pack of filteredPacks" (click)="openDetail(pack)">
                 
                 <!-- Image du pack -->
                 <div class="pack-image">

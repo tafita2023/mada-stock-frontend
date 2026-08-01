@@ -9,15 +9,29 @@
       <div class="navbar-brand">
         <img src="/logo3.jpg" alt="Logo Mada-stock">
       </div>
-      <div class="navbar-user" *ngIf="user">
-        <!-- Avatar avec image par défaut -->
-        <img 
-            [src]="getImageUrl(user.avatar)" 
-            alt="{{ user.name }}"
-          class="user-avatar"
-          (error)="user.avatar_url = 'assets/nothing.png'"
-        >
-        <h1>{{ user.name || user.email?.split('@')[0] || 'Utilisateur' }}</h1>
+
+      <div class="user-notif">
+        <div class="navbar-notif" routerLink="/admin/notifications">
+          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 10.5h.01m-4.01 0h.01M8 10.5h.01M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-6.6a1 1 0 0 0-.69.275l-2.866 2.723A.5.5 0 0 1 8 18.635V17a1 1 0 0 0-1-1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"/>
+          </svg>
+          <span 
+            class="notification-count"
+            *ngIf="unreadCount > 0">
+            {{ unreadCount }}
+          </span>
+        </div>
+        <div class="navbar-user" *ngIf="user">
+          <!-- Avatar avec image par défaut -->
+          <img 
+              [src]="getImageUrl(user.avatar)" 
+              alt="{{ user.name }}"
+            class="user-avatar"
+            (error)="user.avatar_url = 'assets/nothing.png'"
+          >
+          <h1>{{ user.name || user.email?.split('@')[0] || 'Utilisateur' }}</h1>
+        </div>
+  
       </div>
       </nav>
   

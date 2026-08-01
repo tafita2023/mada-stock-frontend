@@ -9,7 +9,7 @@
 
         <!-- Grille de divers -->
         <div class="divers-grid">
-            <div class="diver-card" *ngFor="let diver of divers" (click)="openDetail(diver)">
+            <div class="diver-card" *ngFor="let diver of filteredDivers" (click)="openDetail(diver)">
                 
                 <!-- Image du diver -->
                 <div class="diver-image">

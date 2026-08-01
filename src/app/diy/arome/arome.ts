@@ -32,6 +32,7 @@ export class AromeComponent {
   loadingError = false;
   selectedArome: Arome | null = null;
   showDetailModal = false;
+  selectedSearch = '';
 
   private subs = new Subscription();
 
@@ -44,6 +45,27 @@ export class AromeComponent {
   ) {}
 
   ngOnInit(): void {
+
+    this.subs.add(
+      this.route.queryParamMap.subscribe(params => {
+  
+        const recherche = params.get('recherche');
+  
+        this.selectedSearch = recherche
+          ? recherche.trim().toLowerCase()
+          : '';
+  
+        console.log(
+          'Recherche arôme:',
+          this.selectedSearch
+        );
+  
+        if (this.aromes.length > 0) {
+          this.applyFilter();
+        }
+  
+      })
+    );
   
     this.loadAromes();
   
@@ -69,7 +91,7 @@ export class AromeComponent {
 
           this.aromes = data;
 
-          this.filteredAromes = [...this.aromes];
+          this.applyFilter();
 
           this.isLoading = false;
 
@@ -93,6 +115,42 @@ export class AromeComponent {
     this.subs.add(sub);
   }
 
+  applyFilter(): void {
+
+    let result = [...this.aromes];
+  
+  
+    if (this.selectedSearch.length > 0) {
+  
+      result = result.filter(arome => {
+  
+        const nom = String(arome.nom ?? '')
+          .toLowerCase();
+  
+        const marque = String(arome.marque ?? '')
+          .toLowerCase();
+  
+  
+        return (
+          nom.includes(this.selectedSearch) ||
+          marque.includes(this.selectedSearch)
+        );
+  
+      });
+  
+    }
+  
+  
+    this.filteredAromes = result;
+  
+  
+    console.log(
+      'Arômes filtrés:',
+      this.filteredAromes
+    );
+  
+  }
+  
   getImageUrl(image: string | null | undefined): string {
     if (!image) return 'assets/no-image.png';
     return `${environment.storageUrl}/${image}`;

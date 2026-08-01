@@ -79,8 +79,8 @@
                        </td>
                      <td class="brand-cell">{{ arome.marque }}</td>
                      <td class="brand-cell">{{ getCategorieLabel(arome.categorie) }}</td>
-                     <td class="modele-cell">{{ arome.quantite }}</td>
                     <td class="prix-cell">{{ arome.prix | number }} Ar</td>
+                    <td class="modele-cell">{{ arome.quantite }} ml</td>
                     <td>
                       <span [class.low-stock]="arome.stock < 10">
                         {{ arome.stock }}

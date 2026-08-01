@@ -9,7 +9,7 @@
 
         <!-- Grille de aromes -->
         <div class="aromes-grid">
-            <div class="arome-card" *ngFor="let arome of aromes" (click)="openDetail(arome)">
+            <div class="arome-card" *ngFor="let arome of filteredAromes" (click)="openDetail(arome)">
                 
                 <!-- Image du arome -->
                 <div class="arome-image">
