@@ -28,17 +28,14 @@ export class NotificationComponents implements OnInit {
 
   loading = true;
 
-
   constructor(
     private notificationService: NotificationService,
     private cdr: ChangeDetectorRef
   ) {}
 
-
   ngOnInit(): void {
     this.loadMessages();
   }
-
 
   // Charger les messages
   loadMessages(): void {
@@ -76,12 +73,10 @@ export class NotificationComponents implements OnInit {
 
   }
 
-
   // Ouvrir le popup
   openMessage(message: Message): void {
 
     this.selectedMessage = message;
-
 
     if (message.status === 1) {
 
@@ -106,11 +101,8 @@ export class NotificationComponents implements OnInit {
           }
 
         });
-
     }
-
   }
-
 
   // Fermer le popup
   closeMessage(): void {
