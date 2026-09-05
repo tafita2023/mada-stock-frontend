@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../homeService/produit';
 import { CartService } from '../homeService/cart';
@@ -25,6 +25,7 @@ export interface Product {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './product.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./product.css']
 })
 export class ProductsComponent implements OnInit, OnDestroy {

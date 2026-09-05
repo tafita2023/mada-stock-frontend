@@ -1,4 +1,4 @@
-import { Component, Inject, PLATFORM_ID, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, Inject, PLATFORM_ID, OnInit, ChangeDetectorRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth-service';
@@ -10,6 +10,7 @@ import { environment } from '../../../environments/environment';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './compte.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./compte.css']
 })
 export class CompteComponent implements OnInit, OnDestroy {

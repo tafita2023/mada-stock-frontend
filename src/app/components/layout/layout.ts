@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Header } from "../header/header";
 
 @Component({
@@ -6,6 +6,7 @@ import { Header } from "../header/header";
   standalone: true,
   imports: [Header],
   templateUrl: './layout.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './layout.css',
 })
 export class LayoutAdmin {

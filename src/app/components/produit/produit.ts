@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy, Inject, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
@@ -26,6 +26,7 @@ export interface Produit {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './produit.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./produit.css']
 })
 export class ProduitComponent implements OnInit, OnDestroy {

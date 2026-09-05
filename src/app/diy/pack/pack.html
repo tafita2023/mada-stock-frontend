@@ -72,8 +72,8 @@
 
         <img 
           class="detail-image"
-          [src]="getImageUrl(selectedPack?.image)"
-          [alt]="selectedPack?.nom"
+          [src]="getImageUrl($safeNavigationMigration(selectedPack?.image))"
+          [alt]="$safeNavigationMigration(selectedPack?.nom)"
         >
 
         <h2>
@@ -104,7 +104,7 @@
 
             <div class="pack-price">
               <span class="current-price">
-                Prix: {{ selectedPack?.prix | number }} Ar
+                Prix: {{ $safeNavigationMigration(selectedPack?.prix) | number }} Ar
               </span>
             </div>
                     

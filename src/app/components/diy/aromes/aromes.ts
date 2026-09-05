@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectorRef, OnDestroy, OnInit } from '@angular/core';
+import { Component, ChangeDetectorRef, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AromesService } from '../../services/aromes';
 import { finalize, catchError } from 'rxjs/operators';
@@ -22,6 +22,7 @@ export interface Arome {
   selector: 'app-aromes',
   imports: [CommonModule, FormsModule],
   templateUrl: './aromes.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './aromes.css',
 })
 export class AromesComponent {

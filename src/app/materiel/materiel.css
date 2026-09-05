@@ -36,6 +36,24 @@
     border-bottom: 2px solid white;
 }
 
+.detail-description span {
+    display: block;
+    white-space: pre-line;
+    line-height: 1.6;
+    margin-top: 8px;
+  }
+
+  .detail-description {
+    margin-top: 15px;
+    line-height: 1.6;
+  }
+  
+  .description-text {
+    margin-top: 8px;
+    line-height: 1.7;
+    text-align: justify;
+  }
+  
 @media (min-width: 768px) {
     .materiels-container {
         margin-top: 4rem;

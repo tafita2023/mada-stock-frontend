@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../homeService/cart';
@@ -17,6 +17,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './navbar.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './navbar.css',
 })
 export class Navbar implements OnInit, OnDestroy {
@@ -622,11 +623,13 @@ export class Navbar implements OnInit, OnDestroy {
   }
 
   goToSearchResult(result: any): void {
+
+    // Utiliser le nom de L'ÉLÉMENT CLIQUÉ
+    const recherche = String(result.name || '').trim();
   
-    // Sauvegarder la recherche avant de fermer le popup
-    const recherche = this.searchTerm.trim();
-  
+    // Fermer le popup
     this.closeSearchPopup();
+  
   
     // ==============================
     // PRODUIT
@@ -659,7 +662,7 @@ export class Navbar implements OnInit, OnDestroy {
   
   
     // ==============================
-    // DIY
+    // ARÔME
     // ==============================
     if (result.category === 'arome') {
   
@@ -672,33 +675,50 @@ export class Navbar implements OnInit, OnDestroy {
       return;
     }
   
+  
+    // ==============================
+    // BASE
+    // ==============================
     if (result.category === 'base') {
-
+  
       this.router.navigate(['/diy/bases'], {
-        queryParams: { recherche }
+        queryParams: {
+          recherche: recherche
+        }
       });
-    
+  
       return;
     }
-    
-    
+  
+  
+    // ==============================
+    // PACK
+    // ==============================
     if (result.category === 'pack') {
-    
+  
       this.router.navigate(['/diy/packs'], {
-        queryParams: { recherche }
+        queryParams: {
+          recherche: recherche
+        }
       });
-    
+  
       return;
     }
-    
-    
+  
+  
+    // ==============================
+    // DIVERS
+    // ==============================
     if (result.category === 'divers') {
-    
+  
       this.router.navigate(['/diy/divers'], {
-        queryParams: { recherche }
+        queryParams: {
+          recherche: recherche
+        }
       });
-    
+  
       return;
     }
+  
   }
 }

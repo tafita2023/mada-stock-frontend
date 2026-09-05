@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -13,6 +13,7 @@ export type DeliveryOption = 'delivery' | 'pickup';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './panier.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./panier.css']
 })
 export class PanierComponent implements OnInit, OnDestroy {

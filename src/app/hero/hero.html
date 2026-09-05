@@ -13,31 +13,91 @@
     </div>
 
     <section class="carousel">
-      <div
-        class="carousel-track"
-        [style.transform]="'translateX(-' + currentSlide * 100 + '%)'"
-      >
-        <div class="carousel-slide" *ngFor="let image of images">
-          <img [src]="image" alt="Image carousel">
-        </div>
+      <div class="carousel-container">
+    
+        <p-carousel
+          class="carousel-component"
+          align="center"
+          [loop]="true">
+        
+          <p-carousel-content class="carousel-content">
+    
+            @for (item of items; track item) {
+    
+              <p-carousel-item>
+    
+                <div class="carousel-slide">
+                  <span>{{ item }}</span>
+                </div>
+    
+              </p-carousel-item>
+    
+            }
+    
+          </p-carousel-content>
+    
+          <div class="carousel-controls">
+    
+            <button
+              pCarouselPrev
+              class="carousel-button carousel-button-prev"
+              type="button"
+              aria-label="Slide précédente">
+    
+              <svg
+                class="carousel-icon"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24">
+    
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="m14 8-4 4 4 4"/>
+              </svg>
+    
+            </button>
+    
+            <button
+              #nextButton
+              pCarouselNext
+              class="carousel-button carousel-button-next"
+              type="button"
+              aria-label="Slide suivante">
+    
+              <svg
+                class="carousel-icon"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24">
+    
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="m10 16 4-4-4-4"/>
+              </svg>
+    
+            </button>
+    
+          </div>
+
+          <div class="carousel-indicators">
+            <p-carousel-indicators></p-carousel-indicators>
+          </div>
+    
+        </p-carousel>
+    
       </div>
-    
-      <!-- Boutons -->
-      <button class="carousel-btn prev" (click)="previousSlide()">
-        &#10094;
-      </button>
-    
-      <button class="carousel-btn next" (click)="nextSlide()">
-        &#10095;
-      </button>
-    
-      <!-- Indicateurs -->
-      <div class="carousel-dots">
-        <span
-          *ngFor="let image of images; let i = index"
-          [class.active]="i === currentSlide"
-          (click)="goToSlide(i)"
-        ></span>
-      </div>
-    </section>  </div>
+    </section>
+    </div>
 </section>

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectorRef, OnDestroy, OnInit } from '@angular/core';
+import { Component, ChangeDetectorRef, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DiversService } from '../../services/divers';
 import { finalize, catchError } from 'rxjs/operators';
@@ -20,6 +20,7 @@ export interface Diver {
   selector: 'app-divers',
   imports: [CommonModule, FormsModule],
   templateUrl: './divers.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './divers.css',
 })
 export class DiversComponent {

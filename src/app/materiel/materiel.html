@@ -73,8 +73,8 @@
 
         <img 
           class="detail-image"
-          [src]="getImageUrl(selectedMateriel?.image)"
-          [alt]="selectedMateriel?.nom"
+          [src]="getImageUrl($safeNavigationMigration(selectedMateriel?.image))"
+          [alt]="$safeNavigationMigration(selectedMateriel?.nom)"
         >
 
 
@@ -119,17 +119,24 @@
         </p>
 
 
-        <p *ngIf="selectedMateriel?.description">
-          <strong>Description :</strong><br>
-          {{ selectedMateriel?.description }}
-        </p>
-
+        <div
+        class="detail-description"
+        *ngIf="selectedMateriel?.description">
+      
+        <strong>Description :</strong>
+      
+        <div
+          class="description-text"
+          [innerHTML]="formatDescription(selectedMateriel?.description)">
+        </div>
+      
+      </div>
 
         <div class="detail-footer">
 
             <div class="materiel-price">
               <span class="current-price">
-                Prix: {{ selectedMateriel?.prix | number }} Ar
+                Prix: {{ $safeNavigationMigration(selectedMateriel?.prix) | number }} Ar
               </span>
             </div>
                     

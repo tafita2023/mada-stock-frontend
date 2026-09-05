@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DiverService } from '../../homeService/diver';
 import { CartService } from '../../homeService/cart';
@@ -21,6 +21,7 @@ export interface Diver {
   selector: 'app-diver',
   imports: [CommonModule, FormsModule],
   templateUrl: './diver.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './diver.css',
 })
 export class DiverComponent {

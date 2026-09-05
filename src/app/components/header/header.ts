@@ -1,20 +1,27 @@
-import { 
-  Component, 
-  HostListener, 
-  Inject, 
-  PLATFORM_ID, 
+import {
+  Component,
+  HostListener,
+  Inject,
+  PLATFORM_ID,
   OnInit,
-  AfterViewInit
+  OnDestroy,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  afterNextRender
 } from '@angular/core';
 
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router';
-import { AuthService } from '../services/auth-service'; 
+import {
+  RouterOutlet,
+  RouterLink
+} from '@angular/router';
+
+import { AuthService } from '../services/auth-service';
 import { environment } from '../../../environments/environment';
 import { NotificationService } from '../services/notification';
 
+import { Subscription } from 'rxjs';
 
-// Interface Message
 export interface Message {
   id: number;
   nom: string;
@@ -24,19 +31,23 @@ export interface Message {
   created_at: string;
 }
 
-
 @Component({
   selector: 'app-header',
   standalone: true,
+
   imports: [
     CommonModule,
     RouterOutlet,
     RouterLink
   ],
+
   templateUrl: './header.html',
+
+  changeDetection: ChangeDetectionStrategy.Eager,
+
   styleUrls: ['./header.css']
 })
-export class Header implements OnInit {
+export class Header implements OnInit, OnDestroy {
 
   user: any = null;
 
@@ -46,92 +57,142 @@ export class Header implements OnInit {
 
   private isBrowser: boolean;
 
+  private unreadSubscription?: Subscription;
+
   diys = [
-    { name: 'Bases', route:'diy/bases' },
-    { name: 'Arômes concentré', route:'diy/aromes' },
-    { name: 'Packs', route:'diy/packs' },
-    { name: 'Divers', route:'diy/divers' },
+    {
+      name: 'Bases',
+      route: 'diy/bases'
+    },
+    {
+      name: 'Arômes concentré',
+      route: 'diy/aromes'
+    },
+    {
+      name: 'Packs',
+      route: 'diy/packs'
+    },
+    {
+      name: 'Divers',
+      route: 'diy/divers'
+    }
   ];
 
   isDiyOpen = false;
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
+    @Inject(PLATFORM_ID)
+    private platformId: object,
+
     private authService: AuthService,
+
     private notificationService: NotificationService,
-    private router: Router
+
+    private cdr: ChangeDetectorRef
   ) {
 
     this.isBrowser = isPlatformBrowser(this.platformId);
 
-    // Actualisation du badge après navigation
-    this.router.events.subscribe(event => {
+    afterNextRender(() => {
 
-      if (event instanceof NavigationEnd) {
-
-        this.loadUnreadMessages();
-
+      if (!this.isBrowser) {
+        return;
       }
 
-    });
+      this.initializeBrowser();
 
+    });
   }
 
   ngOnInit(): void {
 
-    if (this.isBrowser) {
-  
-      this.user = this.authService.getUser();
-  
-      setTimeout(() => {
-        this.checkScreenSize();
-      });
-  
+    if (!this.isBrowser) {
+      return;
     }
-  
-    this.loadUnreadMessages();
-  
+
   }
 
+  private initializeBrowser(): void {
+
+    this.user = this.authService.getUser();
+
+    this.checkScreenSize();
+
+    this.unreadSubscription =
+      this.notificationService.unreadCount$
+        .subscribe(count => {
+
+          this.unreadCount = count;
+
+          this.cdr.markForCheck();
+
+        });
+
+    if (this.authService.isLoggedIn()) {
+
+      this.loadUnreadMessages();
+
+    } else {
+
+      this.notificationService.setUnreadCount(0);
+
+    }
+
+  }
+
+  ngOnDestroy(): void {
+
+    this.unreadSubscription?.unsubscribe();
+
+  }
 
   loadUnreadMessages(): void {
 
-    this.notificationService.getMessages()
+    if (!this.isBrowser) {
+      return;
+    }
+
+    if (!this.authService.isLoggedIn()) {
+
+      this.notificationService.setUnreadCount(0);
+
+      return;
+    }
+
+    this.notificationService
+      .getMessages()
       .subscribe({
-  
+
         next: (response: any) => {
-  
-          const messages: Message[] = Array.isArray(response)
-            ? response
-            : response?.data ?? [];
-  
-  
-          this.unreadCount = messages.filter(
-            (message: Message) => message.status === 1
-          ).length;
-  
-  
-          console.log(
-            'Nombre de messages non lus :',
-            this.unreadCount
-          );
-  
+
+          const messages: Message[] =
+            Array.isArray(response)
+              ? response
+              : response?.data ?? [];
+
+          const count =
+            messages.filter(
+              (message: Message) =>
+                Number(message.status) === 1
+            ).length;
+
+          this.notificationService.setUnreadCount(count);
+
         },
-  
-  
+
         error: (error) => {
-  
+
           console.error(
             'Erreur chargement notifications :',
             error
           );
-  
-          this.unreadCount = 0;
-  
+
+          this.notificationService.setUnreadCount(0);
+
         }
-  
+
       });
-  
+
   }
 
   toggleSidebar(): void {
@@ -140,28 +201,22 @@ export class Header implements OnInit {
 
   }
 
-
-
   toggleDiyMenu(): void {
 
     this.isDiyOpen = !this.isDiyOpen;
 
   }
 
-
-
   @HostListener('window:resize')
   onResize(): void {
 
-    if (this.isBrowser) {
-
-      this.checkScreenSize();
-
+    if (!this.isBrowser) {
+      return;
     }
 
+    this.checkScreenSize();
+
   }
-
-
 
   checkScreenSize(): void {
 
@@ -169,29 +224,29 @@ export class Header implements OnInit {
       return;
     }
 
-
     this.sidebarOpen = window.innerWidth > 768;
 
   }
 
-
-
   closeSidebarOnMobile(): void {
 
-    if (this.isBrowser && window.innerWidth <= 768) {
+    if (
+      this.isBrowser &&
+      window.innerWidth <= 768
+    ) {
 
       this.sidebarOpen = false;
+
       this.isDiyOpen = false;
 
     }
 
   }
 
-
-
   logout(): void {
 
-    this.authService.logout()
+    this.authService
+      .logout()
       .subscribe({
 
         next: () => {},
@@ -202,13 +257,13 @@ export class Header implements OnInit {
 
   }
 
-
-
   getImageUrl(image?: string): string {
 
-    return image
-      ? `${environment.storageUrl}/${image}`
-      : 'assets/nothing.png';
+    if (!image) {
+      return 'assets/nothing.png';
+    }
+
+    return `${environment.storageUrl}/${image}`;
 
   }
 

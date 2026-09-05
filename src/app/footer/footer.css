@@ -19,6 +19,11 @@
     font-size: 0.8rem;
 }
 
+.footer-conf {
+    margin-top: 12px;
+    color: white;
+    cursor: pointer;
+}
 /* Responsive */
 @media (max-width: 1024px) {
     .footer-top {

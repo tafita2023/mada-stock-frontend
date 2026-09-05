@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ChangeDetectorRef } from '@angular/core'; // Ajouter ChangeDetectorRef
+import { Component, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core'; // Ajouter ChangeDetectorRef
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ContactService } from '../homeService/contact';
@@ -9,6 +9,7 @@ declare const grecaptcha: any;
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './contact.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './contact.css',
 })
 export class Contact implements OnDestroy {
@@ -26,6 +27,7 @@ export class Contact implements OnDestroy {
     this.contactForm = this.formBuilder.group({
       nom: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
+      telephone: ['', [Validators.required, Validators.minLength(10)]],
       message: ['', [Validators.required, Validators.minLength(10)]]
     });
   }
@@ -62,6 +64,11 @@ export class Contact implements OnDestroy {
         this.contactForm.get('email')?.value || ''
       );
   
+      formData.append(
+        'telephone',
+        this.contactForm.get('telephone')?.value || ''
+      );
+
       formData.append(
         'message',
         this.contactForm.get('message')?.value || ''

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PackService } from '../../homeService/pack';
 import { CartService } from '../../homeService/cart';
@@ -23,6 +23,7 @@ export interface Pack {
   selector: 'app-pack',
   imports: [CommonModule, FormsModule],
   templateUrl: './pack.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './pack.css',
 })
 export class PackComponent {

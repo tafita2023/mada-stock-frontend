@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AromeService } from '../../homeService/arome';
 import { CartService } from '../../homeService/cart';
@@ -23,6 +23,7 @@ export interface Arome {
   selector: 'app-arome',
   imports: [CommonModule, FormsModule],
   templateUrl: './arome.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './arome.css',
 })
 export class AromeComponent {

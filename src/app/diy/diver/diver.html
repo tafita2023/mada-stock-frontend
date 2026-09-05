@@ -72,8 +72,8 @@
 
         <img 
           class="detail-image"
-          [src]="getImageUrl(selectedDiver?.image)"
-          [alt]="selectedDiver?.nom"
+          [src]="getImageUrl($safeNavigationMigration(selectedDiver?.image))"
+          [alt]="$safeNavigationMigration(selectedDiver?.nom)"
         >
 
         <h2>
@@ -94,7 +94,7 @@
 
             <div class="diver-price">
               <span class="current-price">
-                Prix: {{ selectedDiver?.prix | number }} Ar
+                Prix: {{ $safeNavigationMigration(selectedDiver?.prix) | number }} Ar
               </span>
             </div>
                     

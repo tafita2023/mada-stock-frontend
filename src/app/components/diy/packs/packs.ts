@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectorRef, OnDestroy, OnInit } from '@angular/core';
+import { Component, ChangeDetectorRef, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PacksService } from '../../services/packs';
 import { finalize, catchError } from 'rxjs/operators';
@@ -22,6 +22,7 @@ export interface Pack {
   selector: 'app-packs',
   imports: [CommonModule, FormsModule],
   templateUrl: './packs.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './packs.css',
 })
 export class PacksComponent {

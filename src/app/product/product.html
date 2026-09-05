@@ -73,8 +73,8 @@
 
         <img 
           class="detail-image"
-          [src]="getImageUrl(selectedProduct?.image)"
-          [alt]="selectedProduct?.nom"
+          [src]="getImageUrl($safeNavigationMigration(selectedProduct?.image))"
+          [alt]="$safeNavigationMigration(selectedProduct?.nom)"
         >
 
         <h2>
@@ -96,7 +96,7 @@
           {{ selectedProduct?.contenance }} ml
         </p>
 
-        <p *ngIf="selectedProduct?.nicotine !== null && selectedProduct?.nicotine !== undefined">
+        <p *ngIf="$safeNavigationMigration(selectedProduct?.nicotine) !== null && $safeNavigationMigration(selectedProduct?.nicotine) !== undefined">
           <strong>Nicotine :</strong>
           {{ selectedProduct?.nicotine }} mg
         </p>
@@ -111,7 +111,7 @@
 
             <div class="materiel-price">
               <span class="current-price">
-                Prix: {{ selectedProduct?.prix | number }} Ar
+                Prix: {{ $safeNavigationMigration(selectedProduct?.prix) | number }} Ar
               </span>
             </div>
                     

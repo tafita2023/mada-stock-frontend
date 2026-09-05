@@ -8,10 +8,18 @@
   
       <div 
         class="message-card" 
-        *ngFor="let message of messages"
+        [class.message-unread]="message.status === 1"
+        [class.message-read]="message.status === 0"
+        *ngFor="let message of paginatedMessages"
         (click)="openMessage(message)"
       >
   
+      <!-- Indicateur non lu -->
+      <span 
+        class="unread-dot"
+        *ngIf="message.status === 1">
+      </span>
+      
         <div class="message-info">
           <h3>{{ message.nom }}</h3>
           <span>{{ message.email }}</span>
@@ -20,7 +28,11 @@
         <div class="message-preview">
           {{ message.message | slice:0:80 }}...
         </div>
-  
+        
+        <div class="message-phone">
+          Tél: {{ formatPhone(message.telephone) }}
+        </div>
+
         <div class="message-date">
           {{ message.created_at | date:'dd/MM/yyyy HH:mm' }}
         </div>
@@ -28,15 +40,29 @@
         <button
             class="delete-btn"
             (click)="deleteMessage(message.id); $event.stopPropagation()">
-            Supprimer
+                      <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+                      </svg>                      
         </button>
         
       </div>
   
     </div>
   
+    <div class="load-more-container" > 
+    <button class="load-less-btn" *ngIf="itemsPerPage > 10" (click)="loadLessMessages()">
+      Voir moins
+    </button>
   </div>
-  
+
+      <!-- BOUTON VOIR PLUS --> 
+   <div class="load-more-container" *ngIf="hasMoreMessages()"> 
+    <button class="load-more-btn" (click)="loadMoreMessages()">
+      Voir plus 
+    </button> 
+  </div>
+
+  </div>
   
   <!-- Popup détail message -->
   <div class="modal-overlay" *ngIf="selectedMessage">
@@ -52,7 +78,11 @@
       <h2>{{ selectedMessage.nom }}</h2>
   
       <p class="email">
-        {{ selectedMessage.email }}
+        Email: {{ selectedMessage.email }}
+      </p>
+
+      <p class="phone">
+        Telephone: {{ formatPhone(selectedMessage.telephone) }}
       </p>
   
       <div class="message-content">

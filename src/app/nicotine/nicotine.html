@@ -1,0 +1,71 @@
+<div class="articles-page">
+
+  <!-- HEADER -->
+  <section class="articles-header">
+    <div class="header-content">
+
+    <h1>        
+        Découvrez nos actualités, conseils et informations.
+    </h1>
+
+    </div>
+  </section>
+
+
+  <!-- ARTICLES -->
+  <section class="articles-section">
+
+    <div class="articles-container">
+
+      <article
+        class="article-card"
+        *ngFor="let nicotine of nicotines"
+      >
+        <div class="article-image">
+            <img
+            [src]="getImageUrl(nicotine.image)"
+            [alt]="nicotine.titre"
+            />
+        </div>
+
+        <div class="article-content">
+
+          <h2>
+            {{ nicotine.titre }}
+          </h2>
+
+          <p>
+            {{ nicotine.description }}
+          </p>
+
+          <button
+            type="button"
+            class="read-more"
+          >
+            Lire l'article
+            <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-move-right-icon lucide-move-right">
+                    <path d="M18 8L22 12L18 16"/>
+                    <path d="M2 12H22"/>
+                </svg>
+            </span>
+          </button>
+
+        </div>
+
+      </article>
+
+
+      AUCUN ARTICLE
+      <div
+        class="empty-articles"
+        *ngIf="nicotines && nicotines.length === 0"
+      >
+        <p>Aucun article disponible.</p>
+      </div>
+
+    </div>
+
+  </section>
+
+</div>

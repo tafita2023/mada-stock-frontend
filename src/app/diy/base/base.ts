@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseService } from '../../homeService/base';
 import { CartService } from '../../homeService/cart';
@@ -23,6 +23,7 @@ export interface Base {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './base.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './base.css',
 })
 export class BaseComponents {

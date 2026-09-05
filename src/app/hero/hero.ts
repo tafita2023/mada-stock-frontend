@@ -1,57 +1,37 @@
-import { Component, AfterViewInit, ElementRef, ViewChild, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { CarouselModule } from 'primeng/carousel';
 
 @Component({
   selector: 'app-hero',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,CarouselModule],
   templateUrl: './hero.html',
   styleUrls: ['./hero.css']
 })
-export class HeroComponent implements OnInit, OnDestroy {
-  images: string[] = [
-    '/TattooVape.png',
-    '/FighterFuel.png',
-    '/VapeSauce.png',
-  ];
+export class HeroComponent implements AfterViewInit, OnDestroy {
+  items = [1, 2, 3, 4, 5];
 
-  currentSlide = 0;
+  private intervalId: ReturnType<typeof setInterval> | undefined;
 
-  private intervalId: any;
+  @ViewChild('nextButton')
+  nextButton!: ElementRef<HTMLButtonElement>;
 
-  ngOnInit(): void {
-    this.startAutoSlide();
-  }
+  ngAfterViewInit(): void {
 
-  startAutoSlide(): void {
     this.intervalId = setInterval(() => {
-      this.nextSlide();
-    }, 3000); // 3 secondes
-  }
 
-  nextSlide(): void {
-    this.currentSlide++;
+      this.nextButton.nativeElement.click();
 
-    if (this.currentSlide >= this.images.length) {
-      this.currentSlide = 0;
-    }
-  }
+    }, 5000);
 
-  previousSlide(): void {
-    this.currentSlide--;
-
-    if (this.currentSlide < 0) {
-      this.currentSlide = this.images.length - 1;
-    }
-  }
-
-  goToSlide(index: number): void {
-    this.currentSlide = index;
   }
 
   ngOnDestroy(): void {
+
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
+
   }
 }

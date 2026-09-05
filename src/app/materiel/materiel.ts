@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterielService } from '../homeService/materiel';
 import { CartService } from '../homeService/cart';
@@ -27,6 +27,7 @@ export interface Materiel {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './materiel.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./materiel.css']
 })
 export class MaterielsComponent implements OnInit, OnDestroy {
@@ -210,5 +211,15 @@ getTypeLabel(type: number): string {
     this.selectedMateriel = null;
 
     document.body.style.overflow = '';
+  }
+
+  formatDescription(description: string | null | undefined): string {
+    if (!description) {
+      return '';
+    }
+  
+    return description
+      .trim()
+      .replace(/\s*([.!?])\s*/g, '$1<br>');
   }
 }

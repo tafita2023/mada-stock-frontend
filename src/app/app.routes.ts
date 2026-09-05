@@ -17,6 +17,9 @@ import { DiverComponent } from './diy/diver/diver';
 import { CompteComponent } from './components/compte/compte';
 import { NotificationComponents } from './components/notification/notification';
 import { PanierComponent } from './panier/panier';
+import { NicotineComponent } from './components/nicotine/nicotine';
+import { NicotineComponents } from './nicotine/nicotine';
+import { PromotionComponents } from './components/promotion/promotion';
 
 import { LayoutClient } from './layout/layout';
 import { authGuard } from './guards/auth-guard';
@@ -24,6 +27,7 @@ import { BasesComponent } from './components/diy/bases/bases';
 import { AromesComponent } from './components/diy/aromes/aromes';
 import { PacksComponent } from './components/diy/packs/packs';
 import { DiversComponent } from './components/diy/divers/divers';
+import { ConfidentialComponents } from './confidential/confidential';
 
 export const routes: Routes = [
     {
@@ -40,7 +44,9 @@ export const routes: Routes = [
             { path:'diy/bases', component:BasesComponent },
             { path:'diy/aromes', component:AromesComponent },
             { path:'diy/packs', component:PacksComponent },
-            { path:'diy/divers', component:DiversComponent }
+            { path:'diy/divers', component:DiversComponent },
+            { path:'promotion', component:PromotionComponents },
+            { path:'nicotine', component:NicotineComponent }
 
         ]
     },
@@ -57,7 +63,9 @@ export const routes: Routes = [
             { path:'diy/aromes', component:AromeComponent },
             { path: 'diy/boosters_additifs', component: ProductsComponent },
             { path:'diy/packs', component:PackComponent },
-            { path:'diy/divers', component:DiverComponent }
+            { path:'diy/divers', component:DiverComponent },
+            { path:'nicotine', component:NicotineComponents },
+            { path:'confidentialite', component:ConfidentialComponents },   
 
         ]
     },

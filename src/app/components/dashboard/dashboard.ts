@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import Chart from 'chart.js/auto';
 import { ProduitService } from '../services/produit';
 import { MaterielService } from '../services/materiel';
@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './dashboard.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./dashboard.css'],
 })
 export class Dashboard implements OnInit, AfterViewInit {

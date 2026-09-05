@@ -1,44 +1,89 @@
-<div class="logos-carousel">
-    <div class="carousel-header">
-      <h2 class="carousel-title">Nos Partenaires</h2>
-      <div class="carousel-controls">
-        <button class="control-btn" (click)="prevSlide()" [disabled]="currentIndex === 0">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M15 18l-6-6 6-6"/>
-          </svg>
-        </button>
-        <button class="control-btn" (click)="nextSlide()" [disabled]="currentIndex === totalSlides - 1">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M9 18l6-6-6-6"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-  
-    <div class="carousel-wrapper">
-      <div class="carousel-track" [style.transform]="'translateX(-' + currentIndex * 100 + '%)'">
-        @for (slide of logos; track slide.id; let i = $index) {
-          <div class="logo-card" [style.flex]="'0 0 ' + (100 / itemsToShow) + '%'">
-            <div class="card-content" [style.border-color]="slide.color">
-              <div class="logo-container">
-                <img [src]="slide.url" [alt]="slide.name" loading="lazy" width="200" height="200">
-              </div>
-              <div class="logo-hover-effect" [style.background]="slide.color"></div>
+<section class="marques">
+
+  <div class="marques-container">
+
+    <h2 class="marques-title">
+      Nos Partenaires
+    </h2>
+
+    <p-carousel
+      class="marques-carousel"
+      align="center"
+      [slidesPerPage]="slidesPerPage">
+
+      <p-carousel-content>
+
+        @for (logo of logos; track logo.id) {
+
+          <p-carousel-item>
+
+            <div class="marque-card">
+
+              <img
+                [src]="logo.url"
+                [alt]="logo.name"
+                class="marque-logo">
+
             </div>
-          </div>
+
+          </p-carousel-item>
+
         }
-      </div>
-    </div>
-  
-    <!-- Indicateurs -->
-    <div class="carousel-indicators">
-      @for (dot of [].constructor(totalSlides); track $index; let i = $index) {
-        <button 
-          class="dot" 
-          [class.active]="i === currentIndex"
-          (click)="goToSlide(i)"
-          [attr.aria-label]="'Aller à la page ' + (i + 1)">
+
+      </p-carousel-content>
+
+      <div class="marques-controls">
+
+        <button
+          pCarouselPrev
+          type="button"
+          class="marque-button"
+          aria-label="Marque précédente">
+
+          <svg
+            class="marque-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none">
+
+            <path
+              d="m14 8-4 4 4 4"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
+
+          </svg>
+
         </button>
-      }
-    </div>
+
+        <button
+          pCarouselNext
+          type="button"
+          class="marque-button"
+          aria-label="Marque suivante">
+
+          <svg
+            class="marque-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none">
+
+            <path
+              d="m10 16 4-4-4-4"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
+
+          </svg>
+
+        </button>
+
+      </div>
+
+    </p-carousel>
+
   </div>
+
+</section>

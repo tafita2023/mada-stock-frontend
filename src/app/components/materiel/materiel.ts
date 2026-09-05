@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectorRef, OnDestroy, OnInit } from '@angular/core';
+import { Component, ChangeDetectorRef, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MaterielService } from '../services/materiel';
 import { finalize, catchError } from 'rxjs/operators';
@@ -27,6 +27,7 @@ export interface Materiel {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './materiel.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './materiel.css',
 })
 

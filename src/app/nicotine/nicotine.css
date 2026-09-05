@@ -1,0 +1,193 @@
+.articles-page {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* HEADER */
+
+.articles-header {
+  padding: 60px 20px;
+  color: white;
+  text-align: center;
+}
+
+.header-content {
+  max-width: 800px;
+  margin: auto;
+}
+
+.section-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  opacity: 0.7;
+}
+
+.articles-header h1 {
+  margin: 12px 0;
+  font-size: 40px;
+}
+
+.articles-header p {
+  margin: 0;
+  font-size: 16px;
+  opacity: 0.7;
+}
+
+
+/* ARTICLES */
+
+.articles-section {
+  padding: 60px 20px;
+}
+
+.articles-container {
+  max-width: 1200px;
+  margin: auto;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+}
+
+
+/* CARD */
+
+.article-card {
+  background: #333;
+  border-radius: 12px;
+  overflow: hidden;
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.article-card:hover {
+  transform: translateY(-5px);
+}
+
+
+/* CONTENT */
+
+.article-content {
+  padding: 25px;
+}
+
+.article-content h2 {
+  margin: 0 0 15px;
+
+  font-size: 21px;
+  line-height: 1.3;
+
+  color: #f1f1f1;
+}
+
+.article-content p {
+  margin: 0 0 20px;
+
+  color: #f1f1f1;
+
+  font-size: 15px;
+  line-height: 1.6;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+
+/* BUTTON */
+
+.read-more {
+  border: none;
+  background: transparent;
+
+  padding: 0;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #f1f1f1;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: gap 0.2s ease;
+}
+
+.read-more span {
+  font-size: 18px;
+}
+
+.read-more:hover {
+  gap: 12px;
+}
+
+
+/* EMPTY */
+
+.empty-articles {
+  grid-column: 1 / -1;
+
+  text-align: center;
+  padding: 50px;
+
+  color: #777;
+}
+
+.article-image {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #f1f1f1;
+  }
+  
+  .article-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+  
+  .article-card:hover .article-image img {
+    transform: scale(1.05);
+  }
+
+/* TABLET */
+
+@media (max-width: 950px) {
+
+  .articles-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
+
+
+/* MOBILE */
+
+@media (max-width: 650px) {
+
+  .articles-header {
+    padding: 45px 20px;
+  }
+
+  .articles-header h1 {
+    font-size: 30px;
+  }
+
+  .articles-section {
+    padding: 40px 15px;
+  }
+
+  .articles-container {
+    grid-template-columns: 1fr;
+  }
+
+}

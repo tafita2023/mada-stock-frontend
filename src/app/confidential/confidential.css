@@ -1,0 +1,71 @@
+.privacy-container {
+    min-height: 100vh;
+    color: white;
+    padding: 40px 20px;
+}
+
+.privacy-header {
+    margin-top: 4rem;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.privacy-header h1 {
+    font-size: 40px;
+    margin-bottom: 15px;
+    color: #ffffff;
+}
+
+.privacy-header p {
+    color: #9ca3af;
+}
+
+.header-date {
+    text-align: center;
+    margin-bottom: 1rem;
+
+}
+
+h1, .date {
+    margin-bottom: 1rem;
+}
+
+.info {
+    padding: 40px 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.privacy-content {
+    max-width: 1000px;
+    margin: auto;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 25px;
+}
+
+.privacy-card {
+    background: #333;
+    padding: 30px;
+    border-radius: 16px;
+
+    border: 1px solid rgba(255,255,255,0.05);
+
+    transition: 0.3s;
+}
+
+.privacy-card:hover {
+    transform: translateY(-5px);
+}
+
+.privacy-card h2 {
+    color: #DF301C;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.privacy-card p {
+    color: #d1d5db;
+    line-height: 1.8;
+}

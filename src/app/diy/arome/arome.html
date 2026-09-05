@@ -72,8 +72,8 @@
 
         <img 
           class="detail-image"
-          [src]="getImageUrl(selectedArome?.image)"
-          [alt]="selectedArome?.nom"
+          [src]="getImageUrl($safeNavigationMigration(selectedArome?.image))"
+          [alt]="$safeNavigationMigration(selectedArome?.nom)"
         >
 
         <h2>
@@ -99,7 +99,7 @@
 
             <div class="arome-price">
               <span class="current-price">
-                Prix: {{ selectedArome?.prix | number }} Ar
+                Prix: {{ $safeNavigationMigration(selectedArome?.prix) | number }} Ar
               </span>
             </div>
                     

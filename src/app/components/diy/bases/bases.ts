@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectorRef, OnDestroy, OnInit } from '@angular/core';
+import { Component, ChangeDetectorRef, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BasesService } from '../../services/bases';
 import { finalize, catchError } from 'rxjs/operators';
@@ -21,6 +21,7 @@ export interface Base {
   selector: 'app-bases',
   imports: [CommonModule, FormsModule],
   templateUrl: './bases.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './bases.css',
 })
 export class BasesComponent {

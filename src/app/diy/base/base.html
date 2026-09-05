@@ -72,8 +72,8 @@
 
         <img 
           class="detail-image"
-          [src]="getImageUrl(selectedBase?.image)"
-          [alt]="selectedBase?.nom"
+          [src]="getImageUrl($safeNavigationMigration(selectedBase?.image))"
+          [alt]="$safeNavigationMigration(selectedBase?.nom)"
         >
 
         <h2>
@@ -99,7 +99,7 @@
 
             <div class="base-price">
               <span class="current-price">
-                Prix: {{ selectedBase?.prix | number }} Ar
+                Prix: {{ $safeNavigationMigration(selectedBase?.prix) | number }} Ar
               </span>
             </div>
                     
