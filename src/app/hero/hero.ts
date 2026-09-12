@@ -10,6 +10,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { CarouselModule } from 'primeng/carousel';
 import { PromotionHomeService } from '../homeService/promotion';
+import { CartService } from '../homeService/cart';
 
 export interface Promotion {
   id?: number;
@@ -41,7 +42,8 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
   nextButton!: ElementRef<HTMLButtonElement>;
 
   constructor(
-    private promotionHomeService: PromotionHomeService
+    private promotionHomeService: PromotionHomeService,
+    private cartService: CartService
   ) {}
 
   ngOnInit(): void {
@@ -97,5 +99,24 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
     return image
       ? `http://127.0.0.1:8000/${image}`
       : 'assets/nothing.png';
+  }
+
+  ajouterPromotionAuPanier(promotion: any): void {
+
+    console.log('Promotion ajoutée au panier :', promotion);
+  
+    if (
+      promotion.type !== 'produit' &&
+      promotion.type !== 'materiel'
+    ) {
+      console.error(
+        'Type de promotion invalide :',
+        promotion.type
+      );
+  
+      return;
+    }
+  
+    this.cartService.addPromotionToCart(promotion);
   }
 }

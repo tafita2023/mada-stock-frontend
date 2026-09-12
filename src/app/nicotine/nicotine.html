@@ -4,9 +4,9 @@
   <section class="articles-header">
     <div class="header-content">
 
-    <h1>        
+      <h1>
         Découvrez nos actualités, conseils et informations.
-    </h1>
+      </h1>
 
     </div>
   </section>
@@ -21,13 +21,19 @@
         class="article-card"
         *ngFor="let nicotine of nicotines"
       >
+
+        <!-- IMAGE -->
         <div class="article-image">
-            <img
+
+          <img
             [src]="getImageUrl(nicotine.image)"
             [alt]="nicotine.titre"
-            />
+          />
+
         </div>
 
+
+        <!-- CONTENU -->
         <div class="article-content">
 
           <h2>
@@ -41,14 +47,27 @@
           <button
             type="button"
             class="read-more"
+            (click)="openArticle(nicotine)"
           >
             Lire l'article
+
             <span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-move-right-icon lucide-move-right">
-                    <path d="M18 8L22 12L18 16"/>
-                    <path d="M2 12H22"/>
-                </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M18 8L22 12L18 16"/>
+                <path d="M2 12H22"/>
+              </svg>
             </span>
+
           </button>
 
         </div>
@@ -56,6 +75,7 @@
       </article>
 
 
+      <!-- AUCUN ARTICLE -->
       <div
         class="empty-articles"
         *ngIf="nicotines && nicotines.length === 0"
@@ -66,5 +86,58 @@
     </div>
 
   </section>
+
+
+  <!-- POPUP ARTICLE -->
+
+  <div
+    class="article-modal-overlay"
+    *ngIf="selectedArticle"
+    (click)="closeArticle()"
+  >
+
+    <div
+      class="article-modal"
+      (click)="$event.stopPropagation()"
+    >
+
+      <!-- BOUTON FERMER -->
+      <button
+        type="button"
+        class="article-modal-close"
+        (click)="closeArticle()"
+        aria-label="Fermer"
+      >
+        &times;
+      </button>
+
+
+      <!-- IMAGE -->
+      <div class="article-modal-image">
+
+        <img
+          [src]="getImageUrl(selectedArticle.image)"
+          [alt]="selectedArticle.titre"
+        />
+
+      </div>
+
+
+      <!-- CONTENU -->
+      <div class="article-modal-content">
+
+        <h2>
+          {{ selectedArticle.titre }}
+        </h2>
+
+        <p>
+          {{ formatDescription(selectedArticle.description) }}
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
 
 </div>

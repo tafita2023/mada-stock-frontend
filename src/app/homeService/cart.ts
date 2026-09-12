@@ -9,10 +9,12 @@ export interface CartItem {
   price: number;
   quantity: number;
   image: string;
-  category: 'produit' | 'materiel' | 'base' | 'arome' | 'pack' | 'diver';
+  category: 'produit' | 'materiel' | 'base' | 'arome' | 'pack' | 'diver' | 'promotion';
   type?: string;
   marque?: string;
   ratio?: string;
+  promotionId?: number | string;
+  originalCategory?: 'produit' | 'materiel';
 }
 
 @Injectable({
@@ -297,6 +299,67 @@ export class CartService {
   
     }
   
+  }
+
+  addPromotionToCart(promotion: any): void {
+
+    const cart = this.getCart();
+  
+    // Clé unique basée sur l'ID de la promotion
+    const key = `promotion-${promotion.id}`;
+  
+    const existingItem = cart.find(
+      item => item.key === key
+    );
+  
+    // Promotion déjà dans le panier
+    if (existingItem) {
+  
+      existingItem.quantity += 1;
+  
+      this.saveCart(cart);
+  
+      return;
+    }
+  
+    // Nouvelle promotion
+    const newItem: CartItem = {
+  
+      key: key,
+  
+      // ID du produit ou du matériel associé
+      id: promotion.type === 'produit'
+        ? promotion.id_produit
+        : promotion.id_materiel,
+  
+      // Catégorie spéciale pour les promotions
+      category: 'promotion',
+  
+      name: promotion.nom,
+  
+      // Prix promotionnel uniquement
+      price: Number(promotion.prix),
+  
+      quantity: 1,
+  
+      image: promotion.image || 'assets/default.png',
+  
+      // ID de la promotion
+      promotionId: promotion.id,
+  
+      // Permet de savoir si c'est une promotion produit
+      // ou une promotion matériel
+      originalCategory: promotion.type,
+  
+      type: promotion.type,
+  
+    };
+  
+    cart.push(newItem);
+  
+    this.saveCart(cart);
+  
+    console.log('Promotion ajoutée au panier :', newItem);
   }
 
   getProducts(): CartItem[] {

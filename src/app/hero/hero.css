@@ -213,7 +213,7 @@
 
   line-height: 1.2;
 
-  color: #362F4F;
+  color: #000957;
 }
 
 
@@ -229,7 +229,7 @@
   font-size: 15px;
   line-height: 1.6;
 
-  color: #362F4F;
+  color: #000957;
 }
 
 
@@ -265,9 +265,56 @@
 
   font-weight: 700;
 
-  color: #362F4F;
+  color: #000957;
 }
 
+/* ================================
+   BOUTON AJOUTER AU PANIER
+================================ */
+
+.add-to-cart-btn {
+  margin-top: 20px;
+  margin-left: auto;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  padding: 12px 22px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: #1591DC;
+  color: white;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.add-to-cart-btn:hover {
+  background: #1591DC;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 8px 20px rgba(67, 97, 238, 0.35);
+}
+
+.add-to-cart-btn:active {
+  transform: translateY(0);
+}
+
+.add-to-cart-btn svg {
+  flex-shrink: 0;
+}
 
 /* ================================
    MOBILE

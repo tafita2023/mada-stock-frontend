@@ -22,7 +22,7 @@ export class NicotineComponents implements OnInit, OnDestroy {
   nicotines: Nicotine[] = [];
   isLoading = true;
   loadingError = false;
-  showDetailModal = false;
+  selectedArticle: Nicotine | null = null;
 
   private subs = new Subscription(); 
 
@@ -46,9 +46,7 @@ export class NicotineComponents implements OnInit, OnDestroy {
     this.subs.add(
       this.nicotineService.getNicotines().subscribe({
         next: (res: any) => {
-  
-          console.log('RÉPONSE API :', res);
-  
+    
           const data = Array.isArray(res) ? res : res?.data;
   
           this.nicotines = Array.isArray(data)
@@ -81,10 +79,28 @@ export class NicotineComponents implements OnInit, OnDestroy {
     );
   }
   
-    // ================= IMAGE =================
-    getImageUrl(image: string | null | undefined): string {
-      if (!image) return 'assets/no-image.png';
-      return `${environment.storageUrl}/${image}`;
-    }
+  openArticle(article: Nicotine): void { 
+    this.selectedArticle = article;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeArticle(): void { 
+    this.selectedArticle = null; 
+    document.body.style.overflow = '';
+  }
+
+  formatDescription(description: string): string {
+    return description
+    .replace(/\.\s*/g, '.\n')
+    .replace(/(^|\n)\s*([a-zà-ÿ])/g, (_, prefix, letter) => {
+      return prefix + letter.toUpperCase();
+    });
+  }
+
+  // ================= IMAGE =================
+  getImageUrl(image: string | null | undefined): string {
+    if (!image) return 'assets/no-image.png';
+    return `${environment.storageUrl}/${image}`;
+  }
   
 }

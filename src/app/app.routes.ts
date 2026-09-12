@@ -65,7 +65,7 @@ export const routes: Routes = [
             { path:'diy/packs', component:PackComponent },
             { path:'diy/divers', component:DiverComponent },
             { path:'nicotine', component:NicotineComponents },
-            { path:'confidentialite', component:ConfidentialComponents },   
+            { path:'cgv', component:ConfidentialComponents },   
 
         ]
     },

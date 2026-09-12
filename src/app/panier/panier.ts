@@ -24,6 +24,8 @@ export class PanierComponent implements OnInit, OnDestroy {
   aromeItems: CartItem[] = [];
   packItems: CartItem[] = [];
   diverItems: CartItem[] = [];
+  promotionProduitItems: CartItem[] = [];
+  promotionMaterielItems: CartItem[] = [];
 
   displayProductsOnly: boolean = false;
   displayWithMateriel: boolean = false;
@@ -74,9 +76,15 @@ export class PanierComponent implements OnInit, OnDestroy {
       this.aromeItems = items.filter(i => i.category === 'arome');
       this.packItems = items.filter(i => i.category === 'pack');
       this.diverItems = items.filter(i => i.category === 'diver');
+      this.promotionProduitItems = items.filter(
+          i => i.category === 'promotion' && i.originalCategory === 'produit'
+        );
 
-      this.updateDisplayMode();
-    });
+        this.promotionMaterielItems = items.filter(
+          i => i.category === 'promotion' && i.originalCategory === 'materiel'
+        );
+            this.updateDisplayMode();
+          });
   }
 
   ngOnDestroy(): void {
@@ -92,7 +100,7 @@ export class PanierComponent implements OnInit, OnDestroy {
   }
 
   get allItems(): CartItem[] {
-    return [...this.cartItems, ...this.materielItems, ...this.baseItems, ...this.aromeItems, ...this.packItems, ...this.diverItems];
+    return [...this.cartItems, ...this.materielItems, ...this.baseItems, ...this.aromeItems, ...this.packItems, ...this.diverItems, ...this.promotionProduitItems, ...this.promotionMaterielItems];
   }
   
   hasMateriel(): boolean {
@@ -101,28 +109,21 @@ export class PanierComponent implements OnInit, OnDestroy {
 
   updateDisplayMode(): void {
 
-    this.displayProductsOnly =
-      this.cartItems.length > 0 &&
-      this.materielItems.length === 0;
+    this.displayProductsOnly = this.cartItems.length > 0;
   
-    this.displayWithMateriel =
-      this.materielItems.length > 0;
+    this.displayWithMateriel = this.materielItems.length > 0;
   
-    this.displayWithBase =
-      this.baseItems.length > 0;
+    this.displayWithBase = this.baseItems.length > 0;
   
-    this.displayWithArome =
-      this.aromeItems.length > 0;
+    this.displayWithArome = this.aromeItems.length > 0;
   
-    this.displayWithPack =
-      this.packItems.length > 0;
+    this.displayWithPack = this.packItems.length > 0;
   
-    this.displayWithDiver =
-      this.diverItems.length > 0;
+    this.displayWithDiver = this.diverItems.length > 0;
   }
-  
+
   getAllItems(): CartItem[] {
-    return [...this.cartItems, ...this.materielItems, ...this.baseItems, ...this.aromeItems, ...this.packItems, ...this.diverItems];
+    return [...this.cartItems, ...this.materielItems, ...this.baseItems, ...this.aromeItems, ...this.packItems, ...this.diverItems, ...this.promotionProduitItems, ...this.promotionMaterielItems];
   }
 
   getImageUrl(image?: string) {
@@ -243,7 +244,7 @@ export class PanierComponent implements OnInit, OnDestroy {
   }
 
   processPayment(): void {
-    if (this.cartItems.length === 0 && this.materielItems.length === 0) {
+    if (this.allItems.length === 0) {
       alert('Votre panier est vide');
       return;
     }

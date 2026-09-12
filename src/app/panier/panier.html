@@ -14,7 +14,7 @@
             <ng-container *ngIf="displayProductsOnly">
                 <div class="cart-header-simple desktop-only">
                     <div>Image</div>
-                    <div>Produit</div>
+                    <div>Nom</div>
                     <div>Prix</div>
                     <div>Quantité</div>
                     <div>Total</div>
@@ -61,45 +61,13 @@
 
             <ng-container *ngIf="displayWithMateriel">
                                 
-                <div class="cart-header desktop-only" *ngIf="cartItems.length > 0">
-                    <div>Image</div>
-                    <div>Nom</div>
-                    <div>Prix</div>
-                    <div>Quantité</div>
-                    <div>Total</div>
-                    <div>Action</div>
-                </div>
-
-                <!-- ARTICLES PRODUITS -->
-                <div *ngFor="let item of cartItems; trackBy: trackByItem" class="cart-item desktop-only">
-                    <div class="item-image-container">
-                        <img [src]="getImageUrl(item.image)" class="item-image">
-                    </div>
-                    <div class="item-name">{{ item.name }}</div>
-                    <div class="item-price">{{ item.price | number }} Ar</div>
-                    <div class="item-quantity">
-                        <button (click)="updateQuantity(item, item.quantity - 1)" class="qty-btn">-</button>
-                        <input type="number" [(ngModel)]="item.quantity" (change)="updateQuantity(item, item.quantity)" min="1" max="99" class="qty-input">
-                        <button (click)="updateQuantity(item, item.quantity + 1)" class="qty-btn">+</button>
-                    </div>
-                    <div class="item-total">{{ item.price * item.quantity | number }} Ar</div>
-                    <div class="item-remove">
-                        <button (click)="removeItem(item)" class="remove-btn">
-                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
-                            </svg>                              
-                        </button>
-                    </div>
-                </div>
 
                 <!-- SEPARATEUR -->
                 <div class="section-separator" *ngIf="cartItems.length > 0 && materielItems.length > 0"></div>
                 
-                <div class="cart-header desktop-only" *ngIf="materielItems.length > 0">
+                <div class="cart-header-simple desktop-only" *ngIf="materielItems.length > 0">
                     <div>Image</div>
-                    <div>Nom</div>
-                    <div>Type</div>
-                    <div>Marque</div>
+                    <div>nom</div>
                     <div>Prix</div>
                     <div>Quantité</div>
                     <div>Total</div>
@@ -107,13 +75,11 @@
                 </div>
 
                 <!-- ARTICLES MATÉRIELS -->
-                <div *ngFor="let item of materielItems; trackBy: trackByItem" class="cart-item desktop-only">
+                <div *ngFor="let item of materielItems; trackBy: trackByItem" class="cart-item-simple desktop-only">
                     <div class="item-image-container">
                         <img [src]="getImageUrl(item.image)" class="item-image">
                     </div>
                     <div class="item-name">{{ item.name }}</div>
-                    <div class="cell type-cell">{{ item.type || '-' }}</div>
-                    <div class="cell marque-cell">{{ item.marque || '-' }}</div>
                     <div class="item-price">{{ item.price | number }} Ar</div>
                     <div class="item-quantity">
                         <button (click)="updateQuantity(item, item.quantity - 1)" class="qty-btn">-</button>
@@ -131,45 +97,210 @@
                 </div>
             </ng-container>
 
+            <!-- ================= PROMOTIONS ================= -->
+
+            <div
+            class="section-separator"
+            *ngIf="promotionMaterielItems.length > 0 || promotionProduitItems.length > 0">
+            </div>
+
+            <!-- ================= HEADER COMMUN ================= -->
+
+            <div
+            class="cart-header-simple desktop-only"
+            *ngIf="promotionMaterielItems.length > 0 || promotionProduitItems.length > 0">
+
+            <div>Image</div>
+            <div>Promotion</div>
+            <div>Prix</div>
+            <div>Quantité</div>
+            <div>Total</div>
+            <div>Action</div>
+
+            </div>
+
+
+            <!-- ================= PROMOTIONS MATÉRIELS ================= -->
+
+            <div
+            *ngFor="let item of promotionMaterielItems; trackBy: trackByItem"
+            class="cart-item-simple desktop-only">
+
+            <div class="item-image-container">
+                <img
+                [src]="getImageUrl(item.image)"
+                [alt]="item.name"
+                class="item-image">
+            </div>
+
+            <div class="item-name">
+                {{ item.name }}
+            </div>
+
+            <div class="item-price">
+                {{ item.price | number }} Ar
+            </div>
+
+            <div class="item-quantity">
+
+                <button
+                (click)="updateQuantity(item, item.quantity - 1)"
+                class="qty-btn">
+                -
+                </button>
+
+                <input
+                type="number"
+                [(ngModel)]="item.quantity"
+                (change)="updateQuantity(item, item.quantity)"
+                min="1"
+                max="99"
+                class="qty-input">
+
+                <button
+                (click)="updateQuantity(item, item.quantity + 1)"
+                class="qty-btn">
+                +
+                </button>
+
+            </div>
+
+            <div class="item-total">
+                {{ item.price * item.quantity | number }} Ar
+            </div>
+
+            <div class="item-remove">
+
+                <button
+                (click)="removeItem(item)"
+                class="remove-btn">
+
+                <svg
+                    width="24"
+                    height="24"
+                    fill="none"
+                    viewBox="0 0 24 24">
+
+                    <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1 1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+
+                </svg>
+
+                </button>
+
+            </div>
+
+            </div>
+
+
+            <!-- ================= PROMOTIONS PRODUITS ================= -->
+
+            <div
+            *ngFor="let item of promotionProduitItems; trackBy: trackByItem"
+            class="cart-item-simple desktop-only">
+
+            <div class="item-image-container">
+                <img
+                [src]="getImageUrl(item.image)"
+                [alt]="item.name"
+                class="item-image">
+            </div>
+
+            <div class="item-name">
+                {{ item.name }}
+            </div>
+
+            <div class="item-price">
+                {{ item.price | number }} Ar
+            </div>
+
+            <div class="item-quantity">
+
+                <button
+                (click)="updateQuantity(item, item.quantity - 1)"
+                class="qty-btn">
+                -
+                </button>
+
+                <input
+                type="number"
+                [(ngModel)]="item.quantity"
+                (change)="updateQuantity(item, item.quantity)"
+                min="1"
+                max="99"
+                class="qty-input">
+
+                <button
+                (click)="updateQuantity(item, item.quantity + 1)"
+                class="qty-btn">
+                +
+                </button>
+
+            </div>
+
+            <div class="item-total">
+                {{ item.price * item.quantity | number }} Ar
+            </div>
+
+            <div class="item-remove">
+
+                <button
+                (click)="removeItem(item)"
+                class="remove-btn">
+
+                <svg
+                    width="24"
+                    height="24"
+                    fill="none"
+                    viewBox="0 0 24 24">
+
+                    <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1 1ZM6 7h12v13a1 1 0 0 1-1-1H7a1 1 0 0 1-1-1V7Z"/>
+
+                </svg>
+
+                </button>
+
+            </div>
+
+            </div>
+
             <!-- ================= BASES DIY ================= -->
             <div class="section-separator" 
             *ngIf="baseItems.length > 0">
             </div>
 
-
-            <div class="cart-header desktop-only" *ngIf="baseItems.length > 0">
+            <div class="cart-header-simple desktop-only" *ngIf="baseItems.length > 0">
             <div>Image</div>
             <div>Nom</div>
-            <div>Ratio</div>
             <div>Prix</div>
             <div>Quantité</div>
             <div>Total</div>
             <div>Action</div>
             </div>
 
-
             <div *ngFor="let item of baseItems; trackBy: trackByItem" 
-            class="cart-item desktop-only">
+            class="cart-item-simple desktop-only">
 
             <div class="item-image-container">
             <img [src]="getImageUrl(item.image)" class="item-image">
             </div>
 
-
             <div class="item-name">
             {{ item.name }}
             </div>
 
-
-            <div class="cell">
-            {{ item.ratio || '-' }}
-            </div>
-
-
             <div class="item-price">
             {{ item.price | number }} Ar
             </div>
-
 
             <div class="item-quantity">
 
@@ -230,10 +361,9 @@
             </div>
 
 
-            <div class="cart-header desktop-only" *ngIf="aromeItems.length > 0">
+            <div class="cart-header-simple desktop-only" *ngIf="aromeItems.length > 0">
             <div>Image</div>
             <div>Nom</div>
-            <div>marque</div>
             <div>Prix</div>
             <div>Quantité</div>
             <div>Total</div>
@@ -242,27 +372,19 @@
 
 
             <div *ngFor="let item of aromeItems; trackBy: trackByItem" 
-            class="cart-item desktop-only">
+            class="cart-item-simple desktop-only">
 
             <div class="item-image-container">
             <img [src]="getImageUrl(item.image)" class="item-image">
             </div>
 
-
             <div class="item-name">
             {{ item.name }}
             </div>
 
-
-            <div class="cell">
-            {{ item.marque || '-' }}
-            </div>
-
-
             <div class="item-price">
             {{ item.price | number }} Ar
             </div>
-
 
             <div class="item-quantity">
 
@@ -322,40 +444,29 @@
             *ngIf="packItems.length > 0">
             </div>
 
-
-            <div class="cart-header desktop-only" *ngIf="packItems.length > 0">
+            <div class="cart-header-simple desktop-only" *ngIf="packItems.length > 0">
             <div>Image</div>
             <div>Nom</div>
-            <div>marque</div>
             <div>Prix</div>
             <div>Quantité</div>
             <div>Total</div>
             <div>Action</div>
             </div>
 
-
             <div *ngFor="let item of packItems; trackBy: trackByItem" 
-            class="cart-item desktop-only">
+            class="cart-item-simple desktop-only">
 
             <div class="item-image-container">
             <img [src]="getImageUrl(item.image)" class="item-image">
             </div>
 
-
             <div class="item-name">
             {{ item.name }}
             </div>
 
-
-            <div class="cell">
-            {{ item.marque || '-' }}
-            </div>
-
-
             <div class="item-price">
             {{ item.price | number }} Ar
             </div>
-
 
             <div class="item-quantity">
 
@@ -365,7 +476,6 @@
                 -
             </button>
 
-
             <input 
                 type="number"
                 [(ngModel)]="item.quantity"
@@ -373,7 +483,6 @@
                 min="1"
                 max="99"
                 class="qty-input">
-
 
             <button 
                 (click)="updateQuantity(item, item.quantity + 1)"
@@ -383,11 +492,9 @@
 
             </div>
 
-
             <div class="item-total">
             {{ item.price * item.quantity | number }} Ar
             </div>
-
 
             <div class="item-remove">
 
@@ -415,40 +522,29 @@
             *ngIf="diverItems.length > 0">
             </div>
 
-
-            <div class="cart-header desktop-only" *ngIf="diverItems.length > 0">
+            <div class="cart-header-simple desktop-only" *ngIf="diverItems.length > 0">
             <div>Image</div>
             <div>Nom</div>
-            <div>marque</div>
             <div>Prix</div>
             <div>Quantité</div>
             <div>Total</div>
             <div>Action</div>
             </div>
 
-
             <div *ngFor="let item of diverItems; trackBy: trackByItem" 
-            class="cart-item desktop-only">
+            class="cart-item-simple desktop-only">
 
             <div class="item-image-container">
             <img [src]="getImageUrl(item.image)" class="item-image">
             </div>
 
-
             <div class="item-name">
             {{ item.name }}
             </div>
 
-
-            <div class="cell">
-            {{ item.marque || '-' }}
-            </div>
-
-
             <div class="item-price">
             {{ item.price | number }} Ar
             </div>
-
 
             <div class="item-quantity">
 
@@ -517,10 +613,6 @@
                     </div>
                     <div class="mobile-card-body">
                         <h3 class="mobile-product-name">{{ item.name }}</h3>
-                        <div *ngIf="item.category === 'materiel'" class="materiel-details-mobile">
-                            <p><strong>Type :</strong> {{ item.type || '-' }}</p>
-                            <p><strong>Marque :</strong> {{ item.marque || '-' }}</p>
-                        </div>
                         <div class="mobile-info-row">
                             <span class="info-label">Prix :</span>
                             <span class="info-value">{{ item.price | number }} Ar</span>
@@ -754,7 +846,7 @@
                   
                       <span>
                         J'ai lu et j'accepte les
-                        <a routerLink="/confidentialite" target="_blank">
+                        <a routerLink="/cgv" target="_blank">
                           Conditions Générales de Vente
                         </a>
                       </span>
