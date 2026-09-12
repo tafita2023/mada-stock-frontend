@@ -1,30 +1,88 @@
-import { Component, AfterViewInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
+import {
+  Component,
+  AfterViewInit,
+  ElementRef,
+  ViewChild,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { CarouselModule } from 'primeng/carousel';
+import { PromotionHomeService } from '../homeService/promotion';
+
+export interface Promotion {
+  id?: number;
+  nom: string;
+  prix: number;
+  description: string;
+  type?: 'produit' | 'materiel';
+  image?: string;
+  ancien_prix?: number;
+}
 
 @Component({
   selector: 'app-hero',
   standalone: true,
-  imports: [CommonModule,CarouselModule],
+  imports: [
+    CommonModule,
+    CarouselModule
+  ],
   templateUrl: './hero.html',
   styleUrls: ['./hero.css']
 })
-export class HeroComponent implements AfterViewInit, OnDestroy {
-  items = [1, 2, 3, 4, 5];
+export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  promotions: Promotion[] = [];
 
   private intervalId: ReturnType<typeof setInterval> | undefined;
 
   @ViewChild('nextButton')
   nextButton!: ElementRef<HTMLButtonElement>;
 
-  ngAfterViewInit(): void {
+  constructor(
+    private promotionHomeService: PromotionHomeService
+  ) {}
 
+  ngOnInit(): void {
+    this.loadPromotions();
+  }
+
+  loadPromotions(): void {
+    this.promotionHomeService.getPromotions().subscribe({
+      next: (res: any) => {
+        console.log('Promotions reçues :', res);
+
+        const data = res?.data ?? res ?? [];
+
+        if (Array.isArray(data)) {
+          this.promotions = data;
+        } else {
+          this.promotions = [];
+        }
+
+        console.log('Promotions affichées dans le carousel :', this.promotions);
+      },
+
+      error: (error) => {
+        console.error(
+          'Erreur lors de la récupération des promotions :',
+          error
+        );
+
+        this.promotions = [];
+      }
+    });
+  }
+
+  ngAfterViewInit(): void {
     this.intervalId = setInterval(() => {
 
-      this.nextButton.nativeElement.click();
+      if (this.nextButton) {
+        this.nextButton.nativeElement.click();
+      }
 
     }, 5000);
-
   }
 
   ngOnDestroy(): void {
@@ -33,5 +91,11 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
       clearInterval(this.intervalId);
     }
 
+  }
+
+  getImageUrl(image?: string): string {
+    return image
+      ? `http://127.0.0.1:8000/${image}`
+      : 'assets/nothing.png';
   }
 }

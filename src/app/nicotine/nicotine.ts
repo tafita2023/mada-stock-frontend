@@ -36,10 +36,9 @@ export class NicotineComponents implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void { 
-    this.subs.unsubscribe(); 
+    this.subs.unsubscribe();
   }
 
-  // ================= LOAD ================= 
   loadArticles(): void {
     this.isLoading = true;
     this.loadingError = false;

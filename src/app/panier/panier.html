@@ -743,7 +743,24 @@
                         </div>
                     </div>
                 </div>
-                
+
+                <div class="check">
+                    <label class="check-label">
+                      <input
+                        type="checkbox"
+                        name="acceptCgv"
+                        required
+                      />
+                  
+                      <span>
+                        J'ai lu et j'accepte les
+                        <a routerLink="/confidentialite" target="_blank">
+                          Conditions Générales de Vente
+                        </a>
+                      </span>
+                    </label>
+                  </div>
+
                 <button class="checkout-btn" (click)="processPayment()">
                     Commander - {{ getTotal() | number }} Ar
                 </button>

@@ -45,7 +45,7 @@ export const routes: Routes = [
             { path:'diy/aromes', component:AromesComponent },
             { path:'diy/packs', component:PacksComponent },
             { path:'diy/divers', component:DiversComponent },
-            { path:'promotion', component:PromotionComponents },
+            { path:'promotions', component:PromotionComponents },
             { path:'nicotine', component:NicotineComponent }
 
         ]

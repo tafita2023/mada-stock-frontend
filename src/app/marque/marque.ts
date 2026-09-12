@@ -1,18 +1,35 @@
-import { Component, OnInit, HostListener, PLATFORM_ID, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import {
+  Component,
+  OnInit,
+  HostListener,
+  PLATFORM_ID,
+  Inject,
+  ChangeDetectionStrategy
+} from '@angular/core';
+
+import {
+  CommonModule,
+  isPlatformBrowser
+} from '@angular/common';
+
 import { CarouselModule } from 'primeng/carousel';
 
 @Component({
   selector: 'app-marque',
   standalone: true,
-  imports: [CommonModule,  CarouselModule],
+  imports: [
+    CommonModule,
+    CarouselModule
+  ],
   templateUrl: './marque.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./marque.css']
 })
-export class MarqueComponent {
+export class MarqueComponent implements OnInit {
 
   slidesPerPage = 4;
+
+  private isBrowser: boolean;
 
   logos = [
     { id: 1, name: '#', url: '/Axl.png' },
@@ -24,19 +41,37 @@ export class MarqueComponent {
     { id: 7, name: '#', url: '/VapeSauce.png' },
     { id: 8, name: '#', url: '/Voopoo.png' },
     { id: 9, name: '#', url: '/VostVape.png' }
-
   ];
 
-  @HostListener('window:resize')
-  onResize(): void {
-    this.updateSlidesPerPage();
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
   ngOnInit(): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    this.updateSlidesPerPage();
+  }
+
+  @HostListener('window:resize')
+  onResize(): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
     this.updateSlidesPerPage();
   }
 
   private updateSlidesPerPage(): void {
+
+    if (!this.isBrowser) {
+      return;
+    }
+
     const width = window.innerWidth;
 
     if (width <= 480) {
@@ -47,5 +82,4 @@ export class MarqueComponent {
       this.slidesPerPage = 4;
     }
   }
-
 }
