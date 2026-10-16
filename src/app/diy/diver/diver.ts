@@ -79,8 +79,6 @@ export class DiverComponent {
 
         next: (res: any) => {
 
-          console.log('Divers reçues:', res);
-
           const data = res.data ?? res ?? [];
 
           this.divers = data;

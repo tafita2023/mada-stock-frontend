@@ -1,0 +1,65 @@
+<div class="payment-result failed-page">
+
+    <div class="result-card">
+  
+      <div class="failed-icon">
+  
+        <svg
+          viewBox="0 0 120 120"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+  
+          <circle
+            class="failed-circle"
+            cx="60"
+            cy="60"
+            r="50"
+          />
+  
+          <path
+            class="failed-cross cross-one"
+            d="M40 40 L80 80"
+          />
+  
+          <path
+            class="failed-cross cross-two"
+            d="M80 40 L40 80"
+          />
+  
+        </svg>
+  
+      </div>
+  
+      <span class="result-label">
+        PAIEMENT
+      </span>
+  
+      <h1>
+        Paiement échoué
+      </h1>
+  
+      <p>
+        Votre paiement n'a pas pu être effectué. Veuiller verifier votre compte.
+      </p>
+    
+      <div class="actions">
+  
+        <button
+          class="primary-btn"
+          (click)="goToCart()"
+        >
+          Réessayer le paiement
+        </button>
+  
+        <button
+          class="secondary-btn"
+          (click)="goHome()"
+        >
+          Retour à l'accueil
+        </button>
+  
+      </div>
+  
+    </div>
+  
+  </div>

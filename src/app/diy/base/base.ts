@@ -81,8 +81,6 @@ export class BaseComponents {
 
         next: (res: any) => {
 
-          console.log('Bases reçues:', res);
-
           const data = res.data ?? res ?? [];
 
           this.bases = data;

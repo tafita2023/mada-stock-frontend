@@ -52,10 +52,7 @@ export class NicotineComponents implements OnInit, OnDestroy {
           this.nicotines = Array.isArray(data)
             ? [...data].sort((a, b) => a.id - b.id)
             : [];
-  
-          console.log('ARTICLES :', this.nicotines);
-          console.log('NOMBRE :', this.nicotines.length);
-  
+    
           this.isLoading = false;
           this.loadingError = false;
   

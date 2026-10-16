@@ -1,12 +1,24 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectionStrategy
+} from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
+
 import { CartService, CartItem } from '../homeService/cart';
+import { PaymentService } from '../homeService/payement';
+
 import { environment } from '../../environments/environment';
 
-export type PaymentMethod = 'mobile_money' | 'card' | 'cash_on_delivery';
+
+export type PaymentMethod = 'online' | 'cash_on_delivery';
+
 export type DeliveryOption = 'delivery' | 'pickup';
+
 
 @Component({
   selector: 'app-cart',
@@ -27,6 +39,7 @@ export class PanierComponent implements OnInit, OnDestroy {
   promotionProduitItems: CartItem[] = [];
   promotionMaterielItems: CartItem[] = [];
 
+
   displayProductsOnly: boolean = false;
   displayWithMateriel: boolean = false;
   displayWithBase: boolean = false;
@@ -34,11 +47,17 @@ export class PanierComponent implements OnInit, OnDestroy {
   displayWithPack: boolean = false;
   displayWithDiver: boolean = false;
 
+
   private cartSubscription!: Subscription;
+
 
   selectedDeliveryOption: DeliveryOption = 'delivery';
 
-// Adresse de livraison (si livraison choisie)
+
+  // =========================
+  // ADRESSE DE LIVRAISON
+  // =========================
+
   deliveryAddress = {
     fullName: '',
     phone: '',
@@ -47,301 +66,509 @@ export class PanierComponent implements OnInit, OnDestroy {
     notes: ''
   };
 
-  selectedPaymentMethod: PaymentMethod = 'mobile_money';
-  selectedMobileMoneyOperator: string = '';
 
-  cardDetails = {
-    number: '',
-    expiry: '',
-    cvv: '',
-    name: ''
-  };
+  // =========================
+  // PAIEMENT
+  // =========================
 
-  mobileMoneyOperators = [
-    { id: 'mvola', name: 'Yas', imageUrl: '/Mvola.png' },
-    { id: 'orange_Money', name: 'Orange', imageUrl: '/orange2.png' }
-  ];
+  selectedPaymentMethod: PaymentMethod = 'online';
 
-  mobileMoneyNumber: string = '';
-  phoneNumberError: string = '';
 
-  constructor(private cartService: CartService) {}
+  // Évite plusieurs clics pendant la création du paiement
+  isProcessingPayment: boolean = false;
+
+
+  constructor(
+    private cartService: CartService,
+    private paymentService: PaymentService
+  ) {}
+
+
+  // =========================
+  // INIT
+  // =========================
 
   ngOnInit(): void {
+
     // UNE SEULE source de vérité : la subscription
     this.cartSubscription = this.cartService.cart$.subscribe(items => {
-      this.cartItems = items.filter(i => i.category === 'produit');
-      this.materielItems = items.filter(i => i.category === 'materiel');
-      this.baseItems = items.filter(i => i.category === 'base');
-      this.aromeItems = items.filter(i => i.category === 'arome');
-      this.packItems = items.filter(i => i.category === 'pack');
-      this.diverItems = items.filter(i => i.category === 'diver');
-      this.promotionProduitItems = items.filter(
-          i => i.category === 'promotion' && i.originalCategory === 'produit'
-        );
 
-        this.promotionMaterielItems = items.filter(
-          i => i.category === 'promotion' && i.originalCategory === 'materiel'
-        );
-            this.updateDisplayMode();
-          });
+      this.cartItems = items.filter(
+        i => i.category === 'produit'
+      );
+
+      this.materielItems = items.filter(
+        i => i.category === 'materiel'
+      );
+
+      this.baseItems = items.filter(
+        i => i.category === 'base'
+      );
+
+      this.aromeItems = items.filter(
+        i => i.category === 'arome'
+      );
+
+      this.packItems = items.filter(
+        i => i.category === 'pack'
+      );
+
+      this.diverItems = items.filter(
+        i => i.category === 'diver'
+      );
+
+      this.promotionProduitItems = items.filter(
+        i =>
+          i.category === 'promotion' &&
+          i.originalCategory === 'produit'
+      );
+
+      this.promotionMaterielItems = items.filter(
+        i =>
+          i.category === 'promotion' &&
+          i.originalCategory === 'materiel'
+      );
+
+      this.updateDisplayMode();
+    });
   }
 
+
+  // =========================
+  // DESTROY
+  // =========================
+
   ngOnDestroy(): void {
+
     if (this.cartSubscription) {
       this.cartSubscription.unsubscribe();
     }
   }
 
-  // Supprimez loadCartItems() ou modifiez-la comme ceci :
+
+  // =========================
+  // PANIER
+  // =========================
+
   loadCartItems(): void {
-    // Rafraîchir manuellement si nécessaire
     this.cartService.refreshCart();
   }
 
+
   get allItems(): CartItem[] {
-    return [...this.cartItems, ...this.materielItems, ...this.baseItems, ...this.aromeItems, ...this.packItems, ...this.diverItems, ...this.promotionProduitItems, ...this.promotionMaterielItems];
+
+    return [
+      ...this.cartItems,
+      ...this.materielItems,
+      ...this.baseItems,
+      ...this.aromeItems,
+      ...this.packItems,
+      ...this.diverItems,
+      ...this.promotionProduitItems,
+      ...this.promotionMaterielItems
+    ];
   }
-  
+
+
+  getAllItems(): CartItem[] {
+
+    return [
+      ...this.cartItems,
+      ...this.materielItems,
+      ...this.baseItems,
+      ...this.aromeItems,
+      ...this.packItems,
+      ...this.diverItems,
+      ...this.promotionProduitItems,
+      ...this.promotionMaterielItems
+    ];
+  }
+
+
   hasMateriel(): boolean {
     return this.materielItems.length > 0;
   }
 
+
   updateDisplayMode(): void {
 
-    this.displayProductsOnly = this.cartItems.length > 0;
-  
-    this.displayWithMateriel = this.materielItems.length > 0;
-  
-    this.displayWithBase = this.baseItems.length > 0;
-  
-    this.displayWithArome = this.aromeItems.length > 0;
-  
-    this.displayWithPack = this.packItems.length > 0;
-  
-    this.displayWithDiver = this.diverItems.length > 0;
+    this.displayProductsOnly =
+      this.cartItems.length > 0;
+
+    this.displayWithMateriel =
+      this.materielItems.length > 0;
+
+    this.displayWithBase =
+      this.baseItems.length > 0;
+
+    this.displayWithArome =
+      this.aromeItems.length > 0;
+
+    this.displayWithPack =
+      this.packItems.length > 0;
+
+    this.displayWithDiver =
+      this.diverItems.length > 0;
   }
 
-  getAllItems(): CartItem[] {
-    return [...this.cartItems, ...this.materielItems, ...this.baseItems, ...this.aromeItems, ...this.packItems, ...this.diverItems, ...this.promotionProduitItems, ...this.promotionMaterielItems];
-  }
 
-  getImageUrl(image?: string) {
+  // =========================
+  // IMAGES
+  // =========================
+
+  getImageUrl(image?: string): string {
+
     return image
       ? `${environment.storageUrl}/${image}`
       : 'assets/nothing.png';
   }
 
+
+  // =========================
+  // PRIX
+  // =========================
+
   getSubtotal(): number {
-    const all = this.allItems;
-    return all.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+    return this.allItems.reduce(
+      (sum, item) =>
+        sum + (item.price * item.quantity),
+      0
+    );
   }
 
+
   getShippingCost(): number {
-    // Si le client choisit de récupérer sur place → livraison gratuite
+
+    // Retrait sur place = gratuit
     if (this.selectedDeliveryOption === 'pickup') {
       return 0;
     }
-    // Livraison à domicile : gratuite si commande > 50000 Ar
-    return this.getSubtotal() > 50000 ? 0 : 3000;
+
+    // Livraison gratuite à partir de 50 000 Ar
+    return this.getSubtotal() > 50000
+      ? 0
+      : 3000;
   }
 
+
   getTotal(): number {
+
     return this.getSubtotal() + this.getShippingCost();
   }
 
+
+  // =========================
+  // VALIDATION LIVRAISON
+  // =========================
+
   isDeliveryInfoValid(): boolean {
+
     if (this.selectedDeliveryOption === 'delivery') {
-      return this.deliveryAddress.fullName.trim() !== '' &&
-             this.deliveryAddress.phone.trim() !== '' &&
-             this.deliveryAddress.address.trim() !== '' &&
-             this.deliveryAddress.city.trim() !== '';
+
+      return (
+        this.deliveryAddress.fullName.trim() !== '' &&
+        this.deliveryAddress.phone.trim() !== '' &&
+        this.deliveryAddress.address.trim() !== '' &&
+        this.deliveryAddress.city.trim() !== ''
+      );
     }
-    return true; // Pas d'infos nécessaires pour le retrait sur place
+
+    return true;
   }
 
-  updateQuantity(item: CartItem, newQuantity: number): void {
-    if (newQuantity < 1 || newQuantity > 99) return;
-  
+
+  // =========================
+  // QUANTITÉ
+  // =========================
+
+  updateQuantity(
+    item: CartItem,
+    newQuantity: number
+  ): void {
+
+    if (newQuantity < 1 || newQuantity > 99) {
+      return;
+    }
+
     const cart = this.cartService.getCart();
-    const index = cart.findIndex(i => i.key === item.key);
-    
+
+    const index = cart.findIndex(
+      i => i.key === item.key
+    );
+
     if (index !== -1) {
+
       cart[index].quantity = newQuantity;
+
       this.cartService.updateCart(cart);
     }
   }
 
-  selectMobileMoneyOperator(operatorId: string): void {
-    this.selectedMobileMoneyOperator = operatorId;
-    this.phoneNumberError = '';
-    this.mobileMoneyNumber = '';
-  }
 
-  getSelectedOperatorName(): string {
-    const operator = this.mobileMoneyOperators.find(
-      op => op.id === this.selectedMobileMoneyOperator
-    );
-    return operator ? operator.name : '';
-  }
-
-  onPhoneInput(event: any): void {
-    const rawValue = event.target.value;
-  
-    const cleanNumber = rawValue.replace(/[^0-9]/g, '').substring(0, 9);
-    
-    this.validatePhoneNumber(cleanNumber);
-  }
-
-  validatePhoneNumber(cleanNumber: string): void {
-    if (!cleanNumber) {
-      this.phoneNumberError = '';
-      return;
-    }
-
-    const pattern = /^(32|33|34|37|38|39)\d{7}$/;
-
-    const operator = this.selectedMobileMoneyOperator?.toUpperCase();
-
-    if (operator === 'MVOLA') {
-      this.phoneNumberError = pattern.test(cleanNumber)
-        ? ''
-        : 'Numéro MVola invalide (ex: 341234567)';
-    }
-
-    else if (operator === 'ORANGE_MONEY') {
-      this.phoneNumberError = pattern.test(cleanNumber)
-        ? ''
-        : 'Numéro Orange invalide (ex: 321234567)';
-    }
-  }
-
-  getCleanNumber(): string {
-    return (this.mobileMoneyNumber || '').replace(/[^0-9]/g, '');
-  }
+  // =========================
+  // SUPPRESSION
+  // =========================
 
   removeItem(item: CartItem): void {
+
     this.cartService.removeFromCart(item.key);
   }
-      
-  trackByItem(index: number, item: CartItem): string {
-    return item.key; // Utilisez key qui est unique
+
+
+  trackByItem(
+    index: number,
+    item: CartItem
+  ): string {
+
+    return item.key;
   }
 
+
   clearCart(): void {
+
     this.cartService.clearCart();
   }
 
-  onDeliveryOptionChange(option: DeliveryOption): void {
+
+  // =========================
+  // LIVRAISON
+  // =========================
+
+  onDeliveryOptionChange(
+    option: DeliveryOption
+  ): void {
+
     this.selectedDeliveryOption = option;
   }
-  
-  onPaymentMethodChange(method: PaymentMethod): void {
+
+
+  // =========================
+  // PAIEMENT
+  // =========================
+
+  onPaymentMethodChange(
+    method: PaymentMethod
+  ): void {
+
     this.selectedPaymentMethod = method;
-    if (method !== 'mobile_money') {
-      this.selectedMobileMoneyOperator = '';
-    }
   }
+
+
+  // =========================
+  // PROCESSUS DE PAIEMENT
+  // =========================
 
   processPayment(): void {
+
+    // Empêcher les doubles clics
+    if (this.isProcessingPayment) {
+      return;
+    }
+
+
+    // Vérifier panier
     if (this.allItems.length === 0) {
+
       alert('Votre panier est vide');
+
       return;
     }
 
-    // Vérifier les informations de livraison si nécessaire
+
+    // Vérifier livraison
     if (!this.isDeliveryInfoValid()) {
-      alert('Veuillez remplir toutes les informations de livraison');
+
+      alert(
+        'Veuillez remplir toutes les informations de livraison'
+      );
+
       return;
     }
 
-    switch (this.selectedPaymentMethod) {
-      case 'mobile_money':
-        if (!this.selectedMobileMoneyOperator) {
-          alert('Veuillez sélectionner un opérateur Mobile Money');
-          return;
-        }
-        if (!this.mobileMoneyNumber || this.mobileMoneyNumber.length < 9) {
-          alert('Veuillez entrer un numéro de téléphone valide');
-          return;
-        }
-        if (this.phoneNumberError) {
-          alert('Numéro de téléphone invalide');
-          return;
-        }
-        this.processMobileMoneyPayment();
-        break;
 
-      case 'card':
-        if (!this.validateCardDetails()) {
-          alert('Carte invalide');
-          return;
-        }
-        this.processCardPayment();
-        break;
+    // Paiement en ligne avec Papi
+    if (this.selectedPaymentMethod === 'online') {
 
-      case 'cash_on_delivery':
-        this.processCashOnDelivery();
-        break;
+      this.processOnlinePayment();
+
+      return;
+    }
+
+
+    // Paiement à la livraison
+    if (
+      this.selectedPaymentMethod ===
+      'cash_on_delivery'
+    ) {
+
+      this.processCashOnDelivery();
+
+      return;
     }
   }
 
-private processMobileMoneyPayment(): void {
-    const deliveryText = this.selectedDeliveryOption === 'delivery' 
-      ? `Livraison à : ${this.deliveryAddress.address}, ${this.deliveryAddress.city}`
-      : 'Récupération sur place (gratuit)';
-    
-    alert(`✅ Paiement Mobile Money: ${this.getTotal()} Ar\n${deliveryText}\nFrais de livraison: ${this.getShippingCost()} Ar`);
-    this.confirmOrder();
-  }
 
-private processCardPayment(): void {
-    const deliveryText = this.selectedDeliveryOption === 'delivery' 
-      ? `Livraison à : ${this.deliveryAddress.address}, ${this.deliveryAddress.city}`
-      : 'Récupération sur place (gratuit)';
-    
-    alert(`✅ Paiement par carte: ${this.getTotal()} Ar\n${deliveryText}\nFrais de livraison: ${this.getShippingCost()} Ar`);
-    this.confirmOrder();
-  }
+  // =========================
+  // PAIEMENT PAPI
+  // =========================
 
- private processCashOnDelivery(): void {
-    const deliveryText = this.selectedDeliveryOption === 'delivery' 
-      ? `Livraison à : ${this.deliveryAddress.address}, ${this.deliveryAddress.city}`
-      : 'Récupération sur place (gratuit)';
-    
-    alert(`✅ Commande confirmée (paiement à la livraison)\n${deliveryText}\nFrais de livraison: ${this.getShippingCost()} Ar`);
-    this.confirmOrder();
-  }
-
- private confirmOrder(): void {
-    const orderData = {
-      items: this.allItems,
-      subtotal: this.getSubtotal(),
-      shippingCost: this.getShippingCost(),
-      total: this.getTotal(),
-      deliveryOption: this.selectedDeliveryOption,
-      deliveryDetails: this.selectedDeliveryOption === 'delivery' ? this.deliveryAddress : null,
-      paymentMethod: this.selectedPaymentMethod,
-      paymentDetails: this.selectedPaymentMethod === 'mobile_money' ? {
-        operator: this.selectedMobileMoneyOperator,
-        phone: this.mobileMoneyNumber
-      } : null,
-      date: new Date().toISOString()
+  private processOnlinePayment(): void {
+    if (this.isProcessingPayment) {
+      return;
+    }
+  
+    this.isProcessingPayment = true;
+  
+    const reference = `ORDER-${Date.now()}`;
+  
+    const deliveryText =
+      this.selectedDeliveryOption === 'delivery'
+        ? `Livraison à : ${this.deliveryAddress.address}, ${this.deliveryAddress.city}`
+        : 'Récupération sur place (gratuit)';
+  
+    const paymentData = {
+      amount: this.getTotal(),
+      clientName: this.deliveryAddress.fullName,
+      reference,
+      description: `Commande Mada-Stock - ${deliveryText}`,
+      payerPhone: this.deliveryAddress.phone
     };
-    
-    console.log('Order confirmed:', orderData);
-    
-    // Sauvegarder dans localStorage
-    localStorage.setItem('last_order', JSON.stringify(orderData));
-    
-    alert('🎉 Votre commande a été enregistrée avec succès !');
-    this.clearCart();
+  
+    console.log('Création du paiement Papi :', paymentData);
+  
+    this.paymentService.createPayment(paymentData).subscribe({
+      next: (response) => {
+        console.log('Réponse Laravel/Papi :', response);
+  
+        const paymentLink =
+          response.paymentLink || response.data?.paymentLink;
+  
+        if (!response.success || !paymentLink) {
+          this.isProcessingPayment = false;
+  
+          console.error('Lien de paiement absent :', response);
+  
+          alert(
+            response.message ||
+            'Impossible de créer le paiement.'
+          );
+          return;
+        }
+  
+        const orderData = {
+          reference,
+          items: this.allItems,
+          subtotal: this.getSubtotal(),
+          shippingCost: this.getShippingCost(),
+          total: this.getTotal(),
+          deliveryOption: this.selectedDeliveryOption,
+          deliveryDetails:
+            this.selectedDeliveryOption === 'delivery'
+              ? this.deliveryAddress
+              : null,
+          paymentMethod: 'online',
+          paymentStatus: 'PENDING',
+          date: new Date().toISOString()
+        };
+  
+        localStorage.setItem(
+          'last_order',
+          JSON.stringify(orderData)
+        );
+  
+        console.log('Redirection vers Papi :', paymentLink);
+  
+        // Redirection vers la page Papi où le client choisit son opérateur.
+        window.location.href = paymentLink;
+      },
+  
+      error: (error) => {
+        console.error('Erreur création paiement Papi :', error);
+  
+        this.isProcessingPayment = false;
+  
+        alert(
+          error?.error?.message ||
+          'Une erreur est survenue lors de la création du paiement.'
+        );
+      }
+    });
+  }
+  
+  // =========================
+  // PAIEMENT À LA LIVRAISON
+  // =========================
+
+  private processCashOnDelivery(): void {
+
+    const deliveryText =
+      this.selectedDeliveryOption === 'delivery'
+        ? `Livraison à : ${this.deliveryAddress.address}, ${this.deliveryAddress.city}`
+        : 'Récupération sur place (gratuit)';
+
+
+    alert(
+      `✅ Commande confirmée (paiement à la livraison)\n` +
+      `${deliveryText}\n` +
+      `Frais de livraison: ${this.getShippingCost()} Ar`
+    );
+
+
+    this.confirmOrder();
   }
 
-validateCardDetails(): boolean {
-    return this.cardDetails.number.length >= 13 && 
-           this.cardDetails.cvv.length >= 3 &&
-           this.cardDetails.expiry.length >= 5 &&
-           this.cardDetails.name.length > 0;
+
+  // =========================
+  // CONFIRMATION COMMANDE
+  // =========================
+
+  private confirmOrder(): void {
+
+    const orderData = {
+
+      items: this.allItems,
+
+      subtotal: this.getSubtotal(),
+
+      shippingCost:
+        this.getShippingCost(),
+
+      total:
+        this.getTotal(),
+
+      deliveryOption:
+        this.selectedDeliveryOption,
+
+      deliveryDetails:
+        this.selectedDeliveryOption === 'delivery'
+          ? this.deliveryAddress
+          : null,
+
+      paymentMethod:
+        this.selectedPaymentMethod,
+
+      paymentStatus:
+        this.selectedPaymentMethod === 'cash_on_delivery'
+          ? 'PENDING'
+          : 'PENDING',
+
+      date:
+        new Date().toISOString()
+    };
+
+    console.log(
+      'Order confirmed:',
+      orderData
+    );
+
+    // Sauvegarder la dernière commande
+    localStorage.setItem(
+      'last_order',
+      JSON.stringify(orderData)
+    );
+
+    // Vider le panier
+    this.clearCart();
   }
 }

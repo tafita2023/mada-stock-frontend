@@ -1,0 +1,65 @@
+<div class="payment-result success-page">
+
+    <div class="result-card">
+  
+      <div class="success-icon">
+  
+        <svg
+          viewBox="0 0 120 120"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+  
+          <circle
+            class="success-circle"
+            cx="60"
+            cy="60"
+            r="50"
+          />
+  
+          <path
+            class="success-check"
+            d="M35 61 L52 78 L86 42"
+          />
+  
+        </svg>
+  
+      </div>
+  
+      <span class="result-label">
+        PAIEMENT
+      </span>
+  
+      <h1>
+        Paiement réussi !
+      </h1>
+  
+      <p>
+        Votre paiement a été effectué avec succès.
+      </p>
+  
+      <p class="secondary-text">
+        Merci pour votre commande chez Mada-Stock.
+        Nous allons maintenant préparer votre commande.
+      </p>
+  
+      <div class="actions">
+  
+        <button
+          class="primary-btn"
+          (click)="goHome()"
+        >
+          Retour à l'accueil
+        </button>
+  
+        <button
+          class="secondary-btn"
+          (click)="goToOrders()"
+        >
+          Mes commandes
+        </button>
+  
+      </div>
+  
+    </div>
+  
+  </div>

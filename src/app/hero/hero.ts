@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { CarouselModule } from 'primeng/carousel';
 import { PromotionHomeService } from '../homeService/promotion';
 import { CartService } from '../homeService/cart';
+import { environment } from '../../environments/environment';
 
 export interface Promotion {
   id?: number;
@@ -97,7 +98,7 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getImageUrl(image?: string): string {
     return image
-      ? `http://127.0.0.1:8000/${image}`
+      ? `${environment.storageUrl}/${image}`
       : 'assets/nothing.png';
   }
 

@@ -86,8 +86,6 @@ export class AromeComponent {
 
         next: (res: any) => {
 
-          console.log('Aromes reçues:', res);
-
           const data = res.data ?? res ?? [];
 
           this.aromes = data;

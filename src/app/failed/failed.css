@@ -1,0 +1,309 @@
+.payment-result {
+    min-height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    padding: 40px 20px;
+  }
+  
+  .result-card {
+    width: 100%;
+    max-width: 480px;
+    box-sizing: border-box;
+    padding: 35px 20px;
+  
+    background: #333;
+  
+    border-radius: 20px;
+  
+    text-align: center;
+    
+    animation: cardAppear 0.7s ease forwards;
+  }
+  
+  @keyframes cardAppear {
+  
+    from {
+      opacity: 0;
+      transform: translateY(30px) scale(0.97);
+    }
+  
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  
+  }
+  
+  
+  /* =========================
+     FAILED ICON
+  ========================= */
+  
+  .failed-icon {
+    width: 120px;
+    height: 120px;
+  
+    margin: 0 auto 30px;
+  }
+  
+  .failed-icon svg {
+    width: 100%;
+    height: 100%;
+  
+    overflow: visible;
+  }
+  
+  
+  .failed-circle {
+    fill: none;
+  
+    stroke: #dc3545;
+    stroke-width: 5;
+  
+    stroke-linecap: round;
+  
+    stroke-dasharray: 314;
+    stroke-dashoffset: 314;
+  
+    animation:
+      drawCircle 0.8s ease forwards,
+      pulse 1.5s ease 0.8s;
+  }
+  
+  
+  @keyframes drawCircle {
+  
+    to {
+      stroke-dashoffset: 0;
+    }
+  
+  }
+  
+  
+  .failed-cross {
+    fill: none;
+  
+    stroke: #dc3545;
+  
+    stroke-width: 6;
+  
+    stroke-linecap: round;
+  
+    stroke-dasharray: 57;
+    stroke-dashoffset: 57;
+  }
+  
+  
+  .cross-one {
+    animation:
+      drawCross 0.4s ease 0.65s forwards;
+  }
+  
+  
+  .cross-two {
+    animation:
+      drawCross 0.4s ease 0.85s forwards;
+  }
+  
+  
+  @keyframes drawCross {
+  
+    to {
+      stroke-dashoffset: 0;
+    }
+  
+  }
+  
+  
+  @keyframes pulse {
+  
+    0% {
+      transform: scale(1);
+      transform-origin: center;
+    }
+  
+    50% {
+      transform: scale(1.08);
+      transform-origin: center;
+    }
+  
+    100% {
+      transform: scale(1);
+      transform-origin: center;
+    }
+  
+  }
+  
+  
+  /* =========================
+     TEXT
+  ========================= */
+  
+  .result-label {
+    display: inline-block;
+  
+    margin-bottom: 10px;
+  
+    font-size: 12px;
+    font-weight: 700;
+  
+    letter-spacing: 2px;
+  
+    color: #f1f1f1;
+  }
+  
+  .result-card h1 {
+  
+    margin: 0 0 15px;
+  
+    font-size: 34px;
+    font-weight: 700;
+  
+    color: #f1f1f1;
+  
+    animation:
+      textAppear 0.7s ease 0.3s both;
+  }
+  
+  
+  .result-card p {
+  
+    margin: 0;
+  
+    font-size: 17px;
+  
+    line-height: 1.6;
+  
+    color: #f1f1f1;
+  
+    animation:
+      textAppear 0.7s ease 0.4s both;
+  }
+  
+  
+  .secondary-text {
+  
+    margin-top: 12px !important;
+  
+    font-size: 14px !important;
+  
+    color: #f1f1f1 !important;
+  }
+  
+  
+  @keyframes textAppear {
+  
+    from {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+  
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  
+  }
+  
+  
+  /* =========================
+     BUTTONS
+  ========================= */
+  
+  .actions {
+  
+    display: flex;
+    flex-direction: column;
+  
+    gap: 12px;
+  
+    margin-top: 35px;
+  
+    animation:
+      textAppear 0.7s ease 0.5s both;
+  }
+  
+  
+  .actions button {
+  
+    width: 100%;
+    min-height: 52px;
+  
+    padding: 0 20px;
+  
+    border-radius: 12px;
+  
+    font-size: 15px;
+    font-weight: 600;
+  
+    cursor: pointer;
+  
+    transition: 0.2s ease;
+  }
+  
+  
+  .primary-btn {
+  
+    border: none;
+  
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  
+    color: white;
+  }
+  
+  
+  .primary-btn:hover {
+    transform: translateY(-2px);
+  }
+  
+  
+  .secondary-btn {
+  
+    border: 1px solid #ddd;
+  
+    background: white;
+  
+    color: #333;
+  }
+  
+  
+  .secondary-btn:hover {
+  
+    background: #f5f5f5;
+  
+    transform: translateY(-2px);
+  }
+  
+  
+  /* =========================
+     MOBILE
+  ========================= */
+  
+  @media (max-width: 600px) {
+  
+    .payment-result {
+      padding: 25px 15px;
+    }
+  
+    .result-card {
+      padding: 40px 25px;
+      border-radius: 20px;
+    }
+  
+    .failed-icon {
+      width: 100px;
+      height: 100px;
+    }
+  
+    .result-card h1 {
+      font-size: 28px;
+    }
+  
+    .result-card p {
+      font-size: 15px;
+    }
+  
+  }

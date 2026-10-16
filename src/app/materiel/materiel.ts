@@ -105,7 +105,6 @@ export class MaterielsComponent implements OnInit, OnDestroy {
           ? data.sort((a, b) => a.id - b.id)
           : [];
 
-          console.log('MATERIELS:', this.materiels);
         this.isLoading = false;
 
         this.applyFilter();

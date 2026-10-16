@@ -29,6 +29,9 @@ import { PacksComponent } from './components/diy/packs/packs';
 import { DiversComponent } from './components/diy/divers/divers';
 import { ConfidentialComponents } from './confidential/confidential';
 
+import { SuccessComponent } from './success/success';
+import { FailedComponent } from './failed/failed';
+
 export const routes: Routes = [
     {
         path: 'admin', 
@@ -58,17 +61,20 @@ export const routes: Routes = [
             { path:'produits', component:ProductsComponent },
             { path:'materiels', component:MaterielsComponent },
             { path:'contact', component:Contact },
-            { path:'panier', component:PanierComponent },   
+            { path:'test/panier', component:PanierComponent },   
             { path:'diy/bases', component:BaseComponents },
             { path:'diy/aromes', component:AromeComponent },
             { path: 'diy/boosters_additifs', component: ProductsComponent },
             { path:'diy/packs', component:PackComponent },
             { path:'diy/divers', component:DiverComponent },
             { path:'nicotine', component:NicotineComponents },
-            { path:'cgv', component:ConfidentialComponents },   
-
+            { path:'cgv', component:ConfidentialComponents },
+            
         ]
     },
+
+    { path:'payement_success', component:SuccessComponent },
+    { path:'payement_failed', component:FailedComponent },
 
     { path:'login', component:Login  },
     { path:'**', component:NotFoundComponent }

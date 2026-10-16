@@ -81,8 +81,6 @@ export class PackComponent {
 
         next: (res: any) => {
 
-          console.log('Packs reçues:', res);
-
           const data = res.data ?? res ?? [];
 
           this.packs = data;
